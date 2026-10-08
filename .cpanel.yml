@@ -1,0 +1,8 @@
+---
+deployment:
+  tasks:
+    - export DEPLOYPATH=$HOME/laravel/unsia-story-v2
+    - /bin/mkdir -p $DEPLOYPATH $HOME/public_html
+    - /bin/cp -R * $DEPLOYPATH
+    - /bin/cp -R public/. $HOME/public_html/
+    - /bin/cp deploy/index.php $HOME/public_html/index.php
