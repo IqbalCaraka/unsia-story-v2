@@ -13,6 +13,65 @@
     RewriteCond %{HTTP:x-xsrf-token} .
     RewriteRule .* - [E=HTTP_X_XSRF_TOKEN:%{HTTP:X-XSRF-Token}]
 
+    # =====================================================================
+    #  Redirect warisan situs v1 (PHP biasa) ke URL Laravel v2.
+    #
+    #  301 = pindah permanen, sehingga peringkat dan backlink URL lama
+    #  ikut berpindah ke URL baru. Jangan diubah jadi 302.
+    #
+    #  Harus berada di ATAS aturan front controller di bawah, kalau tidak
+    #  permintaan keburu dilempar ke index.php dan berakhir 404.
+    # =====================================================================
+
+    # --- Artikel blog: v1 sudah memakai slug, jadi pemetaannya 1:1 ---
+    RewriteCond %{QUERY_STRING} (?:^|&)slug=([^&]+)
+    RewriteRule ^blog-detail\.php$ /blog/%1? [R=301,L]
+
+    # Tanpa slug, arahkan ke daftar blog
+    RewriteRule ^blog-detail\.php$ /blog? [R=301,L]
+
+    # --- Daftar blog. Query string ikut terbawa, jadi ?kategori=berita tetap jalan ---
+    RewriteRule ^blog\.(?:php|html)$ /blog [R=301,L]
+
+    # --- Halaman statis ---
+    #     Syarat THE_REQUEST wajib di sini. Front controller Laravel me-rewrite
+    #     SEMUA URL ke index.php secara internal, lalu mod_rewrite memproses
+    #     ulang hasilnya. Tanpa syarat ini, setiap halaman ikut tertangkap
+    #     aturan ini dan dilempar ke "/". THE_REQUEST berisi baris permintaan
+    #     asli dari browser dan tidak berubah oleh rewrite internal.
+    RewriteCond %{THE_REQUEST} \s/+index\.(?:php|html)[\s?]
+    RewriteRule ^index\.(?:php|html)$ / [R=301,L]
+    RewriteRule ^about\.(?:php|html)$ /about [R=301,L]
+    RewriteRule ^faq\.(?:php|html)$ /faq [R=301,L]
+
+    # --- Program studi ---
+    RewriteRule ^prodi-(akuntansi|informatika|komunikasi|manajemen|sistem-informasi|teknologi-informasi)\.(?:php|html)$ /prodi/$1 [R=301,L]
+
+    # Halaman kurikulum v1 isinya kurikulum per prodi, jadi diarahkan ke halaman prodi
+    RewriteRule ^kurikulum-(akuntansi|informatika|komunikasi|manajemen|sistem-informasi|teknologi-informasi)\.(?:php|html)$ /prodi/$1 [R=301,L]
+
+    # --- Konversi mata kuliah / RPL ---
+    RewriteRule ^rpl-konversi\.php$ /konversi-mata-kuliah [R=301,L]
+    RewriteRule ^rpl-pdf\.php$ /konversi-mata-kuliah [R=301,L]
+
+    # --- Panel admin (tidak terindeks, hanya menyelamatkan bookmark) ---
+    RewriteRule ^admin-login\.php$ /admin/login [R=301,L]
+    RewriteRule ^admin-dashboard\.php$ /admin [R=301,L]
+
+    # --- Sitemap lama ---
+    RewriteRule ^sitemap\.php$ /sitemap.xml [R=301,L]
+
+    # --- Halaman yang memang sudah tidak ada di v2 ---
+    #     410 Gone, bukan 404. 410 memberi tahu Google halaman ini sengaja
+    #     dihapus permanen, sehingga lebih cepat dikeluarkan dari indeks
+    #     dan tidak dilaporkan sebagai error perayapan.
+    RewriteRule ^(?:event|event-sdp|event-us|contact|tes-minat|presensi|coming-soon)\.(?:php|html)$ - [G,L]
+
+    # Sisa berkas template v1 yang tidak pernah dipakai
+    RewriteRule ^(?:cart|checkout|course|course2|course3|shop|single_course|single_shop|pricing|register|login|team|team-details|error|maintenance|index2|blog_single|event_single|thank-you)\.html$ - [G,L]
+
+    # =====================================================================
+
     # Redirect Trailing Slashes If Not A Folder...
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_URI} (.+)/$

@@ -64,6 +64,24 @@ return [
             ]) : [],
         ],
 
+        /*
+         * Database situs lama (unsia-story v1). Hanya dibaca, dan hanya
+         * dipakai oleh perintah "php artisan migrasi:v1". Boleh dihapus
+         * dari .env setelah migrasi data selesai.
+         */
+        'v1' => [
+            'driver' => 'mysql',
+            'host' => env('DB_V1_HOST', env('DB_HOST', '127.0.0.1')),
+            'port' => env('DB_V1_PORT', env('DB_PORT', '3306')),
+            'database' => env('DB_V1_DATABASE', ''),
+            'username' => env('DB_V1_USERNAME', env('DB_USERNAME', 'root')),
+            'password' => env('DB_V1_PASSWORD', env('DB_PASSWORD', '')),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'strict' => false,
+        ],
+
         'mariadb' => [
             'driver' => 'mariadb',
             'url' => env('DB_URL'),

@@ -8,8 +8,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Event extends Model
 {
     protected $fillable = [
-        'nama_event', 'tanggal_event', 'jam_event', 'link_zoom',
-        'link_materi', 'link_sertif', 'status',
+        'nama_event', 'deskripsi', 'tanggal_event', 'jam_event', 'lokasi',
+        'poster', 'kuota', 'link_zoom', 'link_materi', 'link_sertif',
+        'status', 'presensi_status',
     ];
 
     protected function casts(): array
