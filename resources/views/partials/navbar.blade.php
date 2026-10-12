@@ -119,9 +119,9 @@
                             </a>
                         @else
                             <a class="nav_masuk"
-                               href="{{ auth()->user()->isAdmin() ? route('admin.dashboard') : route('profil.edit') }}">
+                               href="{{ auth()->user()->isPengelola() ? route('admin.dashboard') : route('profil.edit') }}">
                                 <i class="fa-solid fa-user-circle"></i>
-                                {{ auth()->user()->isAdmin() ? 'Dashboard' : 'Akun Saya' }}
+                                {{ auth()->user()->isPengelola() ? 'Dashboard' : 'Akun Saya' }}
                             </a>
                         @endguest
                         <a class="btn_two" href="https://pmb.unsia.ac.id" target="_blank">Daftar <i class="fa-solid fa-arrow-right"></i></a>
@@ -162,9 +162,9 @@
                         <li><a href="{{ route('login') }}"><i class="fa-solid fa-right-to-bracket"></i> Masuk</a></li>
                     @else
                         <li>
-                            <a href="{{ auth()->user()->isAdmin() ? route('admin.dashboard') : route('profil.edit') }}">
+                            <a href="{{ auth()->user()->isPengelola() ? route('admin.dashboard') : route('profil.edit') }}">
                                 <i class="fa-solid fa-user-circle"></i>
-                                {{ auth()->user()->isAdmin() ? 'Dashboard' : 'Akun Saya' }}
+                                {{ auth()->user()->isPengelola() ? 'Dashboard' : 'Akun Saya' }}
                             </a>
                         </li>
                     @endguest

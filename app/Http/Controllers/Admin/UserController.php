@@ -65,10 +65,12 @@ class UserController extends Controller
             $this->attributes()
         );
 
-        // Admin terakhir tidak boleh diturunkan jadi mahasiswa, nanti panel terkunci.
-        if ($user->isAdmin() && $validated['role'] !== 'admin' && User::where('role', 'admin')->count() <= 1) {
+        // Superadmin terakhir tidak boleh diturunkan, nanti tidak ada lagi yang
+        // bisa mengelola pengguna dan panel terkunci selamanya.
+        if ($user->isSuperadmin() && $validated['role'] !== 'superadmin'
+            && User::where('role', 'superadmin')->count() <= 1) {
             return back()->withInput()
-                ->withErrors(['role' => 'Ini satu-satunya akun admin, rolenya tidak bisa diubah.']);
+                ->withErrors(['role' => 'Ini satu-satunya Super Admin, rolenya tidak bisa diturunkan.']);
         }
 
         $data = $this->normalize($validated);
@@ -90,8 +92,8 @@ class UserController extends Controller
             return back()->with('error', 'Anda tidak bisa menghapus akun Anda sendiri.');
         }
 
-        if ($user->isAdmin() && User::where('role', 'admin')->count() <= 1) {
-            return back()->with('error', 'Akun admin terakhir tidak bisa dihapus.');
+        if ($user->isSuperadmin() && User::where('role', 'superadmin')->count() <= 1) {
+            return back()->with('error', 'Super Admin terakhir tidak bisa dihapus.');
         }
 
         $user->delete();
@@ -117,26 +119,28 @@ class UserController extends Controller
      */
     protected function rules(Request $request, ?User $user = null): array
     {
-        $isAdmin = $request->input('role') === 'admin';
+        // superadmin dan admin sama-sama akun pengelola: login via email,
+        // tanpa data akademik.
+        $isPengelola = in_array($request->input('role'), User::ROLE_PENGELOLA, true);
 
         return [
-            'role' => ['required', Rule::in(['admin', 'mahasiswa'])],
+            'role' => ['required', Rule::in(['superadmin', 'admin', 'mahasiswa'])],
             'nama' => ['required', 'string', 'max:255'],
 
             'email' => [
-                $isAdmin ? 'required' : 'nullable',
+                $isPengelola ? 'required' : 'nullable',
                 'email', 'max:255',
                 Rule::unique('users', 'email')->ignore($user),
             ],
 
             'nim' => [
-                $isAdmin ? 'nullable' : 'required',
+                $isPengelola ? 'nullable' : 'required',
                 'string', 'max:20',
                 Rule::unique('users', 'nim')->ignore($user),
             ],
 
-            'prodi_id' => [$isAdmin ? 'nullable' : 'required', 'exists:prodi,id'],
-            'tahun_ajar_id' => [$isAdmin ? 'nullable' : 'required', 'exists:tahun_ajar,id'],
+            'prodi_id' => [$isPengelola ? 'nullable' : 'required', 'exists:prodi,id'],
+            'tahun_ajar_id' => [$isPengelola ? 'nullable' : 'required', 'exists:tahun_ajar,id'],
         ];
     }
 
@@ -146,7 +150,7 @@ class UserController extends Controller
      */
     protected function normalize(array $data): array
     {
-        if ($data['role'] === 'admin') {
+        if (in_array($data['role'], User::ROLE_PENGELOLA, true)) {
             $data['nim'] = null;
             $data['prodi_id'] = null;
             $data['tahun_ajar_id'] = null;
@@ -160,7 +164,7 @@ class UserController extends Controller
     protected function messages(): array
     {
         return [
-            'email.required' => 'Akun admin wajib punya email, karena login admin memakai email.',
+            'email.required' => 'Akun pengelola (admin / super admin) wajib punya email, karena loginnya memakai email.',
             'nim.required' => 'Akun mahasiswa wajib punya NIM, karena login mahasiswa memakai NIM.',
             'prodi_id.required' => 'Program studi wajib dipilih untuk akun mahasiswa.',
             'tahun_ajar_id.required' => 'Tahun ajar wajib dipilih untuk akun mahasiswa.',

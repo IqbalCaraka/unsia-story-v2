@@ -244,12 +244,15 @@
             <hr class="mx-3 border-secondary">
 
             <ul class="nav flex-column">
-                <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}"
-                       href="{{ route('admin.users.index') }}">
-                        <i class="fas fa-users"></i> Pengguna
-                    </a>
-                </li>
+                {{-- Manajemen pengguna hanya untuk superadmin. --}}
+                @if (auth()->user()?->isSuperadmin())
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}"
+                           href="{{ route('admin.users.index') }}">
+                            <i class="fas fa-users"></i> Pengguna
+                        </a>
+                    </li>
+                @endif
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('admin.tahun-ajar.*') ? 'active' : '' }}"
                        href="{{ route('admin.tahun-ajar.index') }}">

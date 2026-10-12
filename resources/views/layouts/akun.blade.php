@@ -94,7 +94,7 @@
 
         <div class="d-flex align-items-center gap-3">
             @auth
-                @if (auth()->user()->isAdmin())
+                @if (auth()->user()->isPengelola())
                     <a href="{{ route('admin.dashboard') }}" class="nav-aksi">
                         <i class="fas fa-gauge me-1"></i>Panel Admin
                     </a>

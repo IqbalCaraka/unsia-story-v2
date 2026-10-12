@@ -34,7 +34,7 @@ class LoginController extends Controller
             $request->session()->regenerate();
 
             // Mahasiswa tidak punya akses panel admin, arahkan ke profilnya.
-            return redirect()->intended(Auth::user()->isAdmin() ? '/admin' : '/profil');
+            return redirect()->intended(Auth::user()->isPengelola() ? '/admin' : '/profil');
         }
 
         return back()->withErrors([

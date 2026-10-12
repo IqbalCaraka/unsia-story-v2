@@ -88,14 +88,40 @@ class User extends Authenticatable
         return mb_strtoupper(mb_substr($bagian[0], 0, 1) . (count($bagian) > 1 ? mb_substr(end($bagian), 0, 1) : ''));
     }
 
+    /** Role yang boleh membuka panel admin. */
+    public const ROLE_PENGELOLA = ['superadmin', 'admin'];
+
+    public function isSuperadmin(): bool
+    {
+        return $this->role === 'superadmin';
+    }
+
     public function isAdmin(): bool
     {
         return $this->role === 'admin';
     }
 
+    /**
+     * Admin maupun superadmin. Dipakai untuk hal yang berlaku bagi
+     * keduanya: akses panel, wajib punya email, arah redirect setelah login.
+     */
+    public function isPengelola(): bool
+    {
+        return in_array($this->role, self::ROLE_PENGELOLA, true);
+    }
+
     public function isMahasiswa(): bool
     {
         return $this->role === 'mahasiswa';
+    }
+
+    public function roleLabel(): string
+    {
+        return match ($this->role) {
+            'superadmin' => 'Super Admin',
+            'admin' => 'Admin',
+            default => 'Mahasiswa',
+        };
     }
 
     public function scopeMahasiswa($query)

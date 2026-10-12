@@ -9,12 +9,17 @@
     <select class="form-select @error('role') is-invalid @enderror" id="role" name="role" required>
         <option value="mahasiswa" {{ $role === 'mahasiswa' ? 'selected' : '' }}>Mahasiswa</option>
         <option value="admin" {{ $role === 'admin' ? 'selected' : '' }}>Admin</option>
+        <option value="superadmin" {{ $role === 'superadmin' ? 'selected' : '' }}>Super Admin</option>
     </select>
     @error('role')
         <div class="invalid-feedback">{{ $message }}</div>
     @enderror
     <div class="form-text">
-        Mahasiswa login memakai NIM. Admin login memakai email dan tidak menyimpan data akademik.
+        <strong>Mahasiswa</strong> login memakai NIM, hanya bisa membuka profil dan cashback-nya sendiri.<br>
+        <strong>Admin</strong> login memakai email, mengelola konten panel tapi
+        <em>tidak bisa</em> mengelola pengguna.<br>
+        <strong>Super Admin</strong> sama seperti admin, ditambah wewenang menambah,
+        mengubah, dan menghapus pengguna.
     </div>
 </div>
 

@@ -36,7 +36,7 @@ class ProfilController extends Controller
 
             // Admin login pakai email, jadi tidak boleh dikosongkan.
             'email' => [
-                $user->isAdmin() ? 'required' : 'nullable',
+                $user->isPengelola() ? 'required' : 'nullable',
                 'email', 'max:255',
                 Rule::unique('users', 'email')->ignore($user->id),
             ],
@@ -48,7 +48,7 @@ class ProfilController extends Controller
         ], [
             'password_lama.required_with' => 'Password saat ini wajib diisi untuk mengganti password.',
             'password_lama.current_password' => 'Password saat ini salah.',
-            'email.required' => 'Akun admin wajib punya email, karena login admin memakai email.',
+            'email.required' => 'Akun pengelola (admin / super admin) wajib punya email, karena loginnya memakai email.',
         ], [
             'foto_profil' => 'foto profil',
             'password_lama' => 'password saat ini',

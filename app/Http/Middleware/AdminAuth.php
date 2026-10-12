@@ -15,9 +15,9 @@ class AdminAuth
             return redirect('/admin/login');
         }
 
-        // Akun mahasiswa memakai login yang sama, tapi tidak boleh masuk panel admin.
-        // Diarahkan ke profilnya, bukan 403 buntu.
-        if (!Auth::user()->isAdmin()) {
+        // Admin dan superadmin sama-sama boleh masuk panel. Mahasiswa memakai
+        // login yang sama tapi diarahkan ke profilnya, bukan 403 buntu.
+        if (!Auth::user()->isPengelola()) {
             return redirect()->route('profil.edit')
                 ->with('error', 'Panel admin hanya untuk administrator.');
         }

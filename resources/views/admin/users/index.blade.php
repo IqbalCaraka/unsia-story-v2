@@ -30,6 +30,7 @@
                 <label for="filterRole" class="form-label small fw-semibold mb-1">Role</label>
                 <select class="form-select" id="filterRole" name="role">
                     <option value="">Semua role</option>
+                    <option value="superadmin" {{ request('role') === 'superadmin' ? 'selected' : '' }}>Super Admin</option>
                     <option value="admin" {{ request('role') === 'admin' ? 'selected' : '' }}>Admin</option>
                     <option value="mahasiswa" {{ request('role') === 'mahasiswa' ? 'selected' : '' }}>Mahasiswa</option>
                 </select>
@@ -82,7 +83,10 @@
                             <td class="text-muted">{{ $user->prodi->nama_prodi ?? '—' }}</td>
                             <td class="text-muted small">{{ $user->tahunAjar->label ?? '—' }}</td>
                             <td>
-                                @if ($user->isAdmin())
+                                @if ($user->isSuperadmin())
+                                    <span class="badge rounded-pill"
+                                          style="background-color: #f0c040; color: #0d1b2a;">Super Admin</span>
+                                @elseif ($user->isAdmin())
                                     <span class="badge rounded-pill"
                                           style="background-color: #0d1b2a; color: #f0c040;">Admin</span>
                                 @else

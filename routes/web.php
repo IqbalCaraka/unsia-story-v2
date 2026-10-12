@@ -159,13 +159,19 @@ Route::prefix('admin')->middleware('admin')->name('admin.')->group(function () {
     Route::patch('/pengajuan-nim/{pengajuan}/tolak', [PengajuanUbahNimController::class, 'tolak'])
         ->name('pengajuan-nim.tolak');
 
-    // Impor massal peserta (didaftarkan sebelum resource agar tidak tertangkap users/{user})
-    Route::get('users/import', [UserImportController::class, 'form'])->name('users.import');
-    Route::get('users/import/template', [UserImportController::class, 'template'])->name('users.import.template');
-    Route::post('users/import', [UserImportController::class, 'store'])->name('users.import.store');
+    /*
+     | Manajemen pengguna: khusus superadmin. Admin biasa tidak berwenang
+     | membuat, mengubah, atau menghapus akun.
+     */
+    Route::middleware('superadmin')->group(function () {
+        // Impor massal peserta (sebelum resource agar tidak tertangkap users/{user})
+        Route::get('users/import', [UserImportController::class, 'form'])->name('users.import');
+        Route::get('users/import/template', [UserImportController::class, 'template'])
+            ->name('users.import.template');
+        Route::post('users/import', [UserImportController::class, 'store'])->name('users.import.store');
 
-    // Manajemen pengguna
-    Route::resource('users', UserController::class)->except(['show']);
+        Route::resource('users', UserController::class)->except(['show']);
+    });
 
     // Manajemen tahun ajar (form tambah & edit lewat modal di halaman index)
     Route::resource('tahun-ajar', TahunAjarController::class)

@@ -1,5 +1,5 @@
 {{-- Admin tetap di dalam panel admin (lengkap dengan sidebar); mahasiswa pakai layout akun. --}}
-@extends(auth()->user()->isAdmin() ? 'layouts.admin' : 'layouts.akun')
+@extends(auth()->user()->isPengelola() ? 'layouts.admin' : 'layouts.akun')
 
 @section('title', 'Profil Saya')
 @section('page-title', 'Profil Saya')
@@ -40,10 +40,16 @@
                 <h6 class="fw-bold mb-1">{{ $user->nama ?? $user->name }}</h6>
                 <p class="text-muted small mb-2">{{ $user->email ?? 'Tanpa email' }}</p>
 
-                @if ($user->isAdmin())
-                    <span class="badge rounded-pill" style="background-color:#0d1b2a;color:#f0c040;">Admin</span>
+                @if ($user->isSuperadmin())
+                    <span class="badge rounded-pill" style="background-color:#f0c040;color:#0d1b2a;">
+                        {{ $user->roleLabel() }}
+                    </span>
+                @elseif ($user->isAdmin())
+                    <span class="badge rounded-pill" style="background-color:#0d1b2a;color:#f0c040;">
+                        {{ $user->roleLabel() }}
+                    </span>
                 @else
-                    <span class="badge rounded-pill bg-light text-dark border">Mahasiswa</span>
+                    <span class="badge rounded-pill bg-light text-dark border">{{ $user->roleLabel() }}</span>
                 @endif
 
                 @if ($user->foto_profil)
@@ -108,17 +114,17 @@
                     <div class="mb-3">
                         <label for="email" class="form-label fw-semibold">
                             Email
-                            @unless ($user->isAdmin())
+                            @unless ($user->isPengelola())
                                 <span class="badge bg-light text-muted fw-normal">opsional</span>
                             @endunless
                         </label>
                         <input type="email" class="form-control @error('email') is-invalid @enderror"
                                id="email" name="email" value="{{ old('email', $user->email) }}"
-                               {{ $user->isAdmin() ? 'required' : '' }}>
+                               {{ $user->isPengelola() ? 'required' : '' }}>
                         @error('email')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
-                        @if ($user->isAdmin())
+                        @if ($user->isPengelola())
                             <div class="form-text">Email ini yang Anda pakai untuk login.</div>
                         @endif
                     </div>
