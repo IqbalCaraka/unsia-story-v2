@@ -1,6 +1,7 @@
-@extends('layouts.akun')
+@extends('layouts.admin')
 
 @section('title', 'Cashback')
+@section('page-title', 'Cashback')
 
 @section('content')
 

@@ -1,5 +1,5 @@
-{{-- Admin tetap di dalam panel admin (lengkap dengan sidebar); mahasiswa pakai layout akun. --}}
-@extends(auth()->user()->isPengelola() ? 'layouts.admin' : 'layouts.akun')
+{{-- Semua role memakai layout panel yang sama; isi sidebar menyesuaikan role. --}}
+@extends('layouts.admin')
 
 @section('title', 'Profil Saya')
 @section('page-title', 'Profil Saya')

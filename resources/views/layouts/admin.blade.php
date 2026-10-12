@@ -208,6 +208,25 @@
             <span>UNSIA Story</span>
         </div>
         <nav class="mt-2">
+            {{-- Mahasiswa memakai layout yang sama, tapi menunya hanya dua halaman
+                 miliknya sendiri. Dipisah di sini supaya gaya sidebar cukup
+                 dirawat di satu berkas. --}}
+            @if (auth()->user()?->isMahasiswa())
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('profil.*') ? 'active' : '' }}"
+                           href="{{ route('profil.edit') }}">
+                            <i class="fas fa-user-gear"></i> Profil Saya
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('cashback.*') ? 'active' : '' }}"
+                           href="{{ route('cashback.index') }}">
+                            <i class="fas fa-money-bill-transfer"></i> Cashback
+                        </a>
+                    </li>
+                </ul>
+            @else
             <ul class="nav flex-column">
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}"
@@ -278,16 +297,20 @@
                     </a>
                 </li>
             </ul>
+            @endif
 
             <hr class="mx-3 border-secondary">
 
             <ul class="nav flex-column">
-                <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('profil.*') ? 'active' : '' }}"
-                       href="{{ route('profil.edit') }}">
-                        <i class="fas fa-user-gear"></i> Profil Saya
-                    </a>
-                </li>
+                {{-- Mahasiswa sudah punya Profil Saya di blok atas. --}}
+                @unless (auth()->user()?->isMahasiswa())
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('profil.*') ? 'active' : '' }}"
+                           href="{{ route('profil.edit') }}">
+                            <i class="fas fa-user-gear"></i> Profil Saya
+                        </a>
+                    </li>
+                @endunless
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('home') }}" target="_blank">
                         <i class="fas fa-external-link-alt"></i> Lihat Website

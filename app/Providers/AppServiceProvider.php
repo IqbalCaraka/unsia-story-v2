@@ -23,7 +23,13 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         // Badge jumlah pengajuan yang menunggu tindakan admin, di sidebar.
+        // Mahasiswa memakai layout yang sama tapi tidak melihat badge ini,
+        // jadi query-nya dilewati supaya tidak membebani tiap halaman mereka.
         View::composer('layouts.admin', function ($view) {
+            if (! auth()->check() || ! auth()->user()->isPengelola()) {
+                return;
+            }
+
             $view->with([
                 'jumlahPengajuanNim' => PengajuanUbahNim::menunggu()->count(),
                 // Termasuk yang sudah diverifikasi tapi belum ditransfer.
