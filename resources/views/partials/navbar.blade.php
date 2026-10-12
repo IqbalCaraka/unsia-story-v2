@@ -4,6 +4,34 @@
 
 <div class="preloaders"><img src="{{ asset('assets/images/mascot-unsiro.png') }}" alt="Loading" style="width:120px;"></div>
 
+<style>
+    /* Tombol Masuk di navbar. Dibuat outline supaya tidak bersaing
+       dengan tombol Daftar yang merupakan aksi utama. */
+    .call_to_action .nav_masuk {
+        display: inline-block;
+        margin-right: 10px;
+        padding: 8px 16px;
+        border: 1px solid #0d1b2a;
+        border-radius: 6px;
+        color: #0d1b2a;
+        font-size: 14px;
+        font-weight: 600;
+        text-decoration: none;
+        vertical-align: middle;
+        transition: background-color .2s ease, color .2s ease;
+    }
+
+    .call_to_action .nav_masuk:hover,
+    .call_to_action .nav_masuk:focus {
+        background-color: #0d1b2a;
+        color: #f0c040;
+    }
+
+    @media (max-width: 1399px) {
+        .call_to_action .nav_masuk { display: none; }
+    }
+</style>
+
 <div class="top_header_banner">
     <section class="logo-contact">
         <div class="container">
@@ -47,7 +75,7 @@
                         <a href="{{ route('home') }}"><img src="{{ asset('assets/images/logo-unsia-horizontal.jpg') }}" alt="UNSIA Story"></a>
                     </div>
                 </div>
-                <div id="nav-menu" style="width:75%;flex-grow:1;" class="d-flex">
+                <div id="nav-menu" style="width:69%;flex-grow:1;" class="d-flex">
                     <nav id="main-menu">
                         <ul>
                             <li><a href="{{ route('home') }}">Beranda</a></li>
@@ -83,8 +111,19 @@
                         </ul>
                     </nav>
                 </div>
-                <div id="nav-cta" style="width:13%;flex-shrink:0;white-space:nowrap;" class="d-none d-xl-block text-end align-self-center">
+                <div id="nav-cta" style="width:19%;flex-shrink:0;white-space:nowrap;" class="d-none d-xl-block text-end align-self-center">
                     <div class="call_to_action">
+                        @guest
+                            <a class="nav_masuk" href="{{ route('login') }}">
+                                <i class="fa-solid fa-right-to-bracket"></i> Masuk
+                            </a>
+                        @else
+                            <a class="nav_masuk"
+                               href="{{ auth()->user()->isAdmin() ? route('admin.dashboard') : route('profil.edit') }}">
+                                <i class="fa-solid fa-user-circle"></i>
+                                {{ auth()->user()->isAdmin() ? 'Dashboard' : 'Akun Saya' }}
+                            </a>
+                        @endguest
                         <a class="btn_two" href="https://pmb.unsia.ac.id" target="_blank">Daftar <i class="fa-solid fa-arrow-right"></i></a>
                     </div>
                 </div>
@@ -119,6 +158,16 @@
                         </ul>
                     </li>
                     <li><a href="{{ route('faq') }}">FAQ</a></li>
+                    @guest
+                        <li><a href="{{ route('login') }}"><i class="fa-solid fa-right-to-bracket"></i> Masuk</a></li>
+                    @else
+                        <li>
+                            <a href="{{ auth()->user()->isAdmin() ? route('admin.dashboard') : route('profil.edit') }}">
+                                <i class="fa-solid fa-user-circle"></i>
+                                {{ auth()->user()->isAdmin() ? 'Dashboard' : 'Akun Saya' }}
+                            </a>
+                        </li>
+                    @endguest
                 </ul>
             </div>
         </div>
