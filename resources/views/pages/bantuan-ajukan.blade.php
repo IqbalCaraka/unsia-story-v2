@@ -62,7 +62,7 @@
                 <div style="text-align:center;margin-bottom:25px;">
                     <h4 style="color:#2c7aff;font-size:14px;letter-spacing:2px;text-transform:uppercase;">Formulir Pengajuan</h4>
                     <h2 style="font-weight:700;font-size:26px;">Daftarkan Diri &amp; Laporkan Syarat Administrasi</h2>
-                    <p style="color:#666;">Total bantuan <strong>Rp15.000.000</strong> — seleksi berdasarkan peringkat IP semester 1. <a href="{{ route('bantuan') }}" style="color:#2c7aff;font-weight:600;">Lihat info program</a></p>
+                    <p style="color:#666;">Total bantuan <strong>jutaan rupiah</strong> — seleksi berdasarkan peringkat IP semester 1. <a href="{{ route('bantuan') }}" style="color:#2c7aff;font-weight:600;">Lihat info program</a></p>
                 </div>
 
                 <div class="khusus-referral">

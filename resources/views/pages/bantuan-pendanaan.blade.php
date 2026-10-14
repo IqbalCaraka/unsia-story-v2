@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
-@section('title', 'Bantuan Pendanaan - UNSIA Story | Dana Bantuan Rp15 Juta')
-@section('description', 'Program Bantuan Pendanaan UNSIA Story senilai Rp15 juta, khusus mahasiswa yang mendaftar dengan kode referral unsia.my.id. Seleksi setelah semester pertama berdasarkan peringkat IP, dengan syarat transkrip nilai dan lembar motivasi.')
+@section('title', 'Bantuan Pendanaan - UNSIA Story | Dana Bantuan Jutaan Rupiah')
+@section('description', 'Program Bantuan Pendanaan UNSIA Story senilai jutaan rupiah, khusus mahasiswa yang mendaftar dengan kode referral unsia.my.id. Seleksi setelah semester pertama berdasarkan peringkat IP, dengan syarat transkrip nilai dan lembar motivasi.')
 @section('keywords', 'bantuan pendanaan unsia, beasiswa unsia, bantuan biaya kuliah, bantuan dana kuliah online, universitas siber asia, ip semester 1')
 @section('og_image', asset('assets/images/logo-unsia-story.png'))
 
@@ -18,7 +18,7 @@
             <div class="col-lg-6 col-md-12 wow fadeInUp" data-wow-duration="1s" data-wow-delay="0.1s">
                 <h4 style="color:#2c7aff;font-size:14px;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;">Program Bantuan</h4>
                 <h2 style="font-weight:700;font-size:32px;margin-bottom:20px;">Bantuan Pendanaan untuk Mahasiswa Berprestasi</h2>
-                <p style="color:#555;font-size:16px;line-height:1.8;margin-bottom:15px;">Program Bantuan Pendanaan disediakan untuk membantu meringankan biaya kuliah mahasiswa. Total dana bantuan yang disalurkan dalam program ini adalah <strong>Rp15.000.000</strong>.</p>
+                <p style="color:#555;font-size:16px;line-height:1.8;margin-bottom:15px;">Program Bantuan Pendanaan disediakan untuk membantu meringankan biaya kuliah mahasiswa. Total dana bantuan yang disalurkan dalam program ini mencapai <strong>jutaan rupiah</strong>.</p>
                 <p style="color:#555;font-size:16px;line-height:1.8;margin-bottom:15px;">Seleksi penerima dilakukan <strong>setelah kamu menjalani semester pertama</strong>, dengan dasar penilaian berupa <strong>peringkat IP semester 1</strong>. Untuk ikut serta, kamu perlu mendaftarkan diri dan melaporkan syarat administrasi melalui halaman <a href="{{ route('bantuan.ajukan') }}" style="color:#2c7aff;font-weight:600;">Ajukan Bantuan Pendanaan</a>.</p>
                 <div style="background:#fff3e0;border-left:4px solid #f0c040;border-radius:10px;padding:15px 20px;">
                     <p style="margin:0;color:#555;font-size:15px;line-height:1.8;"><strong><i class="fa-solid fa-circle-exclamation" style="color:#e65100;margin-right:6px;"></i>Khusus pengguna kode referral:</strong> program ini hanya bisa diajukan oleh mahasiswa yang mendaftar di UNSIA menggunakan kode referral <strong style="color:#2c7aff;">unsia.my.id</strong>.</p>
@@ -35,7 +35,7 @@
             <div class="col-lg-6 col-md-12 text-center wow fadeInUp" data-wow-duration="1s" data-wow-delay="0.2s">
                 <div style="background:linear-gradient(135deg,#0d1b2a,#1a2d4a);border-radius:16px;padding:45px 30px;margin-top:25px;">
                     <p style="color:rgba(255,255,255,0.6);font-size:13px;text-transform:uppercase;letter-spacing:2px;margin-bottom:10px;">Total Bantuan</p>
-                    <div style="background:linear-gradient(135deg,#f0c040,#e6a817);color:#0d1b2a;padding:22px 20px;border-radius:12px;font-size:38px;font-weight:800;letter-spacing:1px;margin-bottom:18px;">Rp15.000.000</div>
+                    <div style="background:linear-gradient(135deg,#f0c040,#e6a817);color:#0d1b2a;padding:22px 20px;border-radius:12px;font-size:38px;font-weight:800;letter-spacing:1px;margin-bottom:18px;">Jutaan Rupiah</div>
                     <p style="color:rgba(255,255,255,0.75);font-size:15px;line-height:1.8;margin:0;">Diseleksi setelah semester pertama<br>berdasarkan <strong style="color:#f0c040;">peringkat IP semester 1</strong></p>
                 </div>
             </div>
