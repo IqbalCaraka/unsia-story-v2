@@ -51,8 +51,8 @@ Route::get('/konversi-mata-kuliah/laporan', [KonversiController::class, 'laporan
 */
 
 Route::get('/bantuan-pendanaan', [BantuanPendanaanController::class, 'index'])->name('bantuan');
-Route::get('/bantuan-pendanaan/ajukan', [BantuanPendanaanController::class, 'ajukan'])->name('bantuan.ajukan');
-Route::post('/bantuan-pendanaan/ajukan', [BantuanPendanaanController::class, 'store'])->name('bantuan.store');
+// Formulir pengajuan publik dihapus. Pengajuan akan pindah ke area mahasiswa
+// yang login, seperti alur cashback. Data lama tetap dikelola di /admin/bantuan.
 
 /*
 |--------------------------------------------------------------------------

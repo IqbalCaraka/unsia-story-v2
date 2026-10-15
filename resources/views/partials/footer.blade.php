@@ -33,7 +33,6 @@
                     <ul>
                         <li><a href="{{ route('about') }}">Tentang</a></li>
                         <li><a href="{{ route('bantuan') }}">Bantuan Pendanaan</a></li>
-                        <li><a href="{{ route('bantuan.ajukan') }}">Ajukan Bantuan</a></li>
                         <li><a href="{{ route('konversi') }}">Konversi Mata Kuliah</a></li>
                         <li><a href="{{ route('faq') }}">FAQ</a></li>
                         <li><a href="https://pmb.unsia.ac.id" target="_blank">Daftar PMB</a></li>

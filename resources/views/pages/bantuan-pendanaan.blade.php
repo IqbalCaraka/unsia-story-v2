@@ -19,14 +19,11 @@
                 <h4 style="color:#2c7aff;font-size:14px;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;">Program Bantuan</h4>
                 <h2 style="font-weight:700;font-size:32px;margin-bottom:20px;">Bantuan Pendanaan untuk Mahasiswa Berprestasi</h2>
                 <p style="color:#555;font-size:16px;line-height:1.8;margin-bottom:15px;">Program Bantuan Pendanaan disediakan untuk membantu meringankan biaya kuliah mahasiswa. Total dana bantuan yang disalurkan dalam program ini mencapai <strong>jutaan rupiah</strong>.</p>
-                <p style="color:#555;font-size:16px;line-height:1.8;margin-bottom:15px;">Seleksi penerima dilakukan <strong>setelah kamu menjalani semester pertama</strong>, dengan dasar penilaian berupa <strong>peringkat IP semester 1</strong>. Untuk ikut serta, kamu perlu mendaftarkan diri dan melaporkan syarat administrasi melalui halaman <a href="{{ route('bantuan.ajukan') }}" style="color:#2c7aff;font-weight:600;">Ajukan Bantuan Pendanaan</a>.</p>
+                <p style="color:#555;font-size:16px;line-height:1.8;margin-bottom:15px;">Seleksi penerima dilakukan <strong>setelah kamu menjalani semester pertama</strong>, dengan dasar penilaian berupa <strong>peringkat IP semester 1</strong>. Untuk ikut serta, kamu perlu mendaftarkan diri dan melaporkan syarat administrasi. Hubungi kami lewat WhatsApp untuk informasi cara pengajuannya.</p>
                 <div style="background:#fff3e0;border-left:4px solid #f0c040;border-radius:10px;padding:15px 20px;">
                     <p style="margin:0;color:#555;font-size:15px;line-height:1.8;"><strong><i class="fa-solid fa-circle-exclamation" style="color:#e65100;margin-right:6px;"></i>Khusus pengguna kode referral:</strong> program ini hanya bisa diajukan oleh mahasiswa yang mendaftar di UNSIA menggunakan kode referral <strong style="color:#2c7aff;">unsia.my.id</strong>.</p>
                 </div>
                 <div style="margin-top:25px;display:flex;gap:15px;flex-wrap:wrap;">
-                    <a href="{{ route('bantuan.ajukan') }}" style="display:inline-flex;align-items:center;gap:8px;background:#2c7aff;color:#fff;padding:14px 28px;border-radius:50px;text-decoration:none;font-weight:700;font-size:15px;">
-                        <i class="fa-solid fa-file-pen"></i> Ajukan Bantuan Pendanaan
-                    </a>
                     <a href="https://wa.me/628133331686?text=Halo%2C%20saya%20ingin%20bertanya%20tentang%20Bantuan%20Pendanaan%20UNSIA" target="_blank" style="display:inline-flex;align-items:center;gap:8px;background:#25D366;color:#fff;padding:14px 28px;border-radius:50px;text-decoration:none;font-weight:700;font-size:15px;">
                         <i class="fa-brands fa-whatsapp"></i> Tanya via WA
                     </a>
@@ -140,7 +137,7 @@
                     <li><i class="fa-solid fa-check" style="color:#f0c040;margin-right:10px;"></i> Hanya untuk mahasiswa yang mendaftar dengan kode referral <strong style="color:#f0c040;">unsia.my.id</strong></li>
                     <li><i class="fa-solid fa-check" style="color:#f0c040;margin-right:10px;"></i> Seleksi dilakukan setelah peserta menjalani semester pertama</li>
                     <li><i class="fa-solid fa-check" style="color:#f0c040;margin-right:10px;"></i> Penilaian berdasarkan peringkat Indeks Prestasi (IP) semester 1</li>
-                    <li><i class="fa-solid fa-check" style="color:#f0c040;margin-right:10px;"></i> Pemohon wajib mendaftarkan diri melalui halaman pengajuan</li>
+                    <li><i class="fa-solid fa-check" style="color:#f0c040;margin-right:10px;"></i> Pemohon wajib mendaftarkan diri terlebih dahulu</li>
                     <li><i class="fa-solid fa-check" style="color:#f0c040;margin-right:10px;"></i> Syarat administrasi harus lengkap: transkrip nilai &amp; lembar motivasi</li>
                 </ul>
             </div>
@@ -148,8 +145,8 @@
                 <div style="background:rgba(255,255,255,0.08);border:2px solid rgba(255,255,255,0.15);border-radius:16px;padding:35px 30px;margin-top:20px;">
                     <i class="fa-solid fa-ranking-star" style="font-size:45px;color:#f0c040;margin-bottom:15px;"></i>
                     <h3 style="color:#fff;font-weight:700;margin-bottom:10px;">Sudah Siap Mengajukan?</h3>
-                    <p style="color:rgba(255,255,255,0.7);font-size:14px;margin-bottom:20px;">Siapkan transkrip nilai semester 1 dan lembar motivasi kamu, lalu isi formulir pengajuan.</p>
-                    <a href="{{ route('bantuan.ajukan') }}" style="display:inline-block;background:#f0c040;color:#0d1b2a;padding:14px 30px;border-radius:30px;text-decoration:none;font-weight:700;font-size:15px;"><i class="fa-solid fa-arrow-right"></i> Ajukan Sekarang</a>
+                    <p style="color:rgba(255,255,255,0.7);font-size:14px;margin-bottom:20px;">Siapkan transkrip nilai semester 1 dan lembar motivasi kamu, lalu hubungi kami untuk proses pengajuannya.</p>
+                    <a href="https://wa.me/628133331686?text=Halo%2C%20saya%20ingin%20mengajukan%20Bantuan%20Pendanaan%20UNSIA" target="_blank" style="display:inline-block;background:#f0c040;color:#0d1b2a;padding:14px 30px;border-radius:30px;text-decoration:none;font-weight:700;font-size:15px;"><i class="fa-brands fa-whatsapp"></i> Tanya Cara Mengajukan</a>
                 </div>
             </div>
         </div>

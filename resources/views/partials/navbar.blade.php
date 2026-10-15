@@ -90,12 +90,7 @@
                                     <li><a href="{{ route('prodi', 'teknologi-informasi') }}">Teknologi Informasi</a></li>
                                 </ul>
                             </li>
-                            <li class="menu-item-has-children"><a href="{{ route('bantuan') }}">Bantuan Pendanaan</a>
-                                <ul>
-                                    <li><a href="{{ route('bantuan') }}">Info Bantuan Pendanaan</a></li>
-                                    <li><a href="{{ route('bantuan.ajukan') }}">Ajukan Bantuan Pendanaan</a></li>
-                                </ul>
-                            </li>
+                            <li><a href="{{ route('bantuan') }}">Bantuan Pendanaan</a></li>
                             <li class="menu-item-has-children"><a href="#">Tools</a>
                                 <ul>
                                     <li><a href="{{ route('konversi') }}">Konversi Mata Kuliah</a></li>
@@ -140,12 +135,7 @@
                             <li><a href="{{ route('prodi', 'teknologi-informasi') }}">Teknologi Informasi</a></li>
                         </ul>
                     </li>
-                    <li><a href="{{ route('bantuan') }}">Bantuan Pendanaan</a>
-                        <ul class="sub-menu">
-                            <li><a href="{{ route('bantuan') }}">Info Bantuan Pendanaan</a></li>
-                            <li><a href="{{ route('bantuan.ajukan') }}">Ajukan Bantuan Pendanaan</a></li>
-                        </ul>
-                    </li>
+                    <li><a href="{{ route('bantuan') }}">Bantuan Pendanaan</a></li>
                     <li><a href="#">Tools</a>
                         <ul class="sub-menu">
                             <li><a href="{{ route('konversi') }}">Konversi Mata Kuliah</a></li>
