@@ -39,7 +39,7 @@
                 <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
                     <div class="single-top-contact">
                         <i class="ti-mobile"></i>
-                        <h4><a href="https://wa.me/628133331686?text=Halo%2C%20saya%20ingin%20bertanya%20tentang%20kuliah%20di%20UNSIA" target="_blank">081 3333 1686</a></h4>
+                        <h4><a href="https://wa.me/{{ config('kontak.cs.wa') }}?text=Halo%2C%20saya%20ingin%20bertanya%20tentang%20kuliah%20di%20UNSIA" target="_blank">081 3333 1686</a></h4>
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">

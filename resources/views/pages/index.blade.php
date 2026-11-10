@@ -108,7 +108,7 @@
                 <div class="abmv">
                     <i class="fa-brands fa-whatsapp"></i>
                     <h4>Ada Pertanyaan?</h4>
-                    <p>Hubungi kami langsung via WhatsApp di <a href="https://wa.me/628133331686" target="_blank" style="color: #25D366; font-weight: 600;">0813-3333-1686</a>, siap bantu kamu!</p>
+                    <p>Hubungi kami langsung via WhatsApp di <a href="https://wa.me/{{ config('kontak.cs.wa') }}" target="_blank" style="color: #25D366; font-weight: 600;">{{ config('kontak.cs.telepon') }}</a>, siap bantu kamu!</p>
                 </div>
                 <div class="cta_two">
                     <a href="https://pmb.unsia.ac.id" target="_blank" class="cta"><span>Daftar Sekarang</span>
@@ -258,7 +258,7 @@
                     <a href="https://pmb.unsia.ac.id" target="_blank" style="display: inline-flex; align-items: center; gap: 8px; background: #f0c040; color: #0d1b2a; padding: 14px 28px; border-radius: 50px; text-decoration: none; font-weight: 700; font-size: 15px;">
                         <i class="fa-solid fa-arrow-right"></i> Daftar Sekarang
                     </a>
-                    <a href="https://wa.me/628133331686?text=Halo%2C%20saya%20ingin%20bertanya%20tentang%20pendaftaran%20UNSIA" target="_blank" style="display: inline-flex; align-items: center; gap: 8px; background: #25D366; color: #fff; padding: 14px 28px; border-radius: 50px; text-decoration: none; font-weight: 700; font-size: 15px;">
+                    <a href="https://wa.me/{{ config('kontak.cs.wa') }}?text=Halo%2C%20saya%20ingin%20bertanya%20tentang%20pendaftaran%20UNSIA" target="_blank" style="display: inline-flex; align-items: center; gap: 8px; background: #25D366; color: #fff; padding: 14px 28px; border-radius: 50px; text-decoration: none; font-weight: 700; font-size: 15px;">
                         <i class="fa-brands fa-whatsapp"></i> Tanya via WA
                     </a>
                 </div>
@@ -379,7 +379,7 @@
                         <i class="fa-brands fa-whatsapp" style="font-size:50px;color:#25D366;margin-bottom:15px;"></i>
                         <h3 style="color:#fff;font-size:20px;font-weight:700;margin-bottom:8px;">Mau Langsung Chat?</h3>
                         <p style="color:rgba(255,255,255,0.7);font-size:14px;margin-bottom:20px;line-height:1.7;">Tim kami siap bantu jawab semua pertanyaan kamu seputar pendaftaran &amp; promo UNSIA.</p>
-                        <a href="https://wa.me/628133331686?text=Halo%2C%20saya%20ingin%20bertanya%20tentang%20kuliah%20di%20UNSIA" target="_blank" style="display:inline-flex;align-items:center;gap:10px;background:#25D366;color:#fff;text-decoration:none;padding:15px 35px;font-size:16px;border-radius:50px;font-weight:700;transition:opacity 0.3s;" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">
+                        <a href="https://wa.me/{{ config('kontak.cs.wa') }}?text=Halo%2C%20saya%20ingin%20bertanya%20tentang%20kuliah%20di%20UNSIA" target="_blank" style="display:inline-flex;align-items:center;gap:10px;background:#25D366;color:#fff;text-decoration:none;padding:15px 35px;font-size:16px;border-radius:50px;font-weight:700;transition:opacity 0.3s;" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">
                             <i class="fa-brands fa-whatsapp" style="font-size:20px;"></i> Chat WhatsApp
                         </a>
                         <p style="color:rgba(255,255,255,0.5);font-size:12px;margin-top:12px;">081 3333 1686 — Buka 24/7</p>

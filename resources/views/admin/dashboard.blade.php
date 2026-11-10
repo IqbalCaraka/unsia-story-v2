@@ -103,7 +103,7 @@
                         </a>
                     </li>
                     <li class="mb-2">
-                        <a href="https://wa.me/628133331686" target="_blank" class="text-decoration-none">
+                        <a href="https://wa.me/{{ config('kontak.cs.wa') }}" target="_blank" class="text-decoration-none">
                             <i class="fab fa-whatsapp me-2 text-muted"></i>WhatsApp
                         </a>
                     </li>

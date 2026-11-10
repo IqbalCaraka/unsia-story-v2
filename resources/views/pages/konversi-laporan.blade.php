@@ -145,7 +145,7 @@ td { padding: 6px 8px; border-bottom: 1px solid #eee; }
 @endforeach
 
 <div class="footer-note">
-    <strong>Disclaimer:</strong> Laporan ini dibuat secara otomatis oleh sistem UNSIA Story sebagai estimasi awal kecocokan mata kuliah untuk keperluan RPL (Rekognisi Pembelajaran Lampau). Hasil akhir konversi mata kuliah ditentukan oleh pihak Universitas Siber Asia melalui proses evaluasi resmi. Untuk informasi lebih lanjut, hubungi tim kami di <strong>0813-3333-1686</strong> (WhatsApp) atau kunjungi <strong>unsia.my.id</strong>.
+    <strong>Disclaimer:</strong> Laporan ini dibuat secara otomatis oleh sistem UNSIA Story sebagai estimasi awal kecocokan mata kuliah untuk keperluan RPL (Rekognisi Pembelajaran Lampau). Hasil akhir konversi mata kuliah ditentukan oleh pihak Universitas Siber Asia melalui proses evaluasi resmi. Untuk informasi lebih lanjut, hubungi tim kami di <strong>{{ config('kontak.cs.telepon') }}</strong> (WhatsApp) atau kunjungi <strong>unsia.my.id</strong>.
     <br><br>
     <strong>UNSIA Story</strong> — Mitra Pemasaran Resmi Universitas Siber Asia | unsia.my.id
 </div>

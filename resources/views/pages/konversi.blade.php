@@ -293,7 +293,7 @@
                         <div style="text-align:center;margin-top:20px;padding:30px;background:linear-gradient(135deg,#0d1b2a,#1a2d4a);border-radius:12px;">
                             <h3 style="color:#fff;margin-bottom:10px;">Tertarik Melanjutkan Kuliah di UNSIA?</h3>
                             <p style="color:rgba(255,255,255,0.7);margin-bottom:20px;">Konsultasikan hasil konversi kamu dengan tim kami</p>
-                            <a href="https://wa.me/628133331686?text={{ urlencode('Halo, saya ' . $nama . ' ingin konsultasi konversi mata kuliah ' . $jenisLabel . ' di UNSIA') }}" target="_blank" style="display:inline-block;background:#25D366;color:#fff;padding:14px 30px;border-radius:30px;text-decoration:none;font-weight:700;"><i class="fa-brands fa-whatsapp"></i> Konsultasi via WA</a>
+                            <a href="https://wa.me/{{ config('kontak.cs.wa') }}?text={{ urlencode('Halo, saya ' . $nama . ' ingin konsultasi konversi mata kuliah ' . $jenisLabel . ' di UNSIA') }}" target="_blank" style="display:inline-block;background:#25D366;color:#fff;padding:14px 30px;border-radius:30px;text-decoration:none;font-weight:700;"><i class="fa-brands fa-whatsapp"></i> Konsultasi via WA</a>
                             <a href="https://pmb.unsia.ac.id" target="_blank" style="display:inline-block;background:#f0c040;color:#0d1b2a;padding:14px 30px;border-radius:30px;text-decoration:none;font-weight:700;margin-left:10px;"><i class="fa-solid fa-arrow-right"></i> Daftar PMB</a>
                         </div>
                     </div>

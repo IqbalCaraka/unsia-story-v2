@@ -24,7 +24,7 @@
                     <p style="margin:0;color:#555;font-size:15px;line-height:1.8;"><strong><i class="fa-solid fa-circle-exclamation" style="color:#e65100;margin-right:6px;"></i>Khusus pengguna kode referral:</strong> program ini hanya bisa diajukan oleh mahasiswa yang mendaftar di UNSIA menggunakan kode referral <strong style="color:#2c7aff;">unsia.my.id</strong>.</p>
                 </div>
                 <div style="margin-top:25px;display:flex;gap:15px;flex-wrap:wrap;">
-                    <a href="https://wa.me/628133331686?text=Halo%2C%20saya%20ingin%20bertanya%20tentang%20Bantuan%20Pendanaan%20UNSIA" target="_blank" style="display:inline-flex;align-items:center;gap:8px;background:#25D366;color:#fff;padding:14px 28px;border-radius:50px;text-decoration:none;font-weight:700;font-size:15px;">
+                    <a href="https://wa.me/{{ config('kontak.cs.wa') }}?text=Halo%2C%20saya%20ingin%20bertanya%20tentang%20Bantuan%20Pendanaan%20UNSIA" target="_blank" style="display:inline-flex;align-items:center;gap:8px;background:#25D366;color:#fff;padding:14px 28px;border-radius:50px;text-decoration:none;font-weight:700;font-size:15px;">
                         <i class="fa-brands fa-whatsapp"></i> Tanya via WA
                     </a>
                 </div>
@@ -61,7 +61,7 @@
                             <i class="fa-solid fa-check" style="color:#2e7d32;margin-right:8px;"></i> Melengkapi syarat administrasi: transkrip nilai &amp; lembar motivasi
                         </p>
                     </div>
-                    <p style="color:#888;font-size:13px;margin:20px 0 0;"><i class="fa-solid fa-circle-info" style="margin-right:5px;"></i> Pengajuan dari mahasiswa yang tidak menggunakan kode referral unsia.my.id tidak dapat diproses. Belum yakin? <a href="https://wa.me/628133331686?text=Halo%2C%20saya%20ingin%20cek%20apakah%20saya%20terdaftar%20dengan%20kode%20referral%20unsia.my.id" target="_blank" style="color:#2c7aff;font-weight:600;">Tanyakan ke tim kami</a>.</p>
+                    <p style="color:#888;font-size:13px;margin:20px 0 0;"><i class="fa-solid fa-circle-info" style="margin-right:5px;"></i> Pengajuan dari mahasiswa yang tidak menggunakan kode referral unsia.my.id tidak dapat diproses. Belum yakin? <a href="https://wa.me/{{ config('kontak.cs.wa') }}?text=Halo%2C%20saya%20ingin%20cek%20apakah%20saya%20terdaftar%20dengan%20kode%20referral%20unsia.my.id" target="_blank" style="color:#2c7aff;font-weight:600;">Tanyakan ke tim kami</a>.</p>
                 </div>
             </div>
         </div>
@@ -146,7 +146,7 @@
                     <i class="fa-solid fa-ranking-star" style="font-size:45px;color:#f0c040;margin-bottom:15px;"></i>
                     <h3 style="color:#fff;font-weight:700;margin-bottom:10px;">Sudah Siap Mengajukan?</h3>
                     <p style="color:rgba(255,255,255,0.7);font-size:14px;margin-bottom:20px;">Siapkan transkrip nilai semester 1 dan lembar motivasi kamu, lalu hubungi kami untuk proses pengajuannya.</p>
-                    <a href="https://wa.me/628133331686?text=Halo%2C%20saya%20ingin%20mengajukan%20Bantuan%20Pendanaan%20UNSIA" target="_blank" style="display:inline-block;background:#f0c040;color:#0d1b2a;padding:14px 30px;border-radius:30px;text-decoration:none;font-weight:700;font-size:15px;"><i class="fa-brands fa-whatsapp"></i> Tanya Cara Mengajukan</a>
+                    <a href="https://wa.me/{{ config('kontak.cs.wa') }}?text=Halo%2C%20saya%20ingin%20mengajukan%20Bantuan%20Pendanaan%20UNSIA" target="_blank" style="display:inline-block;background:#f0c040;color:#0d1b2a;padding:14px 30px;border-radius:30px;text-decoration:none;font-weight:700;font-size:15px;"><i class="fa-brands fa-whatsapp"></i> Tanya Cara Mengajukan</a>
                 </div>
             </div>
         </div>
@@ -159,7 +159,7 @@
         <div class="row justify-content-center">
             <div class="col-lg-10">
                 <div style="background:#fff;border-left:4px solid #f0c040;border-radius:12px;padding:20px 25px;">
-                    <p style="margin:0;color:#555;font-size:14px;line-height:1.9;"><strong><i class="fa-solid fa-circle-info" style="color:#f0c040;margin-right:6px;"></i> Catatan:</strong> Pengajuan yang masuk akan diverifikasi kelengkapan administrasinya terlebih dahulu. Informasi lebih lanjut mengenai program ini dapat ditanyakan melalui WhatsApp <a href="https://wa.me/628133331686" target="_blank" style="color:#2c7aff;font-weight:600;">0813-3333-1686</a>.</p>
+                    <p style="margin:0;color:#555;font-size:14px;line-height:1.9;"><strong><i class="fa-solid fa-circle-info" style="color:#f0c040;margin-right:6px;"></i> Catatan:</strong> Pengajuan yang masuk akan diverifikasi kelengkapan administrasinya terlebih dahulu. Informasi lebih lanjut mengenai program ini dapat ditanyakan melalui WhatsApp <a href="https://wa.me/{{ config('kontak.cs.wa') }}" target="_blank" style="color:#2c7aff;font-weight:600;">{{ config('kontak.cs.telepon') }}</a>.</p>
                 </div>
             </div>
         </div>

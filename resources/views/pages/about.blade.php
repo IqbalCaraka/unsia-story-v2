@@ -26,10 +26,15 @@
                 <p style="color:#555;font-size:16px;line-height:1.8;margin-bottom:10px;">Peran kami adalah membantu calon mahasiswa yang ingin <strong>kuliah online</strong> dengan menyediakan informasi lengkap seputar program studi, biaya kuliah, panduan pendaftaran, dan promo potongan UKT melalui kode referral.</p>
                 <p style="color:#555;font-size:16px;line-height:1.8;margin-bottom:10px;">Seluruh proses pendaftaran mahasiswa baru tetap dilakukan melalui portal resmi universitas di <a href="https://pmb.unsia.ac.id" target="_blank" style="color:#2c7aff;font-weight:600;">pmb.unsia.ac.id</a>. Kode referral <strong>unsia.my.id</strong> yang kami berikan dapat digunakan saat pendaftaran di portal resmi tersebut untuk mendapatkan potongan biaya UKT.</p>
                 <div style="background:#fff3e0;padding:15px;border-radius:8px;border-left:4px solid #f0c040;margin-bottom:20px;">
-                    <p style="margin:0;font-size:14px;color:#555;"><strong>Kontak Bisnis:</strong><br>
-                    <i class="fa-solid fa-envelope" style="margin-right:5px;"></i> <a href="mailto:unsia.story@gmail.com" style="color:#2c7aff;">unsia.story@gmail.com</a><br>
-                    <i class="fa-brands fa-whatsapp" style="margin-right:5px;"></i> <a href="https://wa.me/628133331686" style="color:#2c7aff;">0813-3333-1686</a><br>
-                    <i class="fa-solid fa-location-dot" style="margin-right:5px;"></i> Jl. Monumen Pancasila Sakti 69, Lubang Buaya, Kec. Cipayung, Jakarta Timur, DKI Jakarta 13810</p>
+                    <p style="margin:0 0 12px 0;font-size:14px;color:#555;"><strong>Kontak Bisnis:</strong><br>
+                    <i class="fa-solid fa-user-tie" style="margin-right:5px;"></i> {{ config('kontak.bisnis.nama') }}<br>
+                    <i class="fa-solid fa-envelope" style="margin-right:5px;"></i> <a href="mailto:{{ config('kontak.bisnis.email') }}" style="color:#2c7aff;">{{ config('kontak.bisnis.email') }}</a><br>
+                    <i class="fa-solid fa-phone" style="margin-right:5px;"></i> <a href="tel:{{ preg_replace('/[^0-9+]/', '', config('kontak.bisnis.telepon')) }}" style="color:#2c7aff;">{{ config('kontak.bisnis.telepon') }}</a><br>
+                    <i class="fa-solid fa-location-dot" style="margin-right:5px;"></i> {{ implode(', ', config('kontak.alamat.baris')) }}</p>
+
+                    <p style="margin:0;font-size:14px;color:#555;padding-top:12px;border-top:1px solid rgba(0,0,0,0.08);"><strong>Kontak Customer Service:</strong><br>
+                    <i class="fa-solid fa-headset" style="margin-right:5px;"></i> {{ config('kontak.cs.nama') }}<br>
+                    <i class="fa-brands fa-whatsapp" style="margin-right:5px;"></i> <a href="https://wa.me/{{ config('kontak.cs.wa') }}" target="_blank" style="color:#2c7aff;">{{ config('kontak.cs.telepon') }}</a></p>
                 </div>
                 <div style="display:flex;gap:15px;flex-wrap:wrap;">
                     <div style="background:#e3f2fd;padding:15px 20px;border-radius:10px;flex:1;min-width:140px;text-align:center;">
@@ -68,7 +73,7 @@
                     ['icon' => 'fa-award', 'color' => '#2e7d32', 'judul' => 'Ijazah Resmi', 'teks' => 'Terdaftar di Kemendikbud, terakreditasi BAN-PT, dan beberapa prodi terakreditasi internasional EAHEA.'],
                     ['icon' => 'fa-chalkboard-user', 'color' => '#e53935', 'judul' => 'Dosen Berpengalaman', 'teks' => 'Diajar oleh dosen praktisi dan akademisi yang berpengalaman di bidangnya masing-masing.'],
                     ['icon' => 'fa-briefcase', 'color' => '#7b1fa2', 'judul' => 'Kuliah Sambil Kerja', 'teks' => 'Jadwal fleksibel yang dirancang khusus untuk kamu yang ingin meningkatkan karir tanpa harus resign.'],
-                    ['icon' => 'fa-headset', 'color' => '#00838f', 'judul' => 'Support 24 Jam', 'teks' => 'Tim kami siap membantu kamu kapan saja melalui WhatsApp di 0813-3333-1686.'],
+                    ['icon' => 'fa-headset', 'color' => '#00838f', 'judul' => 'Support 24 Jam', 'teks' => 'Tim kami siap membantu kamu kapan saja melalui WhatsApp di ' . config('kontak.cs.telepon') . '.'],
                 ];
             @endphp
             @foreach ($keunggulan as $i => $item)
@@ -203,7 +208,7 @@
         <h2 style="font-weight:700;margin-bottom:15px;">Ada Pertanyaan?</h2>
         <p style="color:#555;margin-bottom:25px;font-size:16px;">Tim UNSIA Story siap bantu kamu 24/7. Hubungi kami sekarang!</p>
         <a href="https://pmb.unsia.ac.id" target="_blank" style="display:inline-block;background:#2c7aff;color:#fff;padding:15px 35px;border-radius:30px;text-decoration:none;font-weight:700;font-size:16px;"><i class="fa-solid fa-arrow-right"></i> Daftar di PMB UNSIA</a>
-        <a href="https://wa.me/628133331686?text=Halo%2C%20saya%20ingin%20bertanya%20tentang%20kuliah%20di%20UNSIA" target="_blank" style="display:inline-block;background:#25D366;color:#fff;padding:15px 35px;border-radius:30px;text-decoration:none;font-weight:700;font-size:16px;margin-left:10px;"><i class="fa-brands fa-whatsapp"></i> Chat WhatsApp</a>
+        <a href="https://wa.me/{{ config('kontak.cs.wa') }}?text=Halo%2C%20saya%20ingin%20bertanya%20tentang%20kuliah%20di%20UNSIA" target="_blank" style="display:inline-block;background:#25D366;color:#fff;padding:15px 35px;border-radius:30px;text-decoration:none;font-weight:700;font-size:16px;margin-left:10px;"><i class="fa-brands fa-whatsapp"></i> Chat WhatsApp</a>
         <a href="{{ route('faq') }}" style="display:inline-block;background:#0d1b2a;color:#fff;padding:15px 35px;border-radius:30px;text-decoration:none;font-weight:700;font-size:16px;margin-left:10px;"><i class="fa-solid fa-circle-question"></i> Lihat FAQ</a>
     </div>
 </section>

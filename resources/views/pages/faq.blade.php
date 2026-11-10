@@ -168,7 +168,7 @@
                 <div class="faq-item">
                     <h4>Saya masih bingung, bisa tanya langsung? <i class="fa-solid fa-chevron-down"></i></h4>
                     <div class="faq-answer">
-                        <p>Tentu! Hubungi kami via WhatsApp di <a href="https://wa.me/628133331686" target="_blank" style="color:#25D366;font-weight:600;">0813-3333-1686</a>. Tim kami siap bantu!</p>
+                        <p>Tentu! Hubungi kami via WhatsApp di <a href="https://wa.me/{{ config('kontak.cs.wa') }}" target="_blank" style="color:#25D366;font-weight:600;">{{ config('kontak.cs.telepon') }}</a>. Tim kami siap bantu!</p>
                     </div>
                 </div>
 
@@ -183,7 +183,7 @@
         <h2 style="color:#fff;font-weight:700;margin-bottom:15px;">Siap Daftar?</h2>
         <p style="color:rgba(255,255,255,0.7);margin-bottom:25px;font-size:16px;">Jangan lupa pakai kode referral <strong style="color:#f0c040;">unsia.my.id</strong> untuk total keuntungan <strong style="color:#f0c040;">Rp650.000</strong></p>
         <a href="https://pmb.unsia.ac.id" target="_blank" style="display:inline-block;background:#f0c040;color:#0d1b2a;padding:15px 35px;border-radius:30px;text-decoration:none;font-weight:700;font-size:16px;"><i class="fa-solid fa-arrow-right"></i> Daftar di PMB UNSIA</a>
-        <a href="https://wa.me/628133331686" target="_blank" style="display:inline-block;background:#25D366;color:#fff;padding:15px 35px;border-radius:30px;text-decoration:none;font-weight:700;font-size:16px;margin-left:10px;"><i class="fa-brands fa-whatsapp"></i> Tanya via WA</a>
+        <a href="https://wa.me/{{ config('kontak.cs.wa') }}" target="_blank" style="display:inline-block;background:#25D366;color:#fff;padding:15px 35px;border-radius:30px;text-decoration:none;font-weight:700;font-size:16px;margin-left:10px;"><i class="fa-brands fa-whatsapp"></i> Tanya via WA</a>
     </div>
 </section>
 
