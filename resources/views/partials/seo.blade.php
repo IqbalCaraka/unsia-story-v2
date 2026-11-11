@@ -36,7 +36,7 @@
     ],
     "contactPoint": {
         "@@type": "ContactPoint",
-        "telephone": "+62-813-3331-686",
+        "telephone": "{{ config('kontak.cs.telepon') }}",
         "contactType": "customer service",
         "availableLanguage": "Indonesian"
     }
