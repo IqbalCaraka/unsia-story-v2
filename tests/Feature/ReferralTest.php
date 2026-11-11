@@ -24,7 +24,7 @@ class ReferralTest extends TestCase
     {
         $this->get('/')
             ->assertStatus(200)
-            ->assertSee('Tentang unsia.my.id')
+            ->assertSee('Tentang Kami')
             ->assertSee('Tentang Kode Referral')
             ->assertSee(route('referral'));
     }

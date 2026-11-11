@@ -31,7 +31,7 @@
                 <div class="single_footer">
                     <h4>Menu</h4>
                     <ul>
-                        <li><a href="{{ route('about') }}">Tentang</a></li>
+                        <li><a href="{{ route('about') }}">Tentang Kami</a></li>
                         <li><a href="{{ route('referral') }}">Tentang Kode Referral</a></li>
                         <li><a href="{{ route('bantuan') }}">Bantuan Pendanaan</a></li>
                         <li><a href="{{ route('konversi') }}">Konversi Mata Kuliah</a></li>

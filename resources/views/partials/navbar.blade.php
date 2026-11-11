@@ -81,7 +81,7 @@
                             <li><a href="{{ route('home') }}">Beranda</a></li>
                             <li class="menu-item-has-children"><a href="{{ route('about') }}">Tentang</a>
                                 <ul>
-                                    <li><a href="{{ route('about') }}">Tentang unsia.my.id</a></li>
+                                    <li><a href="{{ route('about') }}">Tentang Kami</a></li>
                                     <li><a href="{{ route('referral') }}">Tentang Kode Referral</a></li>
                                 </ul>
                             </li>
@@ -131,7 +131,7 @@
                     <li><a href="{{ route('home') }}">Beranda</a></li>
                     <li><a href="{{ route('about') }}">Tentang</a>
                         <ul class="sub-menu">
-                            <li><a href="{{ route('about') }}">Tentang unsia.my.id</a></li>
+                            <li><a href="{{ route('about') }}">Tentang Kami</a></li>
                             <li><a href="{{ route('referral') }}">Tentang Kode Referral</a></li>
                         </ul>
                     </li>
