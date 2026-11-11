@@ -18,6 +18,12 @@
     {{-- Google Site Verification --}}
     <meta name="google-site-verification" content="xto9eEWnFYcvJT8QGRvLz952sdm668y1R0hHnuF5eEI">
 
+    {{-- Facebook (Meta) Domain Verification.
+         Harus berada di dalam <head> dan ikut ter-render di HTML dari server.
+         Jangan dipindah ke dalam skrip atau dimuat lewat JavaScript, karena
+         Meta tidak akan menemukannya. --}}
+    <meta name="facebook-domain-verification" content="cqok0eefx3gthlfvu65wu69hn9yhtb">
+
     {{-- Tracking Pixels --}}
     @include('partials.tracking')
 
