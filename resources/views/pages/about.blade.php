@@ -69,7 +69,7 @@
             @php
                 $keunggulan = [
                     ['icon' => 'fa-clock', 'color' => '#2c7aff', 'judul' => 'Fleksibel 24/7', 'teks' => 'Akses materi kuliah kapan aja, di mana aja. Cocok buat kamu yang kerja, bisnis, atau punya kesibukan lain.'],
-                    ['icon' => 'fa-wallet', 'color' => '#f0c040', 'judul' => 'Biaya Terjangkau', 'teks' => 'UKT Rp3 juta/semester, bisa dicicil 3x. Pakai kode referral <strong>unsia.my.id</strong>: potongan Rp500.000 (semester 1) + cashback Rp150.000 (semester 2). Lulus dalam <strong>3,5 tahun</strong>!'],
+                    ['icon' => 'fa-wallet', 'color' => '#f0c040', 'judul' => 'Biaya Terjangkau', 'teks' => 'UKT Rp3 juta/semester, bisa dicicil 3x. Pakai kode referral <strong>unsia.my.id</strong>: potongan Rp500.000 (semester 1) + cashback Rp150.000 (semester 1). Lulus dalam <strong>3,5 tahun</strong>!'],
                     ['icon' => 'fa-award', 'color' => '#2e7d32', 'judul' => 'Ijazah Resmi', 'teks' => 'Terdaftar di Kemendikbud, terakreditasi BAN-PT, dan beberapa prodi terakreditasi internasional EAHEA.'],
                     ['icon' => 'fa-chalkboard-user', 'color' => '#e53935', 'judul' => 'Dosen Berpengalaman', 'teks' => 'Diajar oleh dosen praktisi dan akademisi yang berpengalaman di bidangnya masing-masing.'],
                     ['icon' => 'fa-briefcase', 'color' => '#7b1fa2', 'judul' => 'Kuliah Sambil Kerja', 'teks' => 'Jadwal fleksibel yang dirancang khusus untuk kamu yang ingin meningkatkan karir tanpa harus resign.'],
@@ -121,7 +121,7 @@
                 <div style="margin-bottom:20px;">
                     <div style="display:flex;align-items:flex-start;gap:15px;margin-bottom:20px;">
                         <div style="background:#f0c040;color:#0d1b2a;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;">5</div>
-                        <div><h5 style="font-weight:700;margin-bottom:5px;">Isi Biodata &amp; Masukkan Kode Referral</h5><p style="color:#555;margin:0;">Lengkapi biodata, lalu ketik <strong style="color:#2c7aff;font-size:18px;">unsia.my.id</strong> di kolom referral — potongan <strong>Rp500.000</strong> semester pertama + cashback <strong>Rp150.000</strong> semester kedua!</p></div>
+                        <div><h5 style="font-weight:700;margin-bottom:5px;">Isi Biodata &amp; Masukkan Kode Referral</h5><p style="color:#555;margin:0;">Lengkapi biodata, lalu ketik <strong style="color:#2c7aff;font-size:18px;">unsia.my.id</strong> di kolom referral — potongan <strong>Rp500.000</strong> semester pertama + cashback <strong>Rp150.000</strong> semester pertama!</p></div>
                     </div>
                     <div style="display:flex;align-items:flex-start;gap:15px;margin-bottom:20px;">
                         <div style="background:#f0c040;color:#0d1b2a;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;">6</div>
@@ -152,7 +152,7 @@
                 <ul style="list-style:none;padding:0;color:rgba(255,255,255,0.8);font-size:15px;line-height:2.2;">
                     <li><i class="fa-solid fa-check-circle" style="color:#f0c040;margin-right:10px;"></i> UKT normal: <strong style="color:#fff;">Rp3.000.000/semester</strong></li>
                     <li><i class="fa-solid fa-check-circle" style="color:#f0c040;margin-right:10px;"></i> Potongan semester 1 (cicilan ke-3): <strong style="color:#f0c040;">- Rp500.000</strong> → bayar <strong style="color:#fff;font-size:18px;">Rp2.500.000</strong></li>
-                    <li><i class="fa-solid fa-check-circle" style="color:#f0c040;margin-right:10px;"></i> Cashback semester 2 (cicilan ke-3): <strong style="color:#f0c040;">Rp150.000</strong> → bayar <strong style="color:#fff;font-size:18px;">Rp2.850.000</strong></li>
+                    <li><i class="fa-solid fa-check-circle" style="color:#f0c040;margin-right:10px;"></i> Cashback semester 1: <strong style="color:#f0c040;">&minus; Rp150.000</strong> → biaya bersih <strong style="color:#fff;font-size:18px;">Rp2.350.000</strong></li>
                     <li><i class="fa-solid fa-check-circle" style="color:#f0c040;margin-right:10px;"></i> Semester selanjutnya: <strong style="color:#fff;">Rp3.000.000</strong> (bisa cicil 3x)</li>
                     <li><i class="fa-solid fa-check-circle" style="color:#f0c040;margin-right:10px;"></i> Kesempatan lulus dalam <strong style="color:#fff;">3,5 tahun!</strong></li>
                 </ul>

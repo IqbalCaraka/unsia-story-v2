@@ -32,6 +32,7 @@
                     <h4>Menu</h4>
                     <ul>
                         <li><a href="{{ route('about') }}">Tentang</a></li>
+                        <li><a href="{{ route('referral') }}">Tentang Kode Referral</a></li>
                         <li><a href="{{ route('bantuan') }}">Bantuan Pendanaan</a></li>
                         <li><a href="{{ route('konversi') }}">Konversi Mata Kuliah</a></li>
                         <li><a href="{{ route('faq') }}">FAQ</a></li>

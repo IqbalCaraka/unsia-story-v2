@@ -31,6 +31,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [PageController::class, 'index'])->name('home');
 Route::get('/about', [PageController::class, 'about'])->name('about');
+Route::get('/tentang-kode-referral', [PageController::class, 'referral'])->name('referral');
 Route::get('/faq', [PageController::class, 'faq'])->name('faq');
 Route::get('/prodi/{slug}', [PageController::class, 'prodi'])->name('prodi');
 

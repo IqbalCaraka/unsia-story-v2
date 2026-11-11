@@ -39,7 +39,7 @@
                 <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
                     <div class="single-top-contact">
                         <i class="ti-mobile"></i>
-                        <h4><a href="https://wa.me/{{ config('kontak.cs.wa') }}?text=Halo%2C%20saya%20ingin%20bertanya%20tentang%20kuliah%20di%20UNSIA" target="_blank">081 3333 1686</a></h4>
+                        <h4><a href="https://wa.me/{{ config('kontak.cs.wa') }}?text=Halo%2C%20saya%20ingin%20bertanya%20tentang%20kuliah%20di%20UNSIA" target="_blank">{{ config('kontak.cs.telepon') }}</a></h4>
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
@@ -79,7 +79,12 @@
                     <nav id="main-menu">
                         <ul>
                             <li><a href="{{ route('home') }}">Beranda</a></li>
-                            <li><a href="{{ route('about') }}">Tentang</a></li>
+                            <li class="menu-item-has-children"><a href="{{ route('about') }}">Tentang</a>
+                                <ul>
+                                    <li><a href="{{ route('about') }}">Tentang unsia.my.id</a></li>
+                                    <li><a href="{{ route('referral') }}">Tentang Kode Referral</a></li>
+                                </ul>
+                            </li>
                             <li class="menu-item-has-children"><a href="#">Program Studi</a>
                                 <ul>
                                     <li><a href="{{ route('prodi', 'sistem-informasi') }}">Sistem Informasi</a></li>
@@ -124,7 +129,12 @@
                 </div>
                 <ul class="mobile_menu">
                     <li><a href="{{ route('home') }}">Beranda</a></li>
-                    <li><a href="{{ route('about') }}">Tentang</a></li>
+                    <li><a href="{{ route('about') }}">Tentang</a>
+                        <ul class="sub-menu">
+                            <li><a href="{{ route('about') }}">Tentang unsia.my.id</a></li>
+                            <li><a href="{{ route('referral') }}">Tentang Kode Referral</a></li>
+                        </ul>
+                    </li>
                     <li><a href="#">Program Studi</a>
                         <ul class="sub-menu">
                             <li><a href="{{ route('prodi', 'sistem-informasi') }}">Sistem Informasi</a></li>

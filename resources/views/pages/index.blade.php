@@ -150,7 +150,7 @@
                 <div class="single_tp st_two">
                     <h3>Biaya Terjangkau</h3>
                     <i class="fa-solid fa-wallet"></i>
-                    <p>UKT Rp3 juta/semester, cicil 3x. Potongan Rp500rb semester pertama + cashback Rp150rb semester kedua!</p>
+                    <p>UKT Rp3 juta/semester, cicil 3x. Potongan Rp500rb + cashback Rp150rb, keduanya di semester pertama!</p>
                 </div>
             </div>
             <div class="col-lg-3 col-sm-6 col-xs-12 wow fadeInUp" data-wow-duration="1s" data-wow-delay="0.4s" data-wow-offset="0">
@@ -398,7 +398,7 @@
             <div class="col-lg-10">
                 <h2 style="font-size:22px;font-weight:700;margin-bottom:15px;text-align:center;">Kuliah Online di UNSIA — Universitas Siber Asia</h2>
                 <p style="color:#555;font-size:13px;line-height:2;text-align:center;">
-                    <strong>UNSIA Story</strong> adalah mitra pemasaran resmi <strong>Universitas Siber Asia (UNSIA)</strong>, universitas online pertama di Indonesia dengan sistem <strong>Pembelajaran Jarak Jauh (PJJ)</strong>. Dapatkan <strong>potongan biaya kuliah UNSIA</strong> dengan menggunakan <strong>kode referral unsia.my.id</strong> saat mendaftar di pmb.unsia.ac.id. <strong>Promo kuliah UNSIA</strong> ini memberikan <strong>potongan biaya UNSIA</strong> sebesar Rp500.000 pada semester pertama dan cashback Rp150.000 di semester kedua. Gunakan <strong>kode referal unsia.my.id</strong> atau <strong>referral code unsia.my.id</strong> untuk mendapatkan <strong>promo UNSIA</strong> ini. UNSIA menyediakan 6 program studi S1: Sistem Informasi, Informatika, Manajemen, Akuntansi, Komunikasi, dan Teknologi Informasi. Semua program studi terakreditasi BAN-PT dan sebagian terakreditasi internasional EAHEA. Dengan <strong>kuliah online murah</strong> di <strong>kampus online terbaik</strong>, kamu bisa <strong>kuliah sambil kerja</strong> dari mana saja. Daftar sekarang di pmb.unsia.ac.id dengan <strong>kode referral UNSIA</strong>: <strong>unsia.my.id</strong>.
+                    <strong>UNSIA Story</strong> adalah mitra pemasaran resmi <strong>Universitas Siber Asia (UNSIA)</strong>, universitas online pertama di Indonesia dengan sistem <strong>Pembelajaran Jarak Jauh (PJJ)</strong>. Dapatkan <strong>potongan biaya kuliah UNSIA</strong> dengan menggunakan <strong>kode referral unsia.my.id</strong> saat mendaftar di pmb.unsia.ac.id. <strong>Promo kuliah UNSIA</strong> ini memberikan <strong>potongan biaya UNSIA</strong> sebesar Rp500.000 pada semester pertama dan cashback Rp150.000 di semester pertama. Gunakan <strong>kode referal unsia.my.id</strong> atau <strong>referral code unsia.my.id</strong> untuk mendapatkan <strong>promo UNSIA</strong> ini. UNSIA menyediakan 6 program studi S1: Sistem Informasi, Informatika, Manajemen, Akuntansi, Komunikasi, dan Teknologi Informasi. Semua program studi terakreditasi BAN-PT dan sebagian terakreditasi internasional EAHEA. Dengan <strong>kuliah online murah</strong> di <strong>kampus online terbaik</strong>, kamu bisa <strong>kuliah sambil kerja</strong> dari mana saja. Daftar sekarang di pmb.unsia.ac.id dengan <strong>kode referral UNSIA</strong>: <strong>unsia.my.id</strong>.
                 </p>
             </div>
         </div>

@@ -13,8 +13,8 @@
   "mainEntity": [
     {"@@type": "Question", "name": "Bagaimana cara mendaftar di UNSIA?", "acceptedAnswer": {"@@type": "Answer", "text": "Pendaftaran dilakukan secara online melalui pmb.unsia.ac.id. Buka pmb.unsia.ac.id, isi data diri, bayar biaya pendaftaran Rp175.000, login ke akun PMB, masukkan kode referral unsia.my.id untuk potongan UKT Rp650.000, ikuti tes online, tunggu hasil seleksi 2-5 hari, lalu daftar ulang dan bayar UKT Rp3.000.000/semester (bisa cicil 3x)."}},
     {"@@type": "Question", "name": "Berapa biaya pendaftaran UNSIA?", "acceptedAnswer": {"@@type": "Answer", "text": "Biaya pendaftaran hanya Rp175.000 (sekali bayar). Pembayaran bisa melalui transfer bank atau virtual account yang tersedia di portal PMB."}},
-    {"@@type": "Question", "name": "Berapa biaya UKT per semester di UNSIA?", "acceptedAnswer": {"@@type": "Answer", "text": "Biaya UKT adalah Rp3.000.000 per semester dan bisa dicicil 3 kali. Dengan kode referral unsia.my.id, semester pertama dapat potongan Rp500.000 (bayar Rp2.500.000) dan semester kedua cashback Rp150.000 (bayar Rp2.850.000)."}},
-    {"@@type": "Question", "name": "Apa itu kode referral UNSIA dan bagaimana cara menggunakannya?", "acceptedAnswer": {"@@type": "Answer", "text": "Kode referral adalah kode khusus yang memberikan potongan UKT Rp500.000 di semester pertama dan cashback Rp150.000 di semester kedua. Gunakan kode: unsia.my.id. Masukkan di formulir pendaftaran PMB sebelum pembayaran UKT."}},
+    {"@@type": "Question", "name": "Berapa biaya UKT per semester di UNSIA?", "acceptedAnswer": {"@@type": "Answer", "text": "Biaya UKT adalah Rp3.000.000 per semester dan bisa dicicil 3 kali. Dengan kode referral unsia.my.id, semester pertama dapat potongan Rp500.000 (bayar Rp2.500.000) ditambah cashback Rp150.000, sehingga biaya bersih semester pertama Rp2.350.000. Semester selanjutnya Rp3.000.000."}},
+    {"@@type": "Question", "name": "Apa itu kode referral UNSIA dan bagaimana cara menggunakannya?", "acceptedAnswer": {"@@type": "Answer", "text": "Kode referral adalah kode khusus yang memberikan potongan UKT Rp500.000 dan cashback Rp150.000, keduanya di semester pertama. Gunakan kode: unsia.my.id. Masukkan di formulir pendaftaran PMB sebelum pembayaran UKT."}},
     {"@@type": "Question", "name": "Apakah UNSIA benar-benar 100% online?", "acceptedAnswer": {"@@type": "Answer", "text": "Ya! UNSIA adalah universitas siber pertama di Indonesia. Semua perkuliahan dilakukan secara online melalui platform LMS. Kamu bisa kuliah dari mana saja, kapan saja."}},
     {"@@type": "Question", "name": "Apakah ijazah UNSIA diakui negara?", "acceptedAnswer": {"@@type": "Answer", "text": "Ya, 100% diakui. UNSIA terdaftar resmi di Kemendikbud dan terakreditasi BAN-PT. Beberapa prodi juga terakreditasi internasional oleh EAHEA."}},
     {"@@type": "Question", "name": "Apakah bisa kuliah sambil kerja di UNSIA?", "acceptedAnswer": {"@@type": "Answer", "text": "Tentu! Jadwal fleksibel dan materi bisa diakses 24 jam. Banyak mahasiswa UNSIA yang bekerja full-time sambil kuliah."}},
@@ -73,7 +73,7 @@
                             <li><span class="step-number">5</span> Masukkan kode referral <strong>unsia.my.id</strong> — total benefit <strong>Rp650.000</strong> (potongan + cashback)</li>
                             <li><span class="step-number">6</span> Ikuti tes online (CBT)</li>
                             <li><span class="step-number">7</span> Tunggu hasil seleksi (2-5 hari)</li>
-                            <li><span class="step-number">8</span> Daftar ulang &amp; bayar UKT — <strong>Rp3.000.000/semester</strong> (cicil 3x). Semester pertama: potongan <strong>Rp500.000</strong> → bayar <strong>Rp2.500.000</strong>. Semester kedua: cashback <strong>Rp150.000</strong> → bayar <strong>Rp2.850.000</strong></li>
+                            <li><span class="step-number">8</span> Daftar ulang &amp; bayar UKT — <strong>Rp3.000.000/semester</strong> (cicil 3x). Semester pertama: potongan <strong>Rp500.000</strong> → bayar <strong>Rp2.500.000</strong>, ditambah cashback <strong>Rp150.000</strong> → biaya bersih <strong>Rp2.350.000</strong></li>
                         </ol>
                     </div>
                 </div>
@@ -95,7 +95,7 @@
                 <div class="faq-item">
                     <h4>Berapa biaya UKT per semester? <i class="fa-solid fa-chevron-down"></i></h4>
                     <div class="faq-answer">
-                        <p>Biaya UKT adalah <strong>Rp3.000.000 per semester</strong> dan bisa <strong>dicicil 3 kali</strong>. Dengan kode referral <strong>unsia.my.id</strong>:<br>- Semester pertama: potongan <strong>Rp500.000</strong> → bayar <strong>Rp2.500.000</strong><br>- Semester kedua: cashback <strong>Rp150.000</strong> → bayar <strong>Rp2.850.000</strong><br>- Semester selanjutnya: <strong>Rp3.000.000</strong> (bisa cicil 3x)</p>
+                        <p>Biaya UKT adalah <strong>Rp3.000.000 per semester</strong> dan bisa <strong>dicicil 3 kali</strong>. Dengan kode referral <strong>unsia.my.id</strong>:<br>- Semester pertama: potongan <strong>Rp500.000</strong> → bayar <strong>Rp2.500.000</strong><br>- Semester pertama juga: cashback <strong>Rp150.000</strong> → biaya bersih <strong>Rp2.350.000</strong><br>- Semester selanjutnya: <strong>Rp3.000.000</strong> (bisa cicil 3x)</p>
                     </div>
                 </div>
 
@@ -104,7 +104,7 @@
                 <div class="faq-item">
                     <h4>Apa itu kode referral dan bagaimana cara menggunakannya? <i class="fa-solid fa-chevron-down"></i></h4>
                     <div class="faq-answer">
-                        <p>Kode referral adalah kode khusus yang memberikan <strong>potongan UKT Rp500.000 di semester pertama</strong> dan <strong>cashback Rp150.000 di semester kedua</strong>. Kode referral kami:</p>
+                        <p>Kode referral adalah kode khusus yang memberikan <strong>potongan UKT Rp500.000 di semester pertama</strong> dan <strong>cashback Rp150.000 di semester pertama</strong>. Kode referral kami:</p>
                         <div class="ref-code-box">unsia.my.id</div>
                         <p><strong>Cara memasukkan kode referral:</strong></p>
                         <ol>

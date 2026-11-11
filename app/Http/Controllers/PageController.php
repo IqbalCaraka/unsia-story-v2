@@ -17,6 +17,11 @@ class PageController extends Controller
         return view('pages.about');
     }
 
+    public function referral()
+    {
+        return view('pages.referral');
+    }
+
     public function faq()
     {
         return view('pages.faq');
