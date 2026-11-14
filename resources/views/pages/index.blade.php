@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title', 'UNSIA Story - Kuliah Online Universitas Siber Asia | Kode Referral unsia.my.id')
-@section('description', 'Mitra pemasaran resmi UNSIA. Gunakan kode referral unsia.my.id untuk potongan UKT Rp650.000. Info pendaftaran, prodi, dan promo kuliah online.')
+@section('description', 'Mitra pemasaran resmi UNSIA. Gunakan kode referral unsia.my.id untuk potongan UKT Rp600.000. Info pendaftaran, prodi, dan promo kuliah online.')
 @section('og_image', asset('assets/images/logo-unsia-story.png'))
 
 @section('hero')
@@ -103,7 +103,7 @@
                 <div class="abmv">
                     <i class="fa-solid fa-tags"></i>
                     <h4>UKT Rp3 Juta/Semester — Bisa Cicil 3x!</h4>
-                    <p>Gunakan kode referral: <strong style="color: #2c7aff; font-size: 18px;">unsia.my.id</strong> untuk potongan UKT <strong>Rp650.000</strong>!</p>
+                    <p>Gunakan kode referral: <strong style="color: #2c7aff; font-size: 18px;">unsia.my.id</strong> untuk potongan UKT <strong>Rp600.000</strong>!</p>
                 </div>
                 <div class="abmv">
                     <i class="fa-brands fa-whatsapp"></i>
@@ -249,7 +249,7 @@
                     <p><span style="background: #f0c040; color: #0d1b2a; font-weight: 700; padding: 2px 10px; border-radius: 5px; margin-right: 10px;">2</span> Isi data diri &amp; lengkapi informasi kamu</p>
                     <p><span style="background: #f0c040; color: #0d1b2a; font-weight: 700; padding: 2px 10px; border-radius: 5px; margin-right: 10px;">3</span> Bayar biaya pendaftaran <strong>Rp175.000</strong></p>
                     <p><span style="background: #f0c040; color: #0d1b2a; font-weight: 700; padding: 2px 10px; border-radius: 5px; margin-right: 10px;">4</span> Login ke akun PMB, cek ID &amp; PIN dari email</p>
-                    <p><span style="background: #f0c040; color: #0d1b2a; font-weight: 700; padding: 2px 10px; border-radius: 5px; margin-right: 10px;">5</span> Isi biodata lengkap, lalu masukkan kode referral <strong style="color: #f0c040;">unsia.my.id</strong> — potongan UKT <strong>Rp650.000</strong>!</p>
+                    <p><span style="background: #f0c040; color: #0d1b2a; font-weight: 700; padding: 2px 10px; border-radius: 5px; margin-right: 10px;">5</span> Isi biodata lengkap, lalu masukkan kode referral <strong style="color: #f0c040;">unsia.my.id</strong> — potongan UKT <strong>Rp600.000</strong>!</p>
                     <p><span style="background: #f0c040; color: #0d1b2a; font-weight: 700; padding: 2px 10px; border-radius: 5px; margin-right: 10px;">6</span> Ikuti tes online (CBT)</p>
                     <p><span style="background: #f0c040; color: #0d1b2a; font-weight: 700; padding: 2px 10px; border-radius: 5px; margin-right: 10px;">7</span> Tunggu hasil seleksi 2–5 hari</p>
                     <p><span style="background: #f0c040; color: #0d1b2a; font-weight: 700; padding: 2px 10px; border-radius: 5px; margin-right: 10px;">8</span> Daftar ulang &amp; bayar UKT — sebesar <strong>Rp3.000.000/semester</strong> (bisa dicicil 3x)</p>
@@ -398,7 +398,7 @@
             <div class="col-lg-10">
                 <h2 style="font-size:22px;font-weight:700;margin-bottom:15px;text-align:center;">Kuliah Online di UNSIA — Universitas Siber Asia</h2>
                 <p style="color:#555;font-size:13px;line-height:2;text-align:center;">
-                    <strong>UNSIA Story</strong> adalah mitra pemasaran resmi <strong>Universitas Siber Asia (UNSIA)</strong>, universitas online pertama di Indonesia dengan sistem <strong>Pembelajaran Jarak Jauh (PJJ)</strong>. Dapatkan <strong>potongan biaya kuliah UNSIA</strong> dengan menggunakan <strong>kode referral unsia.my.id</strong> saat mendaftar di pmb.unsia.ac.id. <strong>Promo kuliah UNSIA</strong> ini memberikan <strong>potongan biaya UNSIA</strong> sebesar Rp500.000 pada semester pertama dan cashback Rp150.000 di semester pertama. Gunakan <strong>kode referal unsia.my.id</strong> atau <strong>referral code unsia.my.id</strong> untuk mendapatkan <strong>promo UNSIA</strong> ini. UNSIA menyediakan 6 program studi S1: Sistem Informasi, Informatika, Manajemen, Akuntansi, Komunikasi, dan Teknologi Informasi. Semua program studi terakreditasi BAN-PT dan sebagian terakreditasi internasional EAHEA. Dengan <strong>kuliah online murah</strong> di <strong>kampus online terbaik</strong>, kamu bisa <strong>kuliah sambil kerja</strong> dari mana saja. Daftar sekarang di pmb.unsia.ac.id dengan <strong>kode referral UNSIA</strong>: <strong>unsia.my.id</strong>.
+                    <strong>UNSIA Story</strong> adalah mitra pemasaran resmi <strong>Universitas Siber Asia (UNSIA)</strong>, universitas online pertama di Indonesia dengan sistem <strong>Pembelajaran Jarak Jauh (PJJ)</strong>. Dapatkan <strong>potongan biaya kuliah UNSIA</strong> dengan menggunakan <strong>kode referral unsia.my.id</strong> saat mendaftar di pmb.unsia.ac.id. <strong>Promo kuliah UNSIA</strong> ini memberikan <strong>potongan biaya UNSIA</strong> sebesar Rp500.000 pada semester pertama dan cashback Rp100.000 di semester pertama. Gunakan <strong>kode referal unsia.my.id</strong> atau <strong>referral code unsia.my.id</strong> untuk mendapatkan <strong>promo UNSIA</strong> ini. UNSIA menyediakan 6 program studi S1: Sistem Informasi, Informatika, Manajemen, Akuntansi, Komunikasi, dan Teknologi Informasi. Semua program studi terakreditasi BAN-PT dan sebagian terakreditasi internasional EAHEA. Dengan <strong>kuliah online murah</strong> di <strong>kampus online terbaik</strong>, kamu bisa <strong>kuliah sambil kerja</strong> dari mana saja. Daftar sekarang di pmb.unsia.ac.id dengan <strong>kode referral UNSIA</strong>: <strong>unsia.my.id</strong>.
                 </p>
             </div>
         </div>

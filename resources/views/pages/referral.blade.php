@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title', 'Tentang Kode Referral unsia.my.id - Potongan UKT & Cashback | UNSIA Story')
-@section('description', 'Keuntungan memakai kode referral unsia.my.id saat daftar Universitas Siber Asia: potongan UKT Rp500.000, cashback Rp150.000, webinar rutin, dan pendampingan kuliah selama satu semester.')
+@section('description', 'Keuntungan kode referral unsia.my.id untuk tahun ajar genap 2026/2027: total Rp600.000 — potongan UKT Rp500.000 dari UNSIA dan cashback Rp100.000 dari UNSIA Story, plus pendampingan grup, webinar gratis, dan peluang bantuan biaya pendidikan.')
 @section('keywords', 'kode referral unsia, potongan ukt unsia, cashback unsia, referral unsia.my.id, diskon kuliah unsia, pendampingan kuliah unsia')
 
 @section('hero')
@@ -19,7 +19,7 @@
         <div class="row align-items-center">
             <div class="col-lg-7 col-md-12 wow fadeInUp" data-wow-duration="1s" data-wow-delay="0.1s">
                 <h4 style="color:#2c7aff;font-size:14px;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;">Apa Itu Kode Referral?</h4>
-                <h2 style="font-weight:700;font-size:32px;margin-bottom:20px;">Satu Kode, Empat Keuntungan</h2>
+                <h2 style="font-weight:700;font-size:32px;margin-bottom:20px;">Satu Kode, Lima Keuntungan</h2>
                 <p style="color:#555;font-size:16px;line-height:1.8;margin-bottom:15px;">Kode referral <strong style="color:#2c7aff;">unsia.my.id</strong> adalah kode yang kamu masukkan saat mengisi biodata pendaftaran di <a href="https://pmb.unsia.ac.id" target="_blank" style="color:#2c7aff;font-weight:600;">pmb.unsia.ac.id</a>. Kode ini menandakan bahwa kamu mendaftar melalui kami sebagai mitra pemasaran resmi Universitas Siber Asia.</p>
                 <p style="color:#555;font-size:16px;line-height:1.8;margin-bottom:15px;">Memakai kode ini <strong>tidak menambah biaya apa pun</strong>. Proses pendaftaran, seleksi, dan status kemahasiswaanmu sama persis dengan pendaftar lain — bedanya kamu mendapat potongan biaya dari universitas, plus pendampingan dari kami.</p>
                 <div style="background:#e3f2fd;padding:15px 20px;border-radius:8px;border-left:4px solid #2c7aff;">
@@ -51,25 +51,32 @@
                         'icon' => 'fa-tags',
                         'color' => '#2c7aff',
                         'judul' => 'Potongan UKT Rp500.000',
-                        'teks' => 'Potongan langsung dari Universitas Siber Asia untuk <strong>semester pertama</strong>. UKT yang semula Rp3.000.000 menjadi <strong>Rp2.500.000</strong>.',
+                        'teks' => 'Potongan langsung <strong>dari UNSIA</strong> di <strong>semester pertama</strong>. UKT yang semula Rp3.000.000 menjadi <strong>Rp2.500.000</strong>.',
                     ],
                     [
                         'icon' => 'fa-hand-holding-dollar',
                         'color' => '#2e7d32',
-                        'judul' => 'Cashback Rp150.000',
-                        'teks' => 'Dana kembali sebesar Rp150.000, juga di <strong>semester pertama</strong>. Digabung dengan potongan di atas, total keuntungan tunai yang kamu terima <strong>Rp650.000</strong>.',
-                    ],
-                    [
-                        'icon' => 'fa-video',
-                        'color' => '#7b1fa2',
-                        'judul' => 'Webinar Rutin',
-                        'teks' => 'Akses ke kegiatan webinar yang kami adakan secara berkala — mulai dari tips belajar daring, pengembangan karier, sampai bahasan seputar perkuliahan di UNSIA.',
+                        'judul' => 'Cashback Rp100.000',
+                        'teks' => 'Dana kembali <strong>dari UNSIA Story</strong>, juga di <strong>semester pertama</strong>. Digabung dengan potongan di atas, total keuntungan tunai yang kamu terima <strong>Rp600.000</strong>.',
                     ],
                     [
                         'icon' => 'fa-user-group',
                         'color' => '#e65100',
-                        'judul' => 'Pendampingan 1 Semester',
-                        'teks' => 'Kami dampingi kamu selama <strong>satu semester penuh</strong>, sejak daftar ulang sampai selesai semester pertama. Bingung soal LMS, jadwal, atau cara bayar cicilan? Tinggal tanya.',
+                        'judul' => 'Pendampingan Grup',
+                        'teks' => 'Kamu dimasukkan ke grup pendampingan bersama mahasiswa lain yang mendaftar lewat kami. Bingung soal LMS, jadwal, atau cara bayar cicilan? Tinggal tanya di grup.',
+                    ],
+                    [
+                        'icon' => 'fa-video',
+                        'color' => '#7b1fa2',
+                        'judul' => 'Webinar Gratis',
+                        'teks' => 'Ikut kegiatan webinar yang kami adakan <strong>tanpa biaya</strong> — mulai dari tips belajar daring, pengembangan karier, sampai bahasan seputar perkuliahan di UNSIA.',
+                    ],
+                    [
+                        'icon' => 'fa-trophy',
+                        'color' => '#f0a000',
+                        'judul' => 'Peluang Bantuan Biaya Pendidikan',
+                        'teks' => 'Kesempatan memperoleh bantuan biaya pendidikan <strong>bernilai jutaan rupiah</strong> bagi mahasiswa berprestasi. Dinilai dari prestasimu di semester 1, lalu diseleksi oleh UNSIA Story pada semester 2. '
+                            . '<a href="' . route('bantuan') . '" style="color:#2c7aff;font-weight:600;">Lihat program lengkapnya</a>.',
                     ],
                 ];
             @endphp
@@ -97,11 +104,11 @@
             <div class="col-lg-7 col-md-12 wow fadeInUp" data-wow-duration="1s" data-wow-delay="0.1s">
                 <h4 style="color:#f0c040;font-size:14px;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;">Rincian Biaya</h4>
                 <h2 style="color:#fff;font-size:32px;font-weight:700;margin-bottom:15px;">Berapa yang Benar-Benar Kamu Bayar?</h2>
-                <p style="color:rgba(255,255,255,0.75);font-size:16px;line-height:1.8;margin-bottom:20px;">UKT Universitas Siber Asia adalah <strong style="color:#fff;">Rp3.000.000 per semester</strong> dan bisa dicicil hingga tiga kali. Dengan kode referral, semester pertamamu jadi seperti ini:</p>
+                <p style="color:rgba(255,255,255,0.75);font-size:16px;line-height:1.8;margin-bottom:20px;">UKT Universitas Siber Asia adalah <strong style="color:#fff;">Rp3.000.000 per semester</strong> dan bisa dicicil hingga tiga kali. Dengan kode referral untuk <strong style="color:#fff;">tahun ajar genap 2026/2027</strong>, semester pertamamu jadi seperti ini &mdash; kedua keuntungan tunai turun di semester 1:</p>
                 <ul style="list-style:none;padding:0;color:rgba(255,255,255,0.8);font-size:15px;line-height:2.2;">
                     <li><i class="fa-solid fa-check-circle" style="color:#f0c040;margin-right:10px;"></i> UKT normal: <strong style="color:#fff;">Rp3.000.000</strong></li>
-                    <li><i class="fa-solid fa-check-circle" style="color:#f0c040;margin-right:10px;"></i> Potongan semester 1: <strong style="color:#f0c040;">&minus; Rp500.000</strong> → bayar <strong style="color:#fff;font-size:18px;">Rp2.500.000</strong></li>
-                    <li><i class="fa-solid fa-check-circle" style="color:#f0c040;margin-right:10px;"></i> Cashback semester 1: <strong style="color:#f0c040;">&minus; Rp150.000</strong> → biaya bersih <strong style="color:#fff;font-size:18px;">Rp2.350.000</strong></li>
+                    <li><i class="fa-solid fa-check-circle" style="color:#f0c040;margin-right:10px;"></i> Potongan UKT dari UNSIA: <strong style="color:#f0c040;">&minus; Rp500.000</strong> → bayar <strong style="color:#fff;font-size:18px;">Rp2.500.000</strong></li>
+                    <li><i class="fa-solid fa-check-circle" style="color:#f0c040;margin-right:10px;"></i> Cashback dari UNSIA Story: <strong style="color:#f0c040;">&minus; Rp100.000</strong> → biaya bersih <strong style="color:#fff;font-size:18px;">Rp2.400.000</strong></li>
                     <li><i class="fa-solid fa-check-circle" style="color:#f0c040;margin-right:10px;"></i> Semester selanjutnya: <strong style="color:#fff;">Rp3.000.000</strong> (bisa dicicil 3x)</li>
                     <li><i class="fa-solid fa-check-circle" style="color:#f0c040;margin-right:10px;"></i> Kesempatan lulus dalam <strong style="color:#fff;">3,5 tahun</strong></li>
                 </ul>
@@ -109,8 +116,11 @@
             <div class="col-lg-5 col-md-12 wow fadeInUp" data-wow-duration="1s" data-wow-delay="0.2s">
                 <div style="background:rgba(255,255,255,0.08);border:2px solid rgba(255,255,255,0.15);border-radius:16px;padding:35px 30px;margin-top:20px;text-align:center;">
                     <p style="color:rgba(255,255,255,0.6);font-size:13px;text-transform:uppercase;letter-spacing:2px;margin-bottom:8px;">Total Keuntungan Tunai</p>
-                    <h2 style="color:#f0c040;font-size:42px;font-weight:700;margin-bottom:8px;">Rp650.000</h2>
-                    <p style="color:rgba(255,255,255,0.7);font-size:14px;margin-bottom:25px;">Rp500.000 potongan + Rp150.000 cashback</p>
+                    <h2 style="color:#f0c040;font-size:42px;font-weight:700;margin-bottom:8px;">Rp600.000</h2>
+                    <p style="color:rgba(255,255,255,0.7);font-size:14px;margin-bottom:25px;">
+                        Rp500.000 potongan UKT dari UNSIA<br>
+                        + Rp100.000 cashback dari UNSIA Story
+                    </p>
                     <a href="https://pmb.unsia.ac.id" target="_blank" class="btn_two" style="display:inline-block;">Daftar Sekarang <i class="fa-solid fa-arrow-right"></i></a>
                 </div>
             </div>

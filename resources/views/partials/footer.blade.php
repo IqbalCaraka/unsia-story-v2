@@ -52,7 +52,7 @@
                 <div class="single_footer">
                     <h4>Kode Referral</h4>
                     <p>Masukkan kode <strong style="color:#f0c040;font-size:18px;">unsia.my.id</strong> saat mengisi biodata di pmb.unsia.ac.id</p>
-                    <p style="font-size:13px;margin-top:8px;">Potongan UKT <strong style="color:#f0c040;">Rp650.000</strong></p>
+                    <p style="font-size:13px;margin-top:8px;">Potongan UKT <strong style="color:#f0c040;">Rp600.000</strong></p>
                 </div>
             </div>
         </div>

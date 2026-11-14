@@ -11,13 +11,38 @@ class ReferralTest extends TestCase
         $this->get('/tentang-kode-referral')->assertStatus(200);
     }
 
-    public function test_keempat_keuntungan_disebutkan(): void
+    public function test_kelima_keuntungan_disebutkan(): void
     {
         $this->get('/tentang-kode-referral')
             ->assertSee('Potongan UKT Rp500.000')
-            ->assertSee('Cashback Rp150.000')
-            ->assertSee('Webinar Rutin')
-            ->assertSee('Pendampingan 1 Semester');
+            ->assertSee('Cashback Rp100.000')
+            ->assertSee('Pendampingan Grup')
+            ->assertSee('Webinar Gratis')
+            ->assertSee('Peluang Bantuan Biaya Pendidikan');
+    }
+
+    /**
+     * Potongan berasal dari UNSIA, cashback dari UNSIA Story. Keduanya mudah
+     * tertukar, dan tertukarnya berarti situs salah menyebut siapa yang
+     * membayar.
+     */
+    public function test_sumber_dana_disebut_terpisah(): void
+    {
+        $this->get('/tentang-kode-referral')
+            ->assertSee('dari UNSIA Story')
+            ->assertSee('Potongan UKT dari UNSIA')
+            ->assertSee('Cashback dari UNSIA Story');
+    }
+
+    /**
+     * Peluang bantuan biaya pendidikan itu program yang sudah punya halaman
+     * sendiri. Halaman referral harus menautkannya, bukan menjelaskan ulang
+     * dengan kalimat yang bisa menyimpang dari halaman aslinya.
+     */
+    public function test_peluang_bantuan_menaut_ke_halaman_programnya(): void
+    {
+        $this->get('/tentang-kode-referral')
+            ->assertSee(route('bantuan'));
     }
 
     public function test_menu_tentang_punya_dua_pilihan(): void
@@ -36,11 +61,20 @@ class ReferralTest extends TestCase
      */
     public function test_cashback_tidak_lagi_diklaim_di_semester_dua(): void
     {
+        // Sengaja khusus soal cashback. "Semester 2" sendiri BUKAN klaim
+        // terlarang — seleksi bantuan biaya pendidikan memang berlangsung di
+        // semester 2, jadi melarang frasanya secara umum akan menjegal
+        // kalimat yang benar.
         $klaimLama = [
-            'cashback Rp150.000 di semester kedua',
             'Cashback semester 2',
             'Semester kedua: cashback',
-            'cashback Rp150rb semester kedua',
+            'cashback Rp100.000 di semester 2',
+            'cashback Rp100.000 di semester kedua',
+            'cashback Rp150.000 di semester kedua',
+            // Nominal sebelum berubah jadi 600 ribu untuk genap 2026/2027.
+            'Rp650.000',
+            'Rp150.000',
+            'Rp2.350.000',
             'Rp2.850.000',
         ];
 
@@ -61,12 +95,13 @@ class ReferralTest extends TestCase
     public function test_biaya_bersih_semester_satu_konsisten(): void
     {
         $ukt = 3_000_000;
-        $potongan = 500_000;
-        $cashback = 150_000;
+        $potongan = 500_000;   // dari UNSIA
+        $cashback = 100_000;   // dari UNSIA Story
 
         $bersih = $ukt - $potongan - $cashback;
 
-        $this->assertSame(2_350_000, $bersih);
+        $this->assertSame(600_000, $potongan + $cashback);
+        $this->assertSame(2_400_000, $bersih);
 
         $this->get('/tentang-kode-referral')
             ->assertSee('Rp'.number_format($ukt, 0, ',', '.'))
