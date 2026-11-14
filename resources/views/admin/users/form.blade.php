@@ -8,6 +8,7 @@
     <label for="role" class="form-label fw-semibold">Role</label>
     <select class="form-select @error('role') is-invalid @enderror" id="role" name="role" required>
         <option value="mahasiswa" {{ $role === 'mahasiswa' ? 'selected' : '' }}>Mahasiswa</option>
+        <option value="downline" {{ $role === 'downline' ? 'selected' : '' }}>Downline</option>
         <option value="admin" {{ $role === 'admin' ? 'selected' : '' }}>Admin</option>
         <option value="superadmin" {{ $role === 'superadmin' ? 'selected' : '' }}>Super Admin</option>
     </select>
@@ -15,7 +16,10 @@
         <div class="invalid-feedback">{{ $message }}</div>
     @enderror
     <div class="form-text">
-        <strong>Mahasiswa</strong> login memakai NIM, hanya bisa membuka profil dan cashback-nya sendiri.<br>
+        <strong>Mahasiswa</strong> login memakai NIM, hanya bisa membuka profil dan cashback-nya sendiri.
+        Wajib mengisi program studi dan tahun ajar.<br>
+        <strong>Downline</strong> login memakai email. ID dan kode downline-nya
+        dibuat otomatis. Tidak punya akses panel dan tidak menyimpan data akademik.<br>
         <strong>Admin</strong> login memakai email, mengelola konten panel tapi
         <em>tidak bisa</em> mengelola pengguna.<br>
         <strong>Super Admin</strong> sama seperti admin, ditambah wewenang menambah,
@@ -45,6 +49,116 @@
     @error('email')
         <div class="invalid-feedback">{{ $message }}</div>
     @enderror
+</div>
+
+{{-- Data downline: hanya relevan untuk role downline --}}
+<div id="blokDownline">
+    <hr class="my-4">
+    <h6 class="fw-bold text-uppercase text-muted small mb-3">Data Downline</h6>
+
+    @php $dl = $user->downline ?? null; @endphp
+
+    {{-- ID dan kode digenerate sistem, jadi ditampilkan saja, tidak diisi. --}}
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <label class="form-label fw-semibold">ID Downline</label>
+            <input type="text" class="form-control bg-light" value="{{ $dl->id_downline ?? '' }}"
+                   placeholder="dibuat otomatis saat disimpan" readonly disabled>
+        </div>
+        <div class="col-md-6">
+            <label class="form-label fw-semibold">Kode Downline</label>
+            <input type="text" class="form-control bg-light" value="{{ $dl->kode_downline ?? '' }}"
+                   placeholder="dibuat otomatis saat disimpan" readonly disabled>
+        </div>
+    </div>
+
+    {{-- Status --}}
+    <div class="mb-3">
+        <label for="status_downline" class="form-label fw-semibold">Status</label>
+        <select class="form-select @error('status_downline') is-invalid @enderror"
+                id="status_downline" name="status_downline">
+            @php $statusTerpilih = old('status_downline', $dl->status ?? 'aktif'); @endphp
+            <option value="aktif" {{ $statusTerpilih === 'aktif' ? 'selected' : '' }}>Aktif</option>
+            <option value="tidak_aktif" {{ $statusTerpilih === 'tidak_aktif' ? 'selected' : '' }}>Tidak Aktif</option>
+        </select>
+        @error('status_downline')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+        <div class="form-text">
+            ID dan kode downline dibuat otomatis sekali saja, lalu tidak berubah.
+            Menonaktifkan downline tidak menghapus ID-nya.
+        </div>
+    </div>
+
+    {{-- Sosial media --}}
+    @php
+        use App\Models\DownlineSocialMedia;
+
+        // Setelah validasi gagal, pakai isian lama; kalau tidak, pakai yang
+        // tersimpan. Satu baris kosong disiapkan supaya admin bisa langsung
+        // mengisi tanpa menekan tombol tambah lebih dulu.
+        $barisSosmed = old('social_media', $dl
+            ? $dl->socialMedia->map(fn ($m) => ['platform' => $m->platform, 'akun' => $m->akun])->all()
+            : []);
+
+        if (empty($barisSosmed)) {
+            $barisSosmed = [['platform' => 'instagram', 'akun' => '']];
+        }
+    @endphp
+
+    <label class="form-label fw-semibold">Sosial Media</label>
+
+    <div id="daftarSosmed">
+        @foreach ($barisSosmed as $i => $baris)
+            <div class="row g-2 mb-2 align-items-start" data-baris-sosmed>
+                <div class="col-4">
+                    <select class="form-select form-select-sm" name="social_media[{{ $i }}][platform]">
+                        @foreach (DownlineSocialMedia::PLATFORM as $kunci => $meta)
+                            <option value="{{ $kunci }}"
+                                {{ ($baris['platform'] ?? '') === $kunci ? 'selected' : '' }}>
+                                {{ $meta['label'] }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-7">
+                    <input type="text" class="form-control form-control-sm
+                                  @error("social_media.$i.akun") is-invalid @enderror"
+                           name="social_media[{{ $i }}][akun]"
+                           value="{{ $baris['akun'] ?? '' }}"
+                           placeholder="username tanpa @, atau URL penuh untuk Blog">
+                    @error("social_media.$i.akun")
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+                <div class="col-1">
+                    <button type="button" class="btn btn-sm btn-outline-danger w-100"
+                            data-hapus-sosmed title="Hapus baris">&times;</button>
+                </div>
+            </div>
+        @endforeach
+    </div>
+
+    <button type="button" class="btn btn-sm btn-outline-secondary" id="tambahSosmed">
+        <i class="fas fa-plus"></i> Tambah Sosial Media
+    </button>
+
+    <div class="form-text mt-2">
+        Boleh lebih dari satu, termasuk beberapa akun di platform yang sama.
+        Tautan yang ditempel utuh akan dirapikan otomatis jadi username.
+        Baris yang dibiarkan kosong tidak disimpan.
+    </div>
+
+    @if ($dl && $dl->socialMedia->isNotEmpty())
+        <div class="mt-3">
+            @foreach ($dl->socialMedia as $m)
+                <a href="{{ $m->url() }}" target="_blank" rel="noopener"
+                   class="badge rounded-pill bg-light text-dark border text-decoration-none me-1">
+                    <i class="{{ $m->ikon() }}"></i> {{ $m->label() }}
+                </a>
+            @endforeach
+        </div>
+    @endif
 </div>
 
 {{-- Data akademik: hanya relevan untuk mahasiswa --}}

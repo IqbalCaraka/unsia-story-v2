@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
@@ -15,7 +16,17 @@ return new class extends Migration
 {
     public function up(): void
     {
-        DB::statement("ALTER TABLE users MODIFY role ENUM('superadmin','admin','mahasiswa') NOT NULL DEFAULT 'mahasiswa'");
+        // Hanya MySQL yang punya tipe ENUM. SQLite — dipakai saat pengujian —
+        // memakai varchar dengan CHECK, dan CHECK itulah yang menolak nilai
+        // role baru. Di sana kolomnya cukup dijadikan varchar biasa; daftar
+        // role yang sah sudah ditegakkan validasi di UserController.
+        if (DB::getDriverName() === 'mysql') {
+            DB::statement("ALTER TABLE users MODIFY role ENUM('superadmin','admin','mahasiswa') NOT NULL DEFAULT 'mahasiswa'");
+        } else {
+            Schema::table('users', function (Blueprint $table) {
+                $table->string('role')->default('mahasiswa')->change();
+            });
+        }
 
         // Admin yang sudah ada dinaikkan jadi superadmin. Tanpa ini tidak ada
         // satu pun akun yang bisa membuka menu Pengguna, dan panel terkunci.
@@ -26,6 +37,8 @@ return new class extends Migration
     {
         DB::table('users')->where('role', 'superadmin')->update(['role' => 'admin']);
 
-        DB::statement("ALTER TABLE users MODIFY role ENUM('admin','mahasiswa') NOT NULL DEFAULT 'mahasiswa'");
+        if (DB::getDriverName() === 'mysql') {
+            DB::statement("ALTER TABLE users MODIFY role ENUM('admin','mahasiswa') NOT NULL DEFAULT 'mahasiswa'");
+        }
     }
 };

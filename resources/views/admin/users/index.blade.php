@@ -33,6 +33,7 @@
                     <option value="superadmin" {{ request('role') === 'superadmin' ? 'selected' : '' }}>Super Admin</option>
                     <option value="admin" {{ request('role') === 'admin' ? 'selected' : '' }}>Admin</option>
                     <option value="mahasiswa" {{ request('role') === 'mahasiswa' ? 'selected' : '' }}>Mahasiswa</option>
+                    <option value="downline" {{ request('role') === 'downline' ? 'selected' : '' }}>Downline</option>
                 </select>
             </div>
             <div class="col-md-3">
@@ -78,6 +79,14 @@
                             <td>
                                 <div class="fw-semibold">{{ $user->nama ?? $user->name }}</div>
                                 <small class="text-muted">{{ $user->email ?? '—' }}</small>
+                                @if ($user->downline)
+                                    <div>
+                                        <small class="text-muted">
+                                            ID {{ $user->downline->id_downline }}
+                                            &middot; {{ $user->downline->kode_downline }}
+                                        </small>
+                                    </div>
+                                @endif
                             </td>
                             <td class="text-muted">{{ $user->nim ?? '—' }}</td>
                             <td class="text-muted">{{ $user->prodi->nama_prodi ?? '—' }}</td>
@@ -89,8 +98,16 @@
                                 @elseif ($user->isAdmin())
                                     <span class="badge rounded-pill"
                                           style="background-color: #0d1b2a; color: #f0c040;">Admin</span>
+                                @elseif ($user->isDownline())
+                                    <span class="badge rounded-pill"
+                                          style="background-color: #7b1fa2; color: #fff;">Downline</span>
+                                    @if ($user->downline && ! $user->downline->aktif())
+                                        <span class="badge rounded-pill bg-secondary">Tidak Aktif</span>
+                                    @endif
                                 @else
-                                    <span class="badge rounded-pill bg-light text-dark border">Mahasiswa</span>
+                                    {{-- roleLabel() dipakai, bukan teks tetap, supaya role baru
+                                         tidak lagi salah tampil sebagai "Mahasiswa". --}}
+                                    <span class="badge rounded-pill bg-light text-dark border">{{ $user->roleLabel() }}</span>
                                 @endif
                             </td>
                             <td class="text-end pe-3">
