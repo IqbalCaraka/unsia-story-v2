@@ -45,6 +45,66 @@
 
 @section('content')
 
+<!-- START INFO PENDAFTARAN -->
+@php use App\Support\Pendaftaran; @endphp
+<section style="padding: 50px 0 10px;">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10 col-12">
+                <div style="background: linear-gradient(135deg, #0d1b2a 0%, #1a2d4a 100%); border-radius: 16px; padding: 35px 30px; color: #fff;">
+                    <div class="row align-items-center">
+                        <div class="col-lg-8 col-12">
+                            <span style="display: inline-block; background: {{ Pendaftaran::sedangDibuka() ? '#2e7d32' : '#b0b0b0' }}; color: #fff; font-weight: 700; font-size: 12px; letter-spacing: 2px; padding: 5px 16px; border-radius: 20px; text-transform: uppercase; margin-bottom: 14px;">
+                                {{ Pendaftaran::statusLabel() }}
+                            </span>
+
+                            <h2 style="color: #fff; font-size: 30px; font-weight: 700; margin-bottom: 6px;">
+                                {{ Pendaftaran::nama() }}
+                            </h2>
+                            <p style="color: #f0c040; font-size: 19px; font-weight: 600; margin-bottom: 20px;">
+                                <i class="fa-solid fa-calendar-days" style="margin-right: 8px;"></i>
+                                {{ Pendaftaran::rentangTanggal() }}
+                            </p>
+
+                            <ul style="list-style: none; padding: 0; margin: 0; color: rgba(255,255,255,0.85); font-size: 15px; line-height: 2.1;">
+                                <li>
+                                    <i class="fa-solid fa-receipt" style="color: #f0c040; width: 22px;"></i>
+                                    Biaya pendaftaran <strong style="color: #fff;">{{ Pendaftaran::biayaRupiah() }}</strong> (sekali bayar)
+                                </li>
+                                <li>
+                                    <i class="fa-solid fa-globe" style="color: #f0c040; width: 22px;"></i>
+                                    Pendaftaran melalui
+                                    <a href="{{ Pendaftaran::portal() }}" target="_blank" style="color: #f0c040; font-weight: 600;">{{ Pendaftaran::portalLabel() }}</a>
+                                </li>
+                                <li>
+                                    <i class="fa-solid fa-tags" style="color: #f0c040; width: 22px;"></i>
+                                    Pakai kode referal <strong style="color: #f0c040; font-size: 17px;">unsia.my.id</strong>
+                                    &rarr; total keuntungan <strong style="color: #fff;">Rp600.000</strong>
+                                </li>
+                            </ul>
+
+                            <p style="color: rgba(255,255,255,0.6); font-size: 13px; line-height: 1.8; margin: 16px 0 0;">
+                                Rp500.000 potongan UKT dari UNSIA + Rp100.000 cashback dari UNSIA Story, keduanya di semester 1.
+                                Masukkan kodenya <strong style="color: rgba(255,255,255,0.85);">sebelum</strong> membayar UKT.
+                                <a href="{{ route('referral') }}" style="color: #f0c040;">Pelajari kode referal</a>
+                            </p>
+                        </div>
+
+                        <div class="col-lg-4 col-12 text-center text-lg-end" style="margin-top: 25px;">
+                            <a href="{{ Pendaftaran::portal() }}" target="_blank"
+                               style="display: inline-flex; align-items: center; gap: 10px; background: #f0c040; color: #0d1b2a; padding: 16px 30px; border-radius: 50px; text-decoration: none; font-weight: 700; font-size: 16px;">
+                                Daftar Sekarang
+                                <i class="fa-solid fa-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- END INFO PENDAFTARAN -->
+
 <!-- START OFFICIAL DIGITAL REPRESENTATIVE -->
 <section style="padding: 60px 0;">
     <div class="container">
@@ -97,8 +157,8 @@
                 </div>
                 <div class="abmv">
                     <i class="fa-solid fa-calendar-check"></i>
-                    <h4>Gelombang 10 — Gelombang Terakhir!</h4>
-                    <p>Pendaftaran Gel 10 Jalur Reguler: <strong>4 - 17 September 2026</strong>. Daftar sekarang di <a href="https://pmb.unsia.ac.id" target="_blank" style="color: #2c7aff; font-weight: 600;">pmb.unsia.ac.id</a></p>
+                    <h4>{{ Pendaftaran::nama() }} &mdash; {{ Pendaftaran::statusLabel() }}!</h4>
+                    <p>Pendaftaran: <strong>{{ Pendaftaran::rentangTanggal() }}</strong>. Biaya daftar {{ Pendaftaran::biayaRupiah() }}. Daftar di <a href="{{ Pendaftaran::portal() }}" target="_blank" style="color: #2c7aff; font-weight: 600;">{{ Pendaftaran::portalLabel() }}</a></p>
                 </div>
                 <div class="abmv">
                     <i class="fa-solid fa-tags"></i>

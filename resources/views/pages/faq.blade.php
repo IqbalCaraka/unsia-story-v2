@@ -81,7 +81,7 @@
                 <div class="faq-item">
                     <h4>Kapan jadwal pendaftaran terbaru? <i class="fa-solid fa-chevron-down"></i></h4>
                     <div class="faq-answer">
-                        <p>Pendaftaran <strong>Gelombang 10 (Gelombang Terakhir) Jalur Reguler</strong> dibuka mulai <strong>4 - 17 September 2026</strong>. Segera daftar sebelum kuota penuh!</p>
+                        <p>Pendaftaran <strong>{{ \App\Support\Pendaftaran::nama() }}</strong> berlangsung <strong>{{ \App\Support\Pendaftaran::rentangTanggal() }}</strong>, dengan biaya pendaftaran {{ \App\Support\Pendaftaran::biayaRupiah() }}. Pendaftaran dilakukan di <a href="{{ \App\Support\Pendaftaran::portal() }}" target="_blank" style="color:#2c7aff;font-weight:600;">{{ \App\Support\Pendaftaran::portalLabel() }}</a>. Segera daftar sebelum kuota penuh!</p>
                     </div>
                 </div>
 
