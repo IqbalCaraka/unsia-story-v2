@@ -111,4 +111,17 @@ class PendaftaranTest extends TestCase
 
         Carbon::setTestNow();
     }
+
+    /**
+     * Poster pendaftaran sedang disembunyikan karena ada info di dalamnya yang
+     * sedang diperbaiki. Berkasnya masih di repositori, jadi mudah tanpa
+     * sengaja terpasang kembali sebelum perbaikannya selesai.
+     */
+    public function test_poster_pendaftaran_masih_disembunyikan(): void
+    {
+        $this->get('/')
+            ->assertStatus(200)
+            ->assertDontSee('Poster-pendaftaran', false)
+            ->assertSee('mascot-unsiro.png', false);
+    }
 }

@@ -146,8 +146,15 @@
     <div class="container">
         <div class="row">
             <div class="col-lg-6 col-sm-12 col-xs-12 wow fadeInUp" data-wow-duration="1s" data-wow-delay="0.2s" data-wow-offset="0">
-                <div class="ab_img">
-                    <img src="{{ asset('assets/images/Poster-pendaftaran-UNSIA.png') }}" class="img-fluid" alt="Pendaftaran UNSIA" style="border-radius: 10px;">
+                <div class="ab_img text-center">
+                    {{-- Poster pendaftaran disembunyikan sementara karena ada info di
+                         dalamnya yang sedang diperbaiki. Berkasnya tidak dihapus, masih
+                         di public/assets/images/Poster-pendaftaran-UNSIA.png.
+
+                         Untuk memulihkan: ganti gambar maskot di bawah dengan poster
+                         itu, kelasnya img-fluid dan style border-radius: 10px. --}}
+                    <img src="{{ asset('assets/images/mascot-unsiro.png') }}" class="img-fluid"
+                         alt="Maskot UNSIA - Unsiro" style="max-height: 420px; width: auto;">
                 </div>
             </div>
             <div class="col-lg-6 col-sm-12 col-xs-12 wow fadeInUp" data-wow-duration="1s" data-wow-delay="0.1s" data-wow-offset="0">
