@@ -249,7 +249,7 @@
                 <div class="single_tp st_two">
                     <h3>Biaya Terjangkau</h3>
                     <i class="fa-solid fa-wallet"></i>
-                    <p>UKT Rp3 juta/semester, cicil 3x. Potongan Rp500rb + cashback Rp150rb, keduanya di semester pertama!</p>
+                    <p>UKT Rp3 juta/semester, cicil 3x. Potongan Rp500rb dari UNSIA + cashback Rp100rb dari UNSIA Story, keduanya di semester pertama!</p>
                 </div>
             </div>
             <div class="col-lg-3 col-sm-6 col-xs-12 wow fadeInUp" data-wow-duration="1s" data-wow-delay="0.4s" data-wow-offset="0">

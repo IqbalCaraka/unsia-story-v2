@@ -88,6 +88,57 @@ class ReferralTest extends TestCase
     }
 
     /**
+     * Nominal ditulis dalam dua gaya di situs ini: bertitik ("Rp150.000") dan
+     * disingkat ("Rp150rb"). Saat nominal berubah, sapuan yang hanya mencari
+     * format bertitik melewatkan yang disingkat — itu pernah terjadi dan satu
+     * "Rp150rb" sempat tayang di produksi berhari-hari.
+     *
+     * Pola di bawah menangkap kedua gaya sekaligus.
+     */
+    public function test_nominal_lama_tidak_muncul_dalam_bentuk_apa_pun(): void
+    {
+        $polaLama = [
+            'cashback lama (150)' => '/Rp\s?\.?\s?150[\s.]?(000|rb|ribu)/i',
+            'total lama (650)' => '/Rp\s?\.?\s?650[\s.]?(000|rb|ribu)/i',
+            'biaya bersih lama (2.350.000)' => '/Rp\s?\.?\s?2[\s.]?350[\s.]?000/i',
+            'biaya semester 2 lama (2.850.000)' => '/Rp\s?\.?\s?2[\s.]?850[\s.]?000/i',
+        ];
+
+        foreach (['/', '/about', '/faq', '/tentang-kode-referral', '/bantuan-pendanaan'] as $url) {
+            $html = $this->get($url)->assertStatus(200)->getContent();
+
+            foreach ($polaLama as $nama => $pola) {
+                $this->assertDoesNotMatchRegularExpression(
+                    $pola, $html, "$nama masih muncul di $url"
+                );
+            }
+        }
+    }
+
+    /**
+     * Potongan dan cashback yang disingkat harus menyebut angka yang sama
+     * dengan versi bertitiknya, supaya dua gaya penulisan itu tidak pernah
+     * saling bertentangan di halaman yang sama.
+     */
+    public function test_nominal_singkat_sama_dengan_nominal_bertitik(): void
+    {
+        $html = $this->get('/')->assertStatus(200)->getContent();
+
+        preg_match_all('/Rp(\d+)(?:rb|ribu)/i', $html, $singkat);
+
+        $this->assertNotEmpty($singkat[1], 'Beranda tidak lagi memakai nominal singkat.');
+
+        foreach (array_unique($singkat[1]) as $ratusan) {
+            // "500rb" harus punya padanan "Rp500.000" di situs.
+            $this->assertContains(
+                $ratusan,
+                ['500', '100'],
+                "Rp{$ratusan}rb bukan nominal yang berlaku (yang sah: 500 dan 100)"
+            );
+        }
+    }
+
+    /**
      * Biaya bersih semester 1 adalah hasil pengurangan dua angka yang juga
      * tampil di halaman. Kalau salah satunya diubah tanpa yang lain, totalnya
      * jadi menyesatkan.
