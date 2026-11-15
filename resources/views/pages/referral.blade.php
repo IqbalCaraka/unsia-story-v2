@@ -63,7 +63,7 @@
                         'icon' => 'fa-user-group',
                         'color' => '#e65100',
                         'judul' => 'Pendampingan Grup',
-                        'teks' => 'Kamu dimasukkan ke grup pendampingan bersama mahasiswa lain yang mendaftar lewat kami. Bingung soal LMS, jadwal, atau cara bayar cicilan? Tinggal tanya di grup.',
+                        'teks' => 'Di <strong>awal masa kuliah</strong>, kamu dimasukkan ke grup pendampingan bersama mahasiswa lain yang mendaftar lewat kami. Bingung soal LMS, jadwal, atau cara bayar cicilan? Tinggal tanya di grup.',
                     ],
                     [
                         'icon' => 'fa-video',

@@ -170,7 +170,39 @@
                 <div class="abmv">
                     <i class="fa-solid fa-tags"></i>
                     <h4>UKT Rp3 Juta/Semester — Bisa Cicil 3x!</h4>
-                    <p>Gunakan kode referral: <strong style="color: #2c7aff; font-size: 18px;">unsia.my.id</strong> untuk potongan UKT <strong>Rp600.000</strong>!</p>
+                    <p style="margin-bottom: 10px;">Gunakan kode referal <strong style="color: #2c7aff; font-size: 18px;">unsia.my.id</strong> untuk total manfaat <strong>Rp600.000</strong>, dengan rincian:</p>
+
+                    <ul style="list-style: none; padding: 0; margin: 0 0 12px;">
+                        <li style="margin-bottom: 6px;">
+                            <i class="fa-solid fa-circle-check" style="color: #2e7d32; margin-right: 8px;"></i>
+                            <strong>Rp500.000</strong> potongan UKT dari <strong>UNSIA</strong>
+                        </li>
+                        <li style="margin-bottom: 6px;">
+                            <i class="fa-solid fa-circle-check" style="color: #2e7d32; margin-right: 8px;"></i>
+                            <strong>Rp100.000</strong> cashback dari <strong>UNSIA Story</strong>
+                        </li>
+                    </ul>
+
+                    <p style="margin-bottom: 8px;">Benefit lainnya:</p>
+
+                    <ul style="list-style: none; padding: 0; margin: 0 0 10px;">
+                        <li style="margin-bottom: 6px;">
+                            <i class="fa-solid fa-user-group" style="color: #e65100; margin-right: 8px;"></i>
+                            Pendampingan grup di awal kuliah
+                        </li>
+                        <li style="margin-bottom: 6px;">
+                            <i class="fa-solid fa-video" style="color: #7b1fa2; margin-right: 8px;"></i>
+                            Webinar gratis
+                        </li>
+                        <li style="margin-bottom: 6px;">
+                            <i class="fa-solid fa-trophy" style="color: #f0a000; margin-right: 8px;"></i>
+                            Kesempatan memperoleh bantuan biaya pendidikan bagi mahasiswa berprestasi di semester 1
+                        </li>
+                    </ul>
+
+                    <p style="margin: 0;">
+                        <a href="{{ route('referral') }}" style="color: #2c7aff; font-weight: 600;">Pelajari kode referal selengkapnya</a>
+                    </p>
                 </div>
                 <div class="abmv">
                     <i class="fa-brands fa-whatsapp"></i>

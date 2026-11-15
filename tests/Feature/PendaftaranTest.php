@@ -117,6 +117,29 @@ class PendaftaranTest extends TestCase
      * sedang diperbaiki. Berkasnya masih di repositori, jadi mudah tanpa
      * sengaja terpasang kembali sebelum perbaikannya selesai.
      */
+    /**
+     * Blok UKT di beranda harus menguraikan dari mana tiap rupiah berasal.
+     * Angka total saja pernah membuat cashback terbaca seolah dari UNSIA,
+     * padahal yang membayarnya UNSIA Story.
+     */
+    public function test_blok_ukt_menguraikan_asal_tiap_manfaat(): void
+    {
+        $this->get('/')
+            ->assertStatus(200)
+            ->assertSee('total manfaat')
+            ->assertSeeInOrder(['Rp500.000', 'potongan UKT dari', 'UNSIA'], false)
+            ->assertSeeInOrder(['Rp100.000', 'cashback dari', 'UNSIA Story'], false);
+    }
+
+    public function test_blok_ukt_menyebut_benefit_non_tunai(): void
+    {
+        $this->get('/')
+            ->assertSee('Pendampingan grup di awal kuliah')
+            ->assertSee('Webinar gratis')
+            ->assertSee('bantuan biaya pendidikan bagi mahasiswa berprestasi di semester 1')
+            ->assertSee(route('referral'));
+    }
+
     public function test_poster_pendaftaran_masih_disembunyikan(): void
     {
         $this->get('/')
