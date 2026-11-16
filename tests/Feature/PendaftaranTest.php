@@ -133,10 +133,12 @@ class PendaftaranTest extends TestCase
 
     public function test_blok_ukt_menyebut_benefit_non_tunai(): void
     {
+        // Benefit bantuan biaya pendidikan sengaja tidak diuji di sini: ia
+        // disembunyikan bersama seluruh konten Bantuan Pendanaan. Yang menjaga
+        // agar ia tidak kembali muncul ada di ReferralTest.
         $this->get('/')
             ->assertSee('Pendampingan grup di awal kuliah')
             ->assertSee('Webinar gratis')
-            ->assertSee('bantuan biaya pendidikan bagi mahasiswa berprestasi di semester 1')
             ->assertSee(route('referral'));
     }
 

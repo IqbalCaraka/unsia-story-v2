@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title', 'Tentang Kode Referral unsia.my.id - Potongan UKT & Cashback | UNSIA Story')
-@section('description', 'Keuntungan kode referral unsia.my.id untuk tahun ajar genap 2026/2027: total Rp600.000 — potongan UKT Rp500.000 dari UNSIA dan cashback Rp100.000 dari UNSIA Story, plus pendampingan grup, webinar gratis, dan peluang bantuan biaya pendidikan.')
+@section('description', 'Keuntungan kode referral unsia.my.id untuk tahun ajar genap 2026/2027: total Rp600.000 — potongan UKT Rp500.000 dari UNSIA dan cashback Rp100.000 dari UNSIA Story, plus pendampingan grup dan webinar gratis.')
 @section('keywords', 'kode referral unsia, potongan ukt unsia, cashback unsia, referral unsia.my.id, diskon kuliah unsia, pendampingan kuliah unsia')
 
 @section('hero')
@@ -19,7 +19,7 @@
         <div class="row align-items-center">
             <div class="col-lg-7 col-md-12 wow fadeInUp" data-wow-duration="1s" data-wow-delay="0.1s">
                 <h4 style="color:#2c7aff;font-size:14px;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;">Apa Itu Kode Referral?</h4>
-                <h2 style="font-weight:700;font-size:32px;margin-bottom:20px;">Satu Kode, Lima Keuntungan</h2>
+                <h2 style="font-weight:700;font-size:32px;margin-bottom:20px;">Satu Kode, Empat Keuntungan</h2>
                 <p style="color:#555;font-size:16px;line-height:1.8;margin-bottom:15px;">Kode referral <strong style="color:#2c7aff;">unsia.my.id</strong> adalah kode yang kamu masukkan saat mengisi biodata pendaftaran di <a href="https://pmb.unsia.ac.id" target="_blank" style="color:#2c7aff;font-weight:600;">pmb.unsia.ac.id</a>. Kode ini menandakan bahwa kamu mendaftar melalui kami sebagai mitra pemasaran resmi Universitas Siber Asia.</p>
                 <p style="color:#555;font-size:16px;line-height:1.8;margin-bottom:15px;">Memakai kode ini <strong>tidak menambah biaya apa pun</strong>. Proses pendaftaran, seleksi, dan status kemahasiswaanmu sama persis dengan pendaftar lain — bedanya kamu mendapat potongan biaya dari universitas, plus pendampingan dari kami.</p>
                 <div style="background:#e3f2fd;padding:15px 20px;border-radius:8px;border-left:4px solid #2c7aff;">
@@ -37,7 +37,7 @@
     </div>
 </section>
 
-<!-- EMPAT KEUNTUNGAN -->
+<!-- KEUNTUNGAN -->
 <section class="section-padding" style="background:#f8f9fa;">
     <div class="container">
         <div class="section-title text-center">
@@ -71,13 +71,10 @@
                         'judul' => 'Webinar Gratis',
                         'teks' => 'Ikut kegiatan webinar yang kami adakan <strong>tanpa biaya</strong> — mulai dari tips belajar daring, pengembangan karier, sampai bahasan seputar perkuliahan di UNSIA.',
                     ],
-                    [
-                        'icon' => 'fa-trophy',
-                        'color' => '#f0a000',
-                        'judul' => 'Peluang Bantuan Biaya Pendidikan',
-                        'teks' => 'Kesempatan memperoleh bantuan biaya pendidikan <strong>bernilai jutaan rupiah</strong> bagi mahasiswa berprestasi. Dinilai dari prestasimu di semester 1, lalu diseleksi oleh UNSIA Story pada semester 2. '
-                            . '<a href="' . route('bantuan') . '" style="color:#2c7aff;font-weight:600;">Lihat program lengkapnya</a>.',
-                    ],
+                    // Kartu "Peluang Bantuan Biaya Pendidikan" disembunyikan bersama
+                    // seluruh konten Bantuan Pendanaan. Lihat catatan di routes/web.php.
+                    // Saat dipulihkan, ganti juga judul bagian di atas kembali menjadi
+                    // "Lima Keuntungan" dan tautkan lagi ke route('bantuan').
                 ];
             @endphp
             @foreach ($keuntungan as $i => $item)

@@ -246,12 +246,17 @@
                         <i class="fas fa-phone-alt"></i> Callback
                     </a>
                 </li>
+                {{-- Menu Bantuan Pendanaan disembunyikan bersama seluruh kontennya.
+                     Route /admin/bantuan, controller, dan data pemohonnya TIDAK dihapus,
+                     jadi panel ini masih bisa dibuka langsung lewat URL kalau sewaktu-waktu
+                     perlu, dan menunya bisa dipulihkan dengan mengaktifkan blok ini.
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('admin.bantuan.*') ? 'active' : '' }}"
                        href="{{ route('admin.bantuan.index') }}">
                         <i class="fas fa-hand-holding-dollar"></i> Bantuan Pendanaan
                     </a>
                 </li>
+                --}}
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('admin.events.*') ? 'active' : '' }}"
                        href="{{ route('admin.events.index') }}">

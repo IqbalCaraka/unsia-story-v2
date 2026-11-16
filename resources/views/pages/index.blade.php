@@ -194,10 +194,13 @@
                             <i class="fa-solid fa-video" style="color: #7b1fa2; margin-right: 8px;"></i>
                             Webinar gratis
                         </li>
+                        {{-- Benefit bantuan biaya pendidikan disembunyikan bersama seluruh
+                             konten Bantuan Pendanaan. Lihat catatan di routes/web.php.
                         <li style="margin-bottom: 6px;">
                             <i class="fa-solid fa-trophy" style="color: #f0a000; margin-right: 8px;"></i>
                             Kesempatan memperoleh bantuan biaya pendidikan bagi mahasiswa berprestasi di semester 1
                         </li>
+                        --}}
                     </ul>
 
                     <p style="margin: 0;">

@@ -100,7 +100,7 @@ class KontakTest extends TestCase
             '0813-3333-1686',
         ];
 
-        foreach (['/', '/about', '/faq', '/bantuan-pendanaan'] as $url) {
+        foreach (['/', '/about', '/faq', '/tentang-kode-referral'] as $url) {
             $response = $this->get($url)->assertStatus(200);
 
             foreach ($lama as $jejak) {

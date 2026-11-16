@@ -95,7 +95,10 @@
                                     <li><a href="{{ route('prodi', 'teknologi-informasi') }}">Teknologi Informasi</a></li>
                                 </ul>
                             </li>
-                            <li><a href="{{ route('bantuan') }}">Bantuan Pendanaan</a></li>
+                            {{-- Menu Bantuan Pendanaan disembunyikan bersama seluruh kontennya.
+                                 Route publiknya dimatikan di routes/web.php, jadi route('bantuan')
+                                 akan melempar error kalau baris ini diaktifkan lebih dulu.
+                                 <li><a href="/bantuan-pendanaan">Bantuan Pendanaan</a></li> --}}
                             <li class="menu-item-has-children"><a href="#">Tools</a>
                                 <ul>
                                     <li><a href="{{ route('konversi') }}">Konversi Mata Kuliah</a></li>
@@ -145,7 +148,7 @@
                             <li><a href="{{ route('prodi', 'teknologi-informasi') }}">Teknologi Informasi</a></li>
                         </ul>
                     </li>
-                    <li><a href="{{ route('bantuan') }}">Bantuan Pendanaan</a></li>
+                    {{-- Bantuan Pendanaan disembunyikan, lihat catatan di menu desktop di atas. --}}
                     <li><a href="#">Tools</a>
                         <ul class="sub-menu">
                             <li><a href="{{ route('konversi') }}">Konversi Mata Kuliah</a></li>

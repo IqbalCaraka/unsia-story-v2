@@ -11,14 +11,13 @@ class ReferralTest extends TestCase
         $this->get('/tentang-kode-referral')->assertStatus(200);
     }
 
-    public function test_kelima_keuntungan_disebutkan(): void
+    public function test_keempat_keuntungan_disebutkan(): void
     {
         $this->get('/tentang-kode-referral')
             ->assertSee('Potongan UKT Rp500.000')
             ->assertSee('Cashback Rp100.000')
             ->assertSee('Pendampingan Grup')
-            ->assertSee('Webinar Gratis')
-            ->assertSee('Peluang Bantuan Biaya Pendidikan');
+            ->assertSee('Webinar Gratis');
     }
 
     /**
@@ -35,14 +34,35 @@ class ReferralTest extends TestCase
     }
 
     /**
-     * Peluang bantuan biaya pendidikan itu program yang sudah punya halaman
-     * sendiri. Halaman referral harus menautkannya, bukan menjelaskan ulang
-     * dengan kalimat yang bisa menyimpang dari halaman aslinya.
+     * Seluruh konten Bantuan Pendanaan disembunyikan dari situs publik.
+     * Controller, view, dan panel adminnya masih ada di repositori, jadi
+     * sebutannya mudah tanpa sengaja kembali terpasang.
      */
-    public function test_peluang_bantuan_menaut_ke_halaman_programnya(): void
+    public function test_bantuan_pendanaan_tidak_muncul_di_situs_publik(): void
     {
-        $this->get('/tentang-kode-referral')
-            ->assertSee(route('bantuan'));
+        $jejak = [
+            'Bantuan Pendanaan',
+            'bantuan-pendanaan',
+            'bantuan biaya pendidikan',
+            'Peluang Bantuan Biaya Pendidikan',
+        ];
+
+        foreach (['/', '/about', '/faq', '/tentang-kode-referral', '/konversi-mata-kuliah'] as $url) {
+            $response = $this->get($url)->assertStatus(200);
+
+            foreach ($jejak as $teks) {
+                $response->assertDontSee($teks, false);
+            }
+        }
+    }
+
+    /** Route publiknya dimatikan, jadi namanya tidak boleh terdaftar lagi. */
+    public function test_route_publik_bantuan_sudah_tidak_ada(): void
+    {
+        $this->assertFalse(
+            app('router')->has('bantuan'),
+            'Route publik bantuan masih terdaftar, padahal kontennya disembunyikan.'
+        );
     }
 
     public function test_menu_tentang_punya_dua_pilihan(): void
@@ -61,10 +81,8 @@ class ReferralTest extends TestCase
      */
     public function test_cashback_tidak_lagi_diklaim_di_semester_dua(): void
     {
-        // Sengaja khusus soal cashback. "Semester 2" sendiri BUKAN klaim
-        // terlarang — seleksi bantuan biaya pendidikan memang berlangsung di
-        // semester 2, jadi melarang frasanya secara umum akan menjegal
-        // kalimat yang benar.
+        // Sengaja khusus soal cashback, bukan melarang frasa "semester 2"
+        // secara umum — frasa itu bisa dipakai kalimat lain yang benar.
         $klaimLama = [
             'Cashback semester 2',
             'Semester kedua: cashback',
@@ -104,7 +122,7 @@ class ReferralTest extends TestCase
             'biaya semester 2 lama (2.850.000)' => '/Rp\s?\.?\s?2[\s.]?850[\s.]?000/i',
         ];
 
-        foreach (['/', '/about', '/faq', '/tentang-kode-referral', '/bantuan-pendanaan'] as $url) {
+        foreach (['/', '/about', '/faq', '/tentang-kode-referral'] as $url) {
             $html = $this->get($url)->assertStatus(200)->getContent();
 
             foreach ($polaLama as $nama => $pola) {

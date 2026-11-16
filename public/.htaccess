@@ -50,9 +50,14 @@
     # Halaman kurikulum v1 isinya kurikulum per prodi, jadi diarahkan ke halaman prodi
     RewriteRule ^kurikulum-(akuntansi|informatika|komunikasi|manajemen|sistem-informasi|teknologi-informasi)\.(?:php|html)$ /prodi/$1 [R=301,L]
 
-    # --- Formulir pengajuan bantuan yang sudah dihapus ---
-    #     301 ke halaman info, bukan 404, karena URL ini sudah beredar.
-    RewriteRule ^bantuan-pendanaan/ajukan/?$ /bantuan-pendanaan [R=301,L]
+    # --- Bantuan Pendanaan yang disembunyikan ---
+    #     Seluruh kontennya ditarik dari situs publik. URL-nya di-301 ke
+    #     beranda, bukan dibiarkan 404, karena sudah terindeks dengan kata
+    #     kunci seperti "beasiswa unsia".
+    #     Aturan /ajukan harus didahulukan, kalau tidak ia tertangkap oleh
+    #     aturan di bawahnya dan ikut teralih lewat dua lompatan.
+    RewriteRule ^bantuan-pendanaan/ajukan/?$ / [R=301,L]
+    RewriteRule ^bantuan-pendanaan/?$ / [R=301,L]
 
     # --- Konversi mata kuliah / RPL ---
     RewriteRule ^rpl-konversi\.php$ /konversi-mata-kuliah [R=301,L]

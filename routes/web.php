@@ -51,9 +51,15 @@ Route::get('/konversi-mata-kuliah/laporan', [KonversiController::class, 'laporan
 |--------------------------------------------------------------------------
 */
 
-Route::get('/bantuan-pendanaan', [BantuanPendanaanController::class, 'index'])->name('bantuan');
-// Formulir pengajuan publik dihapus. Pengajuan akan pindah ke area mahasiswa
-// yang login, seperti alur cashback. Data lama tetap dikelola di /admin/bantuan.
+// Seluruh konten Bantuan Pendanaan disembunyikan dari situs publik.
+// Controller, view, model, data pemohon, dan panel /admin/bantuan TIDAK
+// dihapus — hanya route publiknya yang dimatikan, supaya program ini bisa
+// ditayangkan kembali hanya dengan mengaktifkan satu baris di bawah.
+//
+// URL lamanya di-301 ke beranda lewat public/.htaccess, bukan dibiarkan 404,
+// karena sudah terindeks dengan kata kunci seperti "beasiswa unsia".
+//
+// Route::get('/bantuan-pendanaan', [BantuanPendanaanController::class, 'index'])->name('bantuan');
 
 /*
 |--------------------------------------------------------------------------
