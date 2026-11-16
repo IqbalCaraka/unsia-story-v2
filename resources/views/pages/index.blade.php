@@ -226,6 +226,10 @@
 </section>
 <!-- END ABOUT US HOME ONE -->
 
+{{-- Ditaruh setelah blok UKT di atas, karena blok itu yang pertama menyebut
+     angka potongan dan cashback — simulasi ini membuktikannya. --}}
+@include('partials.simulasi-biaya')
+
 <!-- START KEUNGGULAN UNSIA -->
 <section class="tp_feature section-padding">
     <div class="container">
