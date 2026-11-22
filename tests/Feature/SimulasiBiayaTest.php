@@ -40,6 +40,75 @@ class SimulasiBiayaTest extends TestCase
         $this->assertStringContainsString('Masukkan kode referal di atas', $html);
     }
 
+    /**
+     * Setiap nominal harus menyebut pemberinya. Panel cicilan pernah hanya
+     * menulis "potongan Rp500.000 - cashback Rp100.000" tanpa menyebut siapa
+     * yang memberi, padahal panel lunas menyebutkannya — pembaca jadi mengira
+     * keduanya dari UNSIA.
+     */
+    public function test_kedua_panel_menyebut_pemberi_tiap_nominal(): void
+    {
+        $html = $this->get('/')->assertStatus(200)->getContent();
+
+        foreach (['lunas', 'cicilan'] as $skema) {
+            // Ambil hanya isi panel yang sedang diperiksa.
+            $pola = '#data-sim-panel="' . $skema . '".*?(?=data-sim-panel="|$)#s';
+
+            $this->assertMatchesRegularExpression($pola, $html, "Panel $skema tidak ditemukan");
+
+            preg_match($pola, $html, $cocok);
+
+            // Diperiksa sebagai teks yang dibaca pengunjung, bukan markup —
+            // kedua panel menyusun kalimatnya dengan tag yang berbeda.
+            $teks = preg_replace('/\s+/', ' ', strip_tags($cocok[0]));
+
+            // "(?! Story)" penting: tanpa itu, sebutan "dari UNSIA Story"
+            // saja sudah membuat pemeriksaan potongan ikut lolos.
+            $this->assertMatchesRegularExpression(
+                '/potongan[^.]{0,60}dari UNSIA(?! Story)/i',
+                $teks,
+                "Panel $skema tidak menyebut potongan berasal dari UNSIA"
+            );
+
+            $this->assertMatchesRegularExpression(
+                '/cashback[^.]{0,60}dari UNSIA Story/i',
+                $teks,
+                "Panel $skema tidak menyebut cashback berasal dari UNSIA Story"
+            );
+        }
+    }
+
+    /**
+     * Pemeriksaan di atas lolos hanya dari subjudul panel, padahal yang semula
+     * kurang justru baris rincian cicilannya sendiri. Tes ini mengunci baris
+     * itu secara khusus.
+     */
+    public function test_baris_rincian_cicilan_menyebut_pemberi_tiap_nominal(): void
+    {
+        $html = $this->get('/')->assertStatus(200)->getContent();
+
+        // Ambil baris rincian di dalam panel cicilan: isi <small> pada baris
+        // cicilan tempat potongan diproses.
+        preg_match('#data-sim-panel="cicilan".*?(?=data-sim-panel="|$)#s', $html, $panel);
+        preg_match_all('#<small[^>]*>(.*?)</small>#s', $panel[0] ?? '', $rincian);
+
+        $this->assertNotEmpty($rincian[1], 'Baris rincian cicilan tidak ditemukan.');
+
+        $gabungan = preg_replace('/\s+/', ' ', strip_tags(implode(' | ', $rincian[1])));
+
+        $this->assertMatchesRegularExpression(
+            '/potongan[^|]{0,60}dari UNSIA(?! Story)/i',
+            $gabungan,
+            'Baris rincian cicilan tidak menyebut potongan berasal dari UNSIA'
+        );
+
+        $this->assertMatchesRegularExpression(
+            '/cashback[^|]{0,60}dari UNSIA Story/i',
+            $gabungan,
+            'Baris rincian cicilan tidak menyebut cashback berasal dari UNSIA Story'
+        );
+    }
+
     public function test_hitungan_lunas_benar(): void
     {
         $this->assertSame(3_000_000, R::ukt());

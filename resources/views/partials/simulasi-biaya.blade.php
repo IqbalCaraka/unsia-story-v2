@@ -211,7 +211,9 @@
                     <div class="sim_kartu sim_kartu--hemat">
                         <h4 style="font-weight: 700; margin-bottom: 4px;">Dengan Kode Referal</h4>
                         <p style="color: #888; font-size: 14px; margin-bottom: 16px;">
-                            Potongan &amp; cashback diproses di cicilan ke-{{ R::cicilanDiproses() }}
+                            Potongan UKT {{ R::rupiah(R::potongan()) }} dari UNSIA dan cashback
+                            {{ R::rupiah(R::cashback()) }} dari UNSIA Story, keduanya diproses di
+                            cicilan ke-{{ R::cicilanDiproses() }}
                         </p>
 
                         <div data-sim-terkunci>
@@ -234,10 +236,12 @@
                                         Cicilan ke-{{ $c['ke'] }}
                                         @if ($c['potongan'])
                                             <br>
-                                            <small style="color: #888;">
-                                                {{ R::rupiah($c['sebelum_manfaat']) }}
-                                                &minus; potongan {{ R::rupiah($c['potongan']) }}
+                                            <small style="color: #888; line-height: 1.7; display: block;">
+                                                {{ R::rupiah($c['sebelum_manfaat']) }}<br>
+                                                &minus; potongan UKT {{ R::rupiah($c['potongan']) }}
+                                                <strong style="color: #2e7d32;">dari UNSIA</strong><br>
                                                 &minus; cashback {{ R::rupiah($c['cashback']) }}
+                                                <strong style="color: #2e7d32;">dari UNSIA Story</strong>
                                             </small>
                                         @endif
                                     </span>
@@ -266,7 +270,9 @@
                         Pada skema cicilan, potongan dan cashback <strong>tidak dibagi rata</strong> ke setiap
                         cicilan. Keduanya baru diproses pada <strong>cicilan ke-{{ R::cicilanDiproses() }}</strong>,
                         sehingga dua cicilan pertama tetap {{ R::rupiah(R::rincianCicilan()[0]['tanpa_kode']) }}.
-                        Totalnya sama saja dengan bayar lunas: {{ R::rupiah(R::biayaBersih()) }}.
+                        Potongan UKT {{ R::rupiah(R::potongan()) }} berasal <strong>dari UNSIA</strong>, sedangkan
+                        cashback {{ R::rupiah(R::cashback()) }} <strong>dari UNSIA Story</strong> &mdash; dua pihak
+                        yang berbeda. Totalnya sama saja dengan bayar lunas: {{ R::rupiah(R::biayaBersih()) }}.
                     </p>
                 </div>
             </div>
