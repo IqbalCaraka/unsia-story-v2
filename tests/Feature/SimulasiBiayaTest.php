@@ -153,7 +153,10 @@ class SimulasiBiayaTest extends TestCase
             $teks
         );
 
-        $this->assertStringContainsString('cashback dari UNSIA Story', $teks);
+        $this->assertStringContainsString(
+            'cashback '.R::ribu(R::cashback()).' dari UNSIA Story',
+            $teks
+        );
     }
 
     public function test_hitungan_lunas_benar(): void
