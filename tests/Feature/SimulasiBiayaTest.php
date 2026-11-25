@@ -109,6 +109,53 @@ class SimulasiBiayaTest extends TestCase
         );
     }
 
+    /**
+     * Bentuk ringkas dipakai di kalimat mengalir seperti disclaimer footer.
+     * Ia tetap dihitung dari config, supaya nominal di prosa tidak bisa
+     * tertinggal saat angkanya berubah.
+     */
+    public function test_bentuk_ringkas_nominal(): void
+    {
+        $this->assertSame('500 ribu', R::ribu(500_000));
+        $this->assertSame('100 ribu', R::ribu(100_000));
+        $this->assertSame('600 ribu', R::ribu(600_000));
+
+        // Bulat jutaan tidak boleh keluar sebagai "3.000 ribu".
+        $this->assertSame('3 juta', R::ribu(3_000_000));
+        $this->assertSame('2 juta', R::ribu(2_000_000));
+
+        // Yang tidak bulat ribuan jatuh ke format rupiah biasa.
+        $this->assertSame('Rp1.500', R::ribu(1_500));
+        $this->assertSame('Rp750', R::ribu(750));
+    }
+
+    /**
+     * Disclaimer footer menyebut nominal potongan dalam kalimat mengalir.
+     * Nominalnya harus mengikuti config, bukan ditulis lepas.
+     */
+    public function test_disclaimer_footer_menyebut_potongan_dan_sumbernya(): void
+    {
+        $html = $this->get('/')->assertStatus(200)->getContent();
+
+        preg_match('#<strong>Disclaimer:</strong>(.*?)</p>#s', $html, $cocok);
+
+        $this->assertNotEmpty($cocok, 'Disclaimer tidak ditemukan di footer.');
+
+        $teks = trim(preg_replace('/\s+/', ' ', html_entity_decode(strip_tags($cocok[1]))));
+
+        $this->assertStringContainsString(
+            'dikelola secara independen oleh '.config('kontak.bisnis.nama'),
+            $teks
+        );
+
+        $this->assertStringContainsString(
+            'potongan biaya UKT '.R::ribu(R::potongan()).' dari UNSIA',
+            $teks
+        );
+
+        $this->assertStringContainsString('cashback dari UNSIA Story', $teks);
+    }
+
     public function test_hitungan_lunas_benar(): void
     {
         $this->assertSame(3_000_000, R::ukt());

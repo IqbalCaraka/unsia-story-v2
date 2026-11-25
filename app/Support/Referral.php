@@ -104,4 +104,29 @@ class Referral
     {
         return 'Rp' . number_format($nilai, 0, ',', '.');
     }
+
+    /**
+     * Bentuk ringkas untuk kalimat mengalir, mis. "500 ribu".
+     *
+     * Dipakai agar prosa seperti disclaimer tetap terikat ke config/referral.php
+     * dan tidak bisa menyimpang sendiri — nominal yang ditulis lepas pernah
+     * tertinggal saat angkanya berubah.
+     *
+     * Nilai yang tidak bulat ribuan dikembalikan dalam format rupiah biasa,
+     * karena "1,5 ribu" lebih membingungkan daripada "Rp1.500". Nilai bulat
+     * jutaan disebut "juta", supaya tidak keluar bentuk janggal seperti
+     * "3.000 ribu".
+     */
+    public static function ribu(int $nilai): string
+    {
+        if ($nilai < 1000 || $nilai % 1000 !== 0) {
+            return self::rupiah($nilai);
+        }
+
+        if ($nilai % 1_000_000 === 0) {
+            return number_format($nilai / 1_000_000, 0, ',', '.') . ' juta';
+        }
+
+        return number_format($nilai / 1000, 0, ',', '.') . ' ribu';
+    }
 }
