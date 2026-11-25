@@ -78,6 +78,57 @@ class KontakTest extends TestCase
         );
     }
 
+    /**
+     * Nama penanggung jawab tampil di dua tempat: blok Kontak Bisnis dan baris
+     * copyright di footer. Keduanya mengambil dari config, jadi tidak boleh
+     * ada yang tertinggal saat namanya diperbaiki.
+     */
+    public function test_nama_bisnis_sama_di_footer_dan_halaman_tentang(): void
+    {
+        $nama = config('kontak.bisnis.nama');
+
+        $this->assertSame('Dianto Adwoko Sudarwono', $nama);
+
+        // Footer ada di setiap halaman publik.
+        foreach (['/', '/faq', '/tentang-kode-referral'] as $url) {
+            $this->get($url)->assertStatus(200)->assertSee($nama);
+        }
+
+        // Halaman Tentang memuatnya dua kali: blok kontak dan footer.
+        $html = $this->get('/about')->assertStatus(200)->getContent();
+        $this->assertSame(2, substr_count($html, $nama));
+    }
+
+    /** Singkatan lama tidak boleh tertinggal di berkas mana pun. */
+    public function test_nama_bisnis_tidak_lagi_disingkat(): void
+    {
+        foreach (['/', '/about'] as $url) {
+            $this->get($url)->assertDontSee('Dianto Adwoko S.');
+        }
+    }
+
+    public function test_baris_copyright_footer_lengkap(): void
+    {
+        $html = $this->get('/')->assertStatus(200)->getContent();
+
+        preg_match('#footer_copyright.*?</div>#s', $html, $cocok);
+
+        $this->assertNotEmpty($cocok, 'Baris copyright tidak ditemukan di footer.');
+
+        $teks = trim(preg_replace('/\s+/', ' ', html_entity_decode(strip_tags($cocok[0]))));
+
+        $this->assertStringContainsString(date('Y'), $teks, 'Tahun harus tahun berjalan');
+        $this->assertStringContainsString('UNSIA Story oleh '.config('kontak.bisnis.nama'), $teks);
+        $this->assertStringContainsString('Mitra Pemasaran Resmi', $teks);
+
+        // Tanda kurung pernah tertulis tanpa penutup.
+        $this->assertSame(
+            substr_count($teks, '('),
+            substr_count($teks, ')'),
+            "Tanda kurung di baris copyright tidak seimbang: $teks"
+        );
+    }
+
     public function test_halaman_tentang_menampilkan_kedua_kontak(): void
     {
         $this->get('/about')

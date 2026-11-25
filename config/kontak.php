@@ -17,7 +17,7 @@ return [
 
     // Penanggung jawab usaha. Nomor ini TIDAK dipakai untuk tombol WhatsApp.
     'bisnis' => [
-        'nama' => 'Dianto Adwoko S.',
+        'nama' => 'Dianto Adwoko Sudarwono',
         'email' => 'info@unsia.my.id',
         'telepon' => '+62 811-2014-086',
     ],

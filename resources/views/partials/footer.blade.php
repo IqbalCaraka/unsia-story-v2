@@ -69,7 +69,10 @@
         <div class="row fc">
             <div class="col-lg-6 col-sm-6 col-xs-12">
                 <div class="footer_copyright">
-                    <p>&copy; {{ date('Y') }} UNSIA Story &mdash; Mitra Pemasaran Resmi <a href="https://unsia.ac.id" class="text-dark" target="_blank">Universitas Siber Asia</a></p>
+                    {{-- Nama diambil dari config/kontak.php, sama dengan yang tampil di
+                         blok Kontak Bisnis halaman Tentang, supaya tidak bisa berbeda.
+                         Tahunnya tetap dihitung date('Y') agar tidak usang tiap Januari. --}}
+                    <p>&copy; {{ date('Y') }} UNSIA Story oleh {{ config('kontak.bisnis.nama') }} (Mitra Pemasaran Resmi <a href="https://unsia.ac.id" class="text-dark" target="_blank">Universitas Siber Asia</a>)</p>
                 </div>
             </div>
             <div class="col-lg-6 col-sm-6 col-xs-12">
