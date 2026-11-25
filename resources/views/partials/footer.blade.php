@@ -1,3 +1,34 @@
+<style>
+    /* Baris penutup footer. Sengaja kelas sendiri, bukan .footer_copyright /
+       .footer_menu bawaan tema, yang mengambang di kolom separuh lebar. */
+    .footer_bawah { text-align: center; }
+
+    .footer_bawah__hak {
+        margin: 0 0 12px;
+        line-height: 1.9;
+        /* Tema memberi text-transform: capitalize pada hak cipta, yang mengubah
+           "oleh" jadi "Oleh". Di sini biarkan apa adanya. */
+        text-transform: none;
+    }
+
+    /* Peran ditahan agar tidak patah di tengah tanda kurung; kalau layarnya
+       sempit, ia turun utuh ke baris berikutnya. */
+    .footer_bawah__peran { display: inline-block; }
+
+    .footer_bawah__tautan {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 6px 26px;
+    }
+
+    .footer_bawah__tautan a { transition: 0.3s; }
+    .footer_bawah__tautan a:hover { color: #2c7aff; text-decoration: underline; }
+</style>
+
 <div class="footer section-padding">
     <div class="container">
         <div class="row">
@@ -66,18 +97,25 @@
             </div>
         </div>
 
+        {{-- Baris penutup footer.
+
+             Tidak memakai .footer_copyright dan .footer_menu dari tema, karena
+             keduanya mengambang (float) di kolom separuh lebar sementara teks di
+             dalamnya dipusatkan — begitu teks hak ciptanya memanjang, kalimatnya
+             patah di tengah dan baris keduanya tampak nyelip. Di sini keduanya
+             ditumpuk dalam satu kolom penuh dan dipusatkan. --}}
         <div class="row fc">
-            <div class="col-lg-6 col-sm-6 col-xs-12">
-                <div class="footer_copyright">
+            <div class="col-12">
+                <div class="footer_bawah">
                     {{-- Nama diambil dari config/kontak.php, sama dengan yang tampil di
                          blok Kontak Bisnis halaman Tentang, supaya tidak bisa berbeda.
                          Tahunnya tetap dihitung date('Y') agar tidak usang tiap Januari. --}}
-                    <p>&copy; {{ date('Y') }} UNSIA Story oleh {{ config('kontak.bisnis.nama') }} (Mitra Pemasaran Resmi <a href="https://unsia.ac.id" class="text-dark" target="_blank">Universitas Siber Asia</a>)</p>
-                </div>
-            </div>
-            <div class="col-lg-6 col-sm-6 col-xs-12">
-                <div class="footer_menu">
-                    <ul>
+                    <p class="footer_bawah__hak" data-footer-hak>
+                        &copy; {{ date('Y') }} UNSIA Story oleh {{ config('kontak.bisnis.nama') }}
+                        <span class="footer_bawah__peran">(Mitra Pemasaran Resmi <a href="https://unsia.ac.id" class="text-dark" target="_blank">Universitas Siber Asia</a>)</span>
+                    </p>
+
+                    <ul class="footer_bawah__tautan">
                         <li><a href="https://unsia.ac.id" target="_blank">unsia.ac.id</a></li>
                         <li><a href="https://pmb.unsia.ac.id" target="_blank">pmb.unsia.ac.id</a></li>
                     </ul>

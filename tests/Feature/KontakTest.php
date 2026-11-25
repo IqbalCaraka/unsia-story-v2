@@ -111,7 +111,9 @@ class KontakTest extends TestCase
     {
         $html = $this->get('/')->assertStatus(200)->getContent();
 
-        preg_match('#footer_copyright.*?</div>#s', $html, $cocok);
+        // Dikaitkan ke data-footer-hak, bukan ke nama kelas, supaya penataan
+        // ulang tampilan tidak mematahkan tes isinya.
+        preg_match('#<p[^>]*data-footer-hak[^>]*>(.*?)</p>#s', $html, $cocok);
 
         $this->assertNotEmpty($cocok, 'Baris copyright tidak ditemukan di footer.');
 
