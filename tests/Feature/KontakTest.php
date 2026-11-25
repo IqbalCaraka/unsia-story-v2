@@ -94,9 +94,16 @@ class KontakTest extends TestCase
             $this->get($url)->assertStatus(200)->assertSee($nama);
         }
 
-        // Halaman Tentang memuatnya dua kali: blok kontak dan footer.
+        // Diperiksa per tempat, bukan dengan menghitung kemunculan. Hitungan
+        // persis sempat memecah tes ini begitu disclaimer footer ikut menyebut
+        // namanya — padahal penambahan itu memang disengaja.
         $html = $this->get('/about')->assertStatus(200)->getContent();
-        $this->assertSame(2, substr_count($html, $nama));
+
+        preg_match('#<p[^>]*data-footer-hak[^>]*>(.*?)</p>#s', $html, $hak);
+        $this->assertStringContainsString($nama, $hak[1] ?? '', 'Nama tidak ada di baris copyright');
+
+        preg_match('#fa-user-tie.*?<br>#s', $html, $kontak);
+        $this->assertStringContainsString($nama, $kontak[0] ?? '', 'Nama tidak ada di blok Kontak Bisnis');
     }
 
     /** Singkatan lama tidak boleh tertinggal di berkas mana pun. */
