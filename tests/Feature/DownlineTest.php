@@ -342,7 +342,7 @@ class DownlineTest extends TestCase
     protected function prodiDanTahun(): array
     {
         return [
-            Prodi::create(['nama_prodi' => 'Informatika', 'slug' => 'informatika']),
+            Prodi::create(['nama_prodi' => 'Informatika']),
             TahunAjar::create([
                 'tahun_ajar' => '2026/2027',
                 'ganjil_genap' => 'ganjil',

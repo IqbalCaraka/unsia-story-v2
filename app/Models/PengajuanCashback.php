@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class PengajuanCashback extends Model
 {
@@ -106,6 +107,30 @@ class PengajuanCashback extends Model
             ->first();
     }
 
+    /**
+     * Apakah nama pemilik rekening sama dengan nama mahasiswa.
+     *
+     * Dibandingkan setelah dirapikan: huruf besar-kecil disamakan dan spasi
+     * ganda dipadatkan. Keduanya hanya soal cara menulis, bukan nama yang
+     * berbeda — "Budi  Santoso" dan "budi santoso" tetap orang yang sama.
+     *
+     * Selain itu dituntut sama persis, sesuai aturan yang berlaku: rekening
+     * e-wallet harus atas nama mahasiswa sendiri.
+     */
+    public static function namaCocok(?string $atasNama, ?string $namaMahasiswa): bool
+    {
+        $rapikan = static fn (?string $n): string => mb_strtolower(
+            preg_replace('/\s+/', ' ', trim((string) $n))
+        );
+
+        return $rapikan($atasNama) !== '' && $rapikan($atasNama) === $rapikan($namaMahasiswa);
+    }
+
+    public function log(): HasMany
+    {
+        return $this->hasMany(LogCashback::class, 'pengajuan_cashback_id')->oldest('id');
+    }
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
@@ -152,6 +177,7 @@ class PengajuanCashback extends Model
             'diverifikasi' => 'Terverifikasi, menunggu transfer',
             'dibayar' => 'Sudah dibayar',
             'ditolak' => 'Ditolak',
+            'dibatalkan' => 'Dibatalkan',
             default => 'Menunggu verifikasi',
         };
     }
@@ -162,6 +188,7 @@ class PengajuanCashback extends Model
             'diverifikasi' => 'info',
             'dibayar' => 'success',
             'ditolak' => 'danger',
+            'dibatalkan' => 'secondary',
             default => 'warning',
         };
     }

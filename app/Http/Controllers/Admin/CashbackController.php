@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\LogCashback;
 use App\Models\PengajuanCashback;
 use App\Models\TahunAjar;
 use Illuminate\Http\Request;
@@ -64,12 +65,19 @@ class CashbackController extends Controller
 
         $request->validate(['catatan_admin' => ['nullable', 'string', 'max:500']]);
 
+        $statusLama = $cashback->status;
+
         $cashback->update([
             'status' => 'diverifikasi',
             'catatan_admin' => $request->input('catatan_admin'),
             'diverifikasi_oleh' => auth()->id(),
             'diverifikasi_pada' => now(),
         ]);
+
+        LogCashback::catat(
+            $cashback, 'diverifikasi', auth()->id(), $statusLama, 'diverifikasi',
+            $request->input('catatan_admin'),
+        );
 
         return back()->with('success',
             "Pengajuan {$cashback->user->nama} diverifikasi. Silakan transfer lalu unggah buktinya.");
@@ -99,6 +107,8 @@ class CashbackController extends Controller
         // Disk private: bukti transfer tidak boleh bisa ditebak lewat URL publik.
         $path = $berkas->storeAs('bukti-cashback', $namaSimpan, 'local');
 
+        $statusLama = $cashback->status;
+
         $cashback->update([
             'status' => 'dibayar',
             'bukti_path' => $path,
@@ -107,6 +117,12 @@ class CashbackController extends Controller
             'dibayar_oleh' => auth()->id(),
             'dibayar_pada' => now(),
         ]);
+
+        LogCashback::catat(
+            $cashback, 'dibayar', auth()->id(), $statusLama, 'dibayar',
+            'Bukti: ' . $berkas->getClientOriginalName()
+                . ($validated['catatan_admin'] ?? null ? ' — ' . $validated['catatan_admin'] : ''),
+        );
 
         return back()->with('success',
             "Cashback {$cashback->jumlah_rupiah} untuk {$cashback->user->nama} ditandai sudah dibayar.");
@@ -126,12 +142,19 @@ class CashbackController extends Controller
             'catatan_admin' => 'alasan penolakan',
         ]);
 
+        $statusLama = $cashback->status;
+
         $cashback->update([
             'status' => 'ditolak',
             'catatan_admin' => $validated['catatan_admin'],
             'diverifikasi_oleh' => auth()->id(),
             'diverifikasi_pada' => now(),
         ]);
+
+        LogCashback::catat(
+            $cashback, 'ditolak', auth()->id(), $statusLama, 'ditolak',
+            $validated['catatan_admin'],
+        );
 
         return back()->with('success', 'Pengajuan ditolak. Mahasiswa bisa mengajukan ulang untuk periode itu.');
     }

@@ -43,7 +43,7 @@ class CashbackSekaliTest extends TestCase
             'nama' => 'Budi',
             'nim' => '2200000001',
             'email' => null,
-            'prodi_id' => Prodi::create(['nama_prodi' => 'Akuntansi', 'slug' => 'akuntansi'])->id,
+            'prodi_id' => Prodi::create(['nama_prodi' => 'Akuntansi'])->id,
             'tahun_ajar_id' => $this->ganjil->id,
         ]);
     }

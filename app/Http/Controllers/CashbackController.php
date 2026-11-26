@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\LogCashback;
 use App\Models\PengajuanCashback;
 use App\Models\TahunAjar;
 use Illuminate\Http\Request;
@@ -65,7 +66,18 @@ class CashbackController extends Controller
             'metode' => ['required', Rule::in(['bank', 'ewallet'])],
             'penyedia' => ['required', Rule::in(PengajuanCashback::daftarPenyedia($metode ?? 'bank'))],
             'nomor' => ['required', 'string', 'max:50', 'regex:/^[0-9][0-9 \-]*$/'],
-            'atas_nama' => ['required', 'string', 'max:150'],
+            // Rekening harus atas nama mahasiswa sendiri. Dicegat di sini,
+            // bukan dibiarkan sampai admin menolaknya, supaya mahasiswa tahu
+            // penyebabnya saat itu juga dan tidak menunggu sia-sia.
+            'atas_nama' => [
+                'required', 'string', 'max:150',
+                function (string $atribut, mixed $nilai, callable $gagal) use ($user) {
+                    if (! PengajuanCashback::namaCocok($nilai, $user->nama ?? $user->name)) {
+                        $gagal('Nama pemilik rekening harus sama dengan nama Anda: '
+                            . ($user->nama ?? $user->name) . '.');
+                    }
+                },
+            ],
             'catatan' => ['nullable', 'string', 'max:500'],
         ], [
             'tahun_ajar_id.exists' => 'Periode tersebut tidak membuka cashback.',
@@ -90,11 +102,16 @@ class CashbackController extends Controller
 
         $periode = TahunAjar::findOrFail($validated['tahun_ajar_id']);
 
-        PengajuanCashback::create($validated + [
+        $pengajuan = PengajuanCashback::create($validated + [
             'user_id' => $user->id,
             // Nominal dibekukan saat pengajuan dibuat.
             'jumlah' => $periode->nominal_cashback,
         ]);
+
+        LogCashback::catat(
+            $pengajuan, 'diajukan', $user->id, null, 'menunggu',
+            $pengajuan->tujuan,
+        );
 
         return redirect()->route('cashback.index')
             ->with('success', 'Pengajuan cashback terkirim dan menunggu verifikasi admin.');
@@ -108,7 +125,13 @@ class CashbackController extends Controller
             return back()->with('error', 'Pengajuan yang sudah diproses admin tidak bisa dibatalkan.');
         }
 
-        $cashback->delete();
+        // Ditandai, bukan dihapus: menghapus barisnya akan menghapus lognya
+        // juga lewat cascade, sehingga justru peristiwa pembatalan yang ingin
+        // dicatat ikut hilang. Status "dibatalkan" tidak mengunci pengajuan
+        // berikutnya.
+        $cashback->update(['status' => 'dibatalkan']);
+
+        LogCashback::catat($cashback, 'dibatalkan', Auth::id(), 'menunggu', 'dibatalkan');
 
         return redirect()->route('cashback.index')->with('success', 'Pengajuan dibatalkan.');
     }
