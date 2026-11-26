@@ -221,15 +221,14 @@
     {{-- Gelombang --}}
     <div class="mb-3">
         <label for="gelombang" class="form-label fw-semibold">Gelombang Pendaftaran</label>
-        <select class="form-select @error('gelombang') is-invalid @enderror" id="gelombang" name="gelombang">
-            <option value="">— Pilih gelombang —</option>
-            @for ($g = 1; $g <= config('pendaftaran.gelombang_maksimal'); $g++)
-                <option value="{{ $g }}"
-                    {{ (int) old('gelombang', $user->gelombang ?? 0) === $g ? 'selected' : '' }}>
-                    Gelombang {{ $g }}
-                </option>
-            @endfor
-        </select>
+        {{-- Isian angka, bukan dropdown: jumlah gelombang tidak dibatasi aturan
+             bisnis apa pun, sehingga daftar pilihan yang tetap pasti akan
+             menolak angka yang sah suatu saat — persis yang pernah terjadi. --}}
+        <input type="number" class="form-control @error('gelombang') is-invalid @enderror"
+               id="gelombang" name="gelombang" min="1"
+               max="{{ config('pendaftaran.gelombang_maksimal') }}"
+               value="{{ old('gelombang', $user->gelombang ?? '') }}"
+               placeholder="contoh: 12">
         @error('gelombang')
             <div class="invalid-feedback">{{ $message }}</div>
         @enderror

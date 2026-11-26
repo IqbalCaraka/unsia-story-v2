@@ -78,7 +78,7 @@ class GelombangTest extends TestCase
     {
         $maks = (int) config('pendaftaran.gelombang_maksimal');
 
-        foreach ([0, -1, $maks + 1, 99] as $nilai) {
+        foreach ([0, -1, $maks + 1] as $nilai) {
             $this->actingAs($this->superadmin())
                 ->post(route('admin.users.store'), $this->dataMahasiswa(['gelombang' => $nilai]))
                 ->assertSessionHasErrors('gelombang');
@@ -162,18 +162,33 @@ class GelombangTest extends TestCase
         $this->assertSame('—', $kosong->periodeMasuk());
     }
 
-    public function test_form_menampilkan_pilihan_gelombang(): void
+    public function test_form_menyediakan_isian_gelombang(): void
     {
-        $maks = (int) config('pendaftaran.gelombang_maksimal');
-
-        $response = $this->actingAs($this->superadmin())
+        $this->actingAs($this->superadmin())
             ->get(route('admin.users.create'))
             ->assertStatus(200)
             ->assertSee('name="gelombang"', false)
-            ->assertSee('Gelombang Pendaftaran');
+            ->assertSee('Gelombang Pendaftaran')
+            // Isian angka, bukan dropdown: daftar pilihan yang tetap pasti
+            // akan menolak gelombang yang sah suatu saat.
+            ->assertSee('type="number"', false);
+    }
 
-        for ($g = 1; $g <= $maks; $g++) {
-            $response->assertSee('value="'.$g.'"', false);
+    /**
+     * Gelombang tidak dibatasi aturan bisnis apa pun. Pernah dipatok 10 atas
+     * dugaan, dan itu menolak gelombang 12 yang sebenarnya sah.
+     */
+    public function test_gelombang_di_atas_sepuluh_diterima(): void
+    {
+        foreach ([11, 12, 25, 60] as $g) {
+            $this->actingAs($this->superadmin())
+                ->post(route('admin.users.store'), $this->dataMahasiswa([
+                    'nim' => '220000'.$g,
+                    'gelombang' => $g,
+                ]))
+                ->assertSessionHasNoErrors();
+
+            $this->assertDatabaseHas('users', ['nim' => '220000'.$g, 'gelombang' => $g]);
         }
     }
 

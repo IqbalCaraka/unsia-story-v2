@@ -426,25 +426,42 @@ class UserImportController extends Controller
 
         // Gelombang memakai daftar angka langsung, tidak perlu named range
         // karena pilihannya tetap dan tidak berasal dari database.
-        $angkaGelombang = implode(',', range(1, (int) config('pendaftaran.gelombang_maksimal')));
+        $angkaGelombang = implode(',', range(1, (int) config('pendaftaran.gelombang_dropdown')));
 
         $daftar = [
-            $kolomDari('prodi') => ['=DAFTAR_PRODI', 'Program Studi', 'Pilih program studi dari daftar.'],
-            $kolomDari('gelombang') => ['"' . $angkaGelombang . '"', 'Gelombang', 'Pilih gelombang pendaftaran.'],
+            // Program studi HARUS dari daftar: namanya dicocokkan ke tabel
+            // prodi, jadi nilai lain memang tidak bisa dipakai.
+            $kolomDari('prodi') => [
+                '=DAFTAR_PRODI', 'Program Studi',
+                'Pilih program studi dari daftar.',
+                DataValidation::STYLE_STOP,
+                'Gunakan dropdown, nama di luar daftar tidak dikenal sistem.',
+            ],
+
+            // Gelombang hanya DISARANKAN dari daftar. Jumlah gelombang tidak
+            // dibatasi aturan apa pun, jadi dropdown yang menolak akan
+            // menghalangi angka yang sah — seperti gelombang 12 yang pernah
+            // tertolak. Peringatan saja, dan angka lain tetap bisa diketik.
+            $kolomDari('gelombang') => [
+                '"' . $angkaGelombang . '"', 'Gelombang',
+                'Pilih dari daftar, atau ketik angka lain kalau gelombangnya lebih tinggi.',
+                DataValidation::STYLE_WARNING,
+                'Angka ini di luar daftar. Tetap boleh dipakai selama gelombangnya memang benar.',
+            ],
         ];
 
-        foreach ($daftar as $kolom => [$formula, $judul, $petunjuk]) {
+        foreach ($daftar as $kolom => [$formula, $judul, $petunjuk, $gaya, $pesanGalat]) {
             $validasi = new DataValidation();
             $validasi->setType(DataValidation::TYPE_LIST);
-            $validasi->setErrorStyle(DataValidation::STYLE_STOP);
+            $validasi->setErrorStyle($gaya);
             $validasi->setAllowBlank(true);
             $validasi->setShowDropDown(true);
             $validasi->setShowInputMessage(true);
             $validasi->setShowErrorMessage(true);
             $validasi->setPromptTitle($judul);
             $validasi->setPrompt($petunjuk);
-            $validasi->setErrorTitle('Pilihan tidak valid');
-            $validasi->setError('Gunakan dropdown, nilai di luar daftar tidak diterima.');
+            $validasi->setErrorTitle($gaya === DataValidation::STYLE_STOP ? 'Pilihan tidak valid' : 'Di luar daftar');
+            $validasi->setError($pesanGalat);
             $validasi->setFormula1($formula);
 
             // Satu validasi untuk seluruh rentang, bukan satu per sel.
@@ -462,7 +479,9 @@ class UserImportController extends Controller
             'CARA MENGISI TEMPLATE IMPOR PESERTA',
             '',
             ' 1. Isi data mulai baris ke-2 pada sheet "Data Peserta". Jangan mengubah atau menghapus baris header.',
-            ' 2. Kolom Program Studi dan Gelombang HARUS dipilih lewat dropdown. Nilai di luar daftar akan ditolak.',
+            ' 2. Kolom Program Studi HARUS dipilih lewat dropdown; nama di luar daftar tidak dikenal sistem.',
+            '    Kolom Gelombang boleh dipilih dari dropdown ATAU diketik angkanya langsung kalau',
+            '    gelombangnya lebih tinggi dari daftar yang tersedia.',
             '    Tahun ajar TIDAK ada di berkas ini — periodenya dipilih sekali saat mengunggah,',
             '    dan berlaku untuk seluruh baris. Satu berkas untuk satu tahun ajar.',
             ' 3. NIM wajib diisi, maksimal 20 karakter, dan tidak boleh sama dengan NIM yang sudah ada di sistem.',

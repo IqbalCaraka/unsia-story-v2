@@ -20,13 +20,18 @@ return [
     'gelombang' => 'Gelombang 1',
     'jalur' => 'Jalur Reguler',
 
-    // Gelombang tertinggi yang boleh dicatat pada data mahasiswa. Dipakai
-    // validasi di UserController dan UserImportController.
+    // Gelombang tertinggi yang boleh dicatat pada data mahasiswa.
     //
-    // Disetel 10, bukan 9, karena situs ini pernah mengumumkan "Gelombang 10
-    // (Gelombang Terakhir)". Batas yang terlalu rendah akan menolak data
-    // mahasiswa yang sah, sedangkan batas yang sedikit longgar tidak merugikan.
-    'gelombang_maksimal' => 10,
+    // 255 adalah kapasitas kolom users.gelombang yang bertipe tinyint unsigned
+    // — jadi ini batas nyata penyimpanannya, bukan aturan bisnis. Angka ini
+    // pernah disetel 10 berdasarkan dugaan, dan itu menolak data gelombang 12
+    // yang sebenarnya sah. Jangan diturunkan tanpa alasan yang pasti.
+    'gelombang_maksimal' => 255,
+
+    // Banyaknya pilihan yang disiapkan pada dropdown template Excel. Hanya
+    // demi kenyamanan mengisi: angka di luar daftar tetap boleh diketik,
+    // karena dropdown-nya memakai peringatan, bukan penolakan.
+    'gelombang_dropdown' => 30,
 
     // Tanggal dalam format Y-m-d. Hari terakhir ikut terhitung sebagai buka.
     'mulai' => '2026-11-13',

@@ -177,6 +177,21 @@ class ImporPesertaTest extends TestCase
         $this->assertDatabaseCount('users', 1);
     }
 
+    /**
+     * Berkas nyata pernah berisi gelombang 12 dan seluruh impor 50 barisnya
+     * tertolak karena batas 10 yang dipatok berdasarkan dugaan.
+     */
+    public function test_gelombang_di_atas_sepuluh_diterima(): void
+    {
+        $this->unggah($this->berkas([
+            ['2201111111', 'Budi', 'budi@contoh.id', 'Akuntansi', '12', ''],
+            ['2202222222', 'Siti', 'siti@contoh.id', 'Akuntansi', '27', ''],
+        ]))->assertSessionMissing('importErrors');
+
+        $this->assertDatabaseHas('users', ['nim' => '2201111111', 'gelombang' => 12]);
+        $this->assertDatabaseHas('users', ['nim' => '2202222222', 'gelombang' => 27]);
+    }
+
     public function test_gelombang_boleh_ditulis_dengan_kata(): void
     {
         $this->unggah($this->berkas([
