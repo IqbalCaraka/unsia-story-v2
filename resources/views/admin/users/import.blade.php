@@ -122,7 +122,11 @@
                     <ul class="small text-muted ps-3 mb-4">
                         <li>Semua peserta diimpor dengan role <strong>mahasiswa</strong>.</li>
                         <li>Tahun ajar <strong>tidak ada di Excel</strong> — diambil dari pilihan di atas.</li>
-                        <li>Password kosong berarti <strong>NIM dipakai sebagai password awal</strong>.</li>
+                        <li>
+                            Kolom Password <strong>sebaiknya dikosongkan</strong>. Peserta membuat
+                            passwordnya sendiri lewat menu <strong>Buat Akun</strong> dan menerimanya
+                            lewat email. Mengisinya untuk banyak baris memperlambat impor.
+                        </li>
                         <li>Baris kosong diabaikan. Maksimal 2.000 baris sekali impor.</li>
                         <li>
                             Bersifat <strong>semua-atau-tidak</strong>: satu baris salah membatalkan

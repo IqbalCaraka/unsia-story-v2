@@ -9,6 +9,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\Cell\DataValidation;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -120,6 +121,10 @@ class UserImportController extends Controller
                 'Maksimal ' . self::MAKS_BARIS . ' baris sekali impor, berkas Anda berisi ' . count($baris) . ' baris.');
         }
 
+        if ($peringatan = $this->terlaluBanyakPasswordDiisi($baris)) {
+            return back()->with('error', $peringatan);
+        }
+
         [$siap, $galat] = $this->validasiBaris($baris, (int) $validated['tahun_ajar_id']);
 
         if ($galat) {
@@ -131,6 +136,42 @@ class UserImportController extends Controller
 
         return redirect()->route('admin.users.index', ['role' => 'mahasiswa'])
             ->with('success', count($siap) . ' peserta berhasil diimpor.');
+    }
+
+    /** Perkiraan lama satu hash bcrypt, dalam detik. */
+    protected const DETIK_PER_HASH = 0.3;
+
+    /**
+     * Menolak lebih awal kalau kolom Password diisi untuk terlalu banyak baris.
+     *
+     * Baris tanpa password memakai satu hash bersama, jadi jumlahnya tidak
+     * berpengaruh. Yang mahal adalah password yang diisi sendiri-sendiri:
+     * bcrypt butuh sekitar sepertiga detik per baris, dan tanpa penjagaan ini
+     * prosesnya berhenti di tengah jalan sebagai 500 tanpa pesan apa pun —
+     * persis kegagalan yang pernah terjadi.
+     */
+    protected function terlaluBanyakPasswordDiisi(array $baris): ?string
+    {
+        $batasWaktu = (int) ini_get('max_execution_time');
+
+        // 0 berarti tidak ada batas waktu, jadi tidak ada yang perlu dijaga.
+        if ($batasWaktu <= 0) {
+            return null;
+        }
+
+        $jumlah = count(array_filter($baris, fn ($b) => trim((string) ($b['password'] ?? '')) !== ''));
+
+        // Disisakan separuh jatah waktu untuk membaca berkas dan menyimpan data.
+        $maksAman = (int) floor(($batasWaktu * 0.5) / self::DETIK_PER_HASH);
+
+        if ($jumlah <= $maksAman) {
+            return null;
+        }
+
+        return "Kolom Password diisi pada {$jumlah} baris. Server ini hanya sanggup memproses "
+            . "sekitar {$maksAman} password sekali impor sebelum kehabisan waktu. "
+            . 'Kosongkan kolom Password — peserta akan membuat passwordnya sendiri lewat menu '
+            . '"Buat Akun" — atau bagi berkasnya menjadi beberapa bagian.';
     }
 
     /**
@@ -201,6 +242,18 @@ class UserImportController extends Controller
 
         $nimTerpakai = User::whereNotNull('nim')->pluck('nim')->map($kecilkan)->flip();
         $emailTerpakai = User::whereNotNull('email')->pluck('email')->map($kecilkan)->flip();
+
+        // Satu hash dipakai bersama oleh semua baris yang kolom Password-nya
+        // dikosongkan.
+        //
+        // Bcrypt sengaja lambat — sekitar 0,28 detik per hash — sehingga
+        // meng-hash satu per satu membuat impor 200 baris saja sudah melewati
+        // batas waktu PHP dan berakhir sebagai 500 tanpa pesan apa pun.
+        //
+        // Nilai acaknya langsung dibuang, jadi hash ini tidak cocok dengan
+        // password mana pun: pemiliknya harus memakai menu "Buat Akun" untuk
+        // menerima password lewat email.
+        $hashTanpaPassword = Hash::make(Str::random(40));
 
         $siap = [];
         $galat = [];
@@ -280,8 +333,9 @@ class UserImportController extends Controller
                 'tahun_ajar_id' => $tahunAjarId,
                 'gelombang' => $gelombang,
                 'role' => 'mahasiswa',
-                // Password kosong memakai NIM sebagai password awal.
-                'password' => Hash::make($password !== '' ? $password : $nim),
+                // Hanya password yang benar-benar diisi admin yang di-hash
+                // sendiri-sendiri; sisanya memakai hash bersama di atas.
+                'password' => $password !== '' ? Hash::make($password) : $hashTanpaPassword,
                 'created_at' => $sekarang,
                 'updated_at' => $sekarang,
             ];
@@ -414,8 +468,10 @@ class UserImportController extends Controller
             ' 3. NIM wajib diisi, maksimal 20 karakter, dan tidak boleh sama dengan NIM yang sudah ada di sistem.',
             ' 4. Nama Lengkap wajib diisi.',
             ' 5. Email boleh dikosongkan. Kalau diisi, harus valid dan belum dipakai akun lain.',
-            ' 6. Password boleh dikosongkan. Jika kosong, NIM dipakai sebagai password awal,',
-            '    jadi mintalah peserta segera menggantinya. Kalau diisi, minimal 8 karakter.',
+            ' 6. Password SEBAIKNYA dikosongkan. Peserta membuat passwordnya sendiri lewat menu',
+            '    "Buat Akun" di situs, dan menerimanya lewat email yang diisi di kolom Email.',
+            '    Kalau diisi, minimal 8 karakter — tetapi mengisinya untuk banyak baris',
+            '    memperlambat impor dan bisa membuatnya kehabisan waktu.',
             ' 7. Semua peserta yang diimpor otomatis berrole "mahasiswa".',
             ' 8. Baris kosong diabaikan, jadi tidak perlu menghapus sisa baris yang tidak terpakai.',
             ' 9. Maksimal ' . self::MAKS_BARIS . ' baris sekali impor.',

@@ -196,6 +196,88 @@ class ImporPesertaTest extends TestCase
         $this->assertDatabaseCount('users', 1);
     }
 
+    /**
+     * Impor dulu meng-hash password untuk SETIAP baris. Bcrypt sengaja lambat
+     * (~0,3 detik per hash), sehingga impor 200 baris melewati batas waktu PHP
+     * dan berakhir sebagai 500 tanpa pesan apa pun di log Laravel.
+     *
+     * Kini baris tanpa password memakai satu hash bersama, jadi jumlah baris
+     * tidak lagi menentukan lamanya.
+     */
+    public function test_impor_banyak_baris_tidak_melambat_karena_hashing(): void
+    {
+        $baris = [];
+        for ($i = 1; $i <= 150; $i++) {
+            $baris[] = ['22' . str_pad((string) $i, 8, '0', STR_PAD_LEFT), "Peserta $i", '', 'Akuntansi', '1', ''];
+        }
+
+        $this->unggah($this->berkas($baris));
+
+        $this->assertSame(150, User::mahasiswa()->count());
+
+        // Diperiksa dari struktur, bukan dari lama waktunya. Pengujian memakai
+        // BCRYPT_ROUNDS=4 sementara produksi 12, sehingga ukuran waktu di sini
+        // tidak mewakili apa pun — pengukuran waktu sempat membuat tes ini
+        // lolos meski hashing per baris dikembalikan.
+        //
+        // Satu hash yang dipakai bersama persis itulah yang membuat jumlah
+        // baris tidak lagi menentukan lamanya proses.
+        $hashUnik = User::mahasiswa()->pluck('password')->unique();
+
+        $this->assertCount(1, $hashUnik,
+            'Baris tanpa password harus berbagi satu hash; '.$hashUnik->count().' hash berbeda ditemukan');
+    }
+
+    /**
+     * Baris tanpa password tidak boleh bisa dipakai masuk dengan NIM-nya,
+     * seperti perilaku lama. Pemiliknya harus lewat menu "Buat Akun".
+     */
+    public function test_baris_tanpa_password_tidak_bisa_login_dengan_nim(): void
+    {
+        $this->unggah($this->berkas([
+            ['2201111111', 'Budi', 'budi@contoh.id', 'Akuntansi', '1', ''],
+        ]));
+
+        $user = User::where('nim', '2201111111')->firstOrFail();
+
+        $this->assertFalse(\Illuminate\Support\Facades\Hash::check('2201111111', $user->password));
+        $this->assertNull($user->terakhir_login_pada);
+    }
+
+    public function test_password_yang_diisi_admin_tetap_berlaku(): void
+    {
+        $this->unggah($this->berkas([
+            ['2201111111', 'Budi', 'budi@contoh.id', 'Akuntansi', '1', 'rahasia123'],
+        ]));
+
+        $user = User::where('nim', '2201111111')->firstOrFail();
+
+        $this->assertTrue(\Illuminate\Support\Facades\Hash::check('rahasia123', $user->password));
+    }
+
+    /**
+     * Kalau kolom Password diisi untuk terlalu banyak baris, impor ditolak
+     * dengan pesan yang jelas — bukan berhenti di tengah sebagai 500.
+     */
+    public function test_password_diisi_terlalu_banyak_ditolak_dengan_pesan(): void
+    {
+        // Batas waktu dibuat kecil supaya ambangnya ikut kecil dan tesnya cepat.
+        $asli = ini_get('max_execution_time');
+        ini_set('max_execution_time', '6');
+
+        $baris = [];
+        for ($i = 1; $i <= 20; $i++) {
+            $baris[] = ['22' . str_pad((string) $i, 8, '0', STR_PAD_LEFT), "P$i", '', 'Akuntansi', '1', 'rahasia123'];
+        }
+
+        $this->unggah($this->berkas($baris))
+            ->assertSessionHas('error', fn ($p) => str_contains($p, 'Kosongkan kolom Password'));
+
+        $this->assertSame(0, User::mahasiswa()->count());
+
+        ini_set('max_execution_time', (string) $asli);
+    }
+
     public function test_hanya_superadmin_yang_boleh_mengimpor(): void
     {
         foreach (['admin', 'mahasiswa', 'downline'] as $i => $role) {
