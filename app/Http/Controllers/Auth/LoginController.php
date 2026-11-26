@@ -33,6 +33,11 @@ class LoginController extends Controller
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
             $request->session()->regenerate();
 
+            // Dipakai fitur "Buat Akun" untuk menolak pembuatan password ulang
+            // pada akun yang sudah pernah dipakai masuk. Disimpan tanpa
+            // menyentuh updated_at supaya kolom itu tetap berarti "data diubah".
+            Auth::user()->forceFill(['terakhir_login_pada' => now()])->saveQuietly();
+
             // Mahasiswa tidak punya akses panel admin, arahkan ke profilnya.
             return redirect()->intended(Auth::user()->isPengelola() ? '/admin' : '/profil');
         }

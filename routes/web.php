@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\UserImportController;
 use App\Http\Controllers\Api\CallbackController;
 use App\Http\Controllers\Api\ImageUploadController;
 use App\Http\Controllers\Api\MataKuliahController;
+use App\Http\Controllers\Auth\BuatAkunController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\BantuanPendanaanController;
 use App\Http\Controllers\BlogController;
@@ -99,6 +100,11 @@ Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap')
 Route::get('/admin/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/admin/login', [LoginController::class, 'login']);
 Route::post('/admin/logout', [LoginController::class, 'logout'])->name('logout');
+
+// Mahasiswa yang datanya sudah didaftarkan admin membuat password awalnya
+// sendiri. Akunnya tidak dibuat di sini — yang belum ada hanya passwordnya.
+Route::get('/buat-akun', [BuatAkunController::class, 'form'])->name('buat-akun');
+Route::post('/buat-akun', [BuatAkunController::class, 'kirim'])->name('buat-akun.kirim');
 
 /*
 |--------------------------------------------------------------------------

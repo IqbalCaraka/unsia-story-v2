@@ -64,6 +64,10 @@ body { font-family:'Lexend',sans-serif; min-height:100vh; background:linear-grad
         <button type="submit"><i class="fa-solid fa-right-to-bracket" style="margin-right:6px;"></i> Login</button>
     </form>
 
+    {{-- Mahasiswa yang datanya sudah didaftarkan admin tapi belum punya
+         password diarahkan ke sini, bukan dibiarkan menebak-nebak. --}}
+    <a href="{{ route('buat-akun') }}" class="back-link">Mahasiswa baru? Buat akun di sini</a>
+
     <a href="{{ route('home') }}" class="back-link"><i class="fa-solid fa-arrow-left"></i> Kembali ke Beranda</a>
 </div>
 
