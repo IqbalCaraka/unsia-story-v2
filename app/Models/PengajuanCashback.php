@@ -55,6 +55,12 @@ class PengajuanCashback extends Model
     }
 
     /**
+     * Status yang berarti klaim sudah disetujui admin. Sekali mencapai salah
+     * satunya, mahasiswa tidak boleh mengajukan lagi.
+     */
+    public const STATUS_DISETUJUI = ['diverifikasi', 'dibayar'];
+
+    /**
      * Apakah mahasiswa ini masih punya klaim berjalan untuk periode tersebut.
      * Klaim yang ditolak tidak menghalangi pengajuan ulang.
      */
@@ -64,6 +70,40 @@ class PengajuanCashback extends Model
             ->where('tahun_ajar_id', $tahunAjarId)
             ->whereIn('status', self::STATUS_AKTIF)
             ->exists();
+    }
+
+    /**
+     * Cashback adalah manfaat sekali seumur, bukan per periode: ia melekat
+     * pada pemakaian kode referal saat mendaftar, dan itu terjadi satu kali.
+     *
+     * Karena itu klaim yang sudah disetujui mengunci fitur ini untuk
+     * seterusnya, termasuk untuk periode lain.
+     */
+    public static function sudahPernahDisetujui(int $userId): bool
+    {
+        return static::where('user_id', $userId)
+            ->whereIn('status', self::STATUS_DISETUJUI)
+            ->exists();
+    }
+
+    /**
+     * Klaim yang sedang diproses juga menahan pengajuan baru, supaya tidak ada
+     * dua klaim berjalan sekaligus di periode yang berbeda.
+     */
+    public static function adaKlaimBerjalan(int $userId): bool
+    {
+        return static::where('user_id', $userId)
+            ->whereIn('status', self::STATUS_AKTIF)
+            ->exists();
+    }
+
+    /** Klaim yang mengunci fitur, kalau ada — untuk ditampilkan ke mahasiswa. */
+    public static function klaimPengunci(int $userId): ?self
+    {
+        return static::where('user_id', $userId)
+            ->whereIn('status', self::STATUS_AKTIF)
+            ->latest('id')
+            ->first();
     }
 
     public function user(): BelongsTo

@@ -15,11 +15,27 @@
                     Nominal cashback ditetapkan per periode oleh kampus, jadi Anda tidak perlu mengisi jumlahnya.
                 </p>
 
-                @if ($periodeTersedia->isEmpty())
+                {{-- Cashback hanya bisa diterima sekali. Saat sudah disetujui atau masih
+                     diproses, formulirnya tidak ditampilkan sama sekali — menampilkan
+                     formulir yang pasti ditolak hanya membuat mahasiswa mengisi sia-sia. --}}
+                @if ($klaimPengunci && in_array($klaimPengunci->status, \App\Models\PengajuanCashback::STATUS_DISETUJUI, true))
+                    <div class="alert alert-success border-0 small mb-0">
+                        <i class="fas fa-circle-check me-1"></i>
+                        <strong>Cashback Anda sudah disetujui.</strong>
+                        Cashback hanya dapat diterima satu kali, jadi pengajuan baru tidak diperlukan lagi.
+                        Rinciannya ada di daftar di bawah.
+                    </div>
+                @elseif ($klaimPengunci)
+                    <div class="alert alert-warning border-0 small mb-0">
+                        <i class="fas fa-hourglass-half me-1"></i>
+                        <strong>Pengajuan Anda sedang diproses.</strong>
+                        Tunggu keputusan admin dulu sebelum mengajukan lagi. Statusnya bisa dilihat di bawah.
+                    </div>
+                @elseif ($periodeTersedia->isEmpty())
                     <div class="alert alert-light border small mb-0">
                         <i class="fas fa-circle-info me-1 text-muted"></i>
-                        Tidak ada periode yang bisa diajukan saat ini. Ini terjadi kalau belum ada periode
-                        yang membuka cashback, atau Anda sudah mengajukan untuk semua periode yang tersedia.
+                        Belum ada periode yang membuka cashback saat ini. Hubungi admin bila Anda
+                        merasa seharusnya sudah bisa mengajukan.
                     </div>
                 @else
                     <form action="{{ route('cashback.store') }}" method="POST">

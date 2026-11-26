@@ -23,21 +23,25 @@ class CashbackController extends Controller
             ->latest('id')
             ->get();
 
-        // Periode yang membuka cashback dan belum pernah diklaim (atau klaimnya ditolak).
-        $sudahDiklaim = $pengajuan
+        // Cashback hanya bisa diterima sekali. Klaim yang sudah disetujui, atau
+        // yang masih diproses, menutup pengajuan baru untuk periode mana pun.
+        $klaimPengunci = $pengajuan
             ->whereIn('status', PengajuanCashback::STATUS_AKTIF)
-            ->pluck('tahun_ajar_id')
-            ->all();
+            ->first();
 
-        $periodeTersedia = TahunAjar::where('nominal_cashback', '>', 0)
-            ->whereNotIn('id', $sudahDiklaim)
-            ->orderByDesc('tahun_ajar')
-            ->orderBy('ganjil_genap')
-            ->get();
+        // Saat terkunci, daftar periode tidak perlu diambil sama sekali —
+        // formulirnya memang tidak ditampilkan.
+        $periodeTersedia = $klaimPengunci
+            ? collect()
+            : TahunAjar::where('nominal_cashback', '>', 0)
+                ->orderByDesc('tahun_ajar')
+                ->orderBy('ganjil_genap')
+                ->get();
 
         return view('cashback.index', [
             'pengajuanList' => $pengajuan,
             'periodeTersedia' => $periodeTersedia,
+            'klaimPengunci' => $klaimPengunci,
             'daftarBank' => PengajuanCashback::daftarBank(),
             'daftarEwallet' => PengajuanCashback::daftarEwallet(),
         ]);
@@ -72,9 +76,16 @@ class CashbackController extends Controller
             'atas_nama' => 'nama pemilik rekening',
         ]);
 
-        if (PengajuanCashback::adaKlaimAktif($user->id, (int) $validated['tahun_ajar_id'])) {
+        // Dikunci menyeluruh, bukan per periode: cashback melekat pada
+        // pemakaian kode referal saat mendaftar, yang terjadi satu kali.
+        if (PengajuanCashback::sudahPernahDisetujui($user->id)) {
             return back()->withInput()
-                ->with('error', 'Anda sudah punya pengajuan berjalan untuk periode tersebut.');
+                ->with('error', 'Cashback Anda sudah disetujui sebelumnya. Cashback hanya dapat diterima satu kali.');
+        }
+
+        if (PengajuanCashback::adaKlaimBerjalan($user->id)) {
+            return back()->withInput()
+                ->with('error', 'Masih ada pengajuan cashback Anda yang sedang diproses. Tunggu keputusan admin dulu.');
         }
 
         $periode = TahunAjar::findOrFail($validated['tahun_ajar_id']);
