@@ -90,7 +90,12 @@
                             </td>
                             <td class="text-muted">{{ $user->nim ?? '—' }}</td>
                             <td class="text-muted">{{ $user->prodi->nama_prodi ?? '—' }}</td>
-                            <td class="text-muted small">{{ $user->tahunAjar->label ?? '—' }}</td>
+                            <td class="text-muted small">
+                                {{ $user->tahunAjar->label ?? '—' }}
+                                @if ($user->gelombang)
+                                    <div class="text-muted">Gelombang {{ $user->gelombang }}</div>
+                                @endif
+                            </td>
                             <td>
                                 @if ($user->isSuperadmin())
                                     <span class="badge rounded-pill"

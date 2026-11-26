@@ -9,6 +9,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\Cell\DataValidation;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\NamedRange;
@@ -34,6 +35,7 @@ class UserImportController extends Controller
         'email' => 'Email (opsional)',
         'prodi' => 'Program Studi',
         'tahun_ajar' => 'Tahun Ajar',
+        'gelombang' => 'Gelombang',
         'password' => 'Password (opsional)',
     ];
 
@@ -241,6 +243,18 @@ class UserImportController extends Controller
                 $pesan[] = "Tahun ajar \"{$data['tahun_ajar']}\" tidak dikenal";
             }
 
+            // Gelombang dibaca sebagai angka. Spreadsheet sering mengirimnya
+            // sebagai "3" maupun 3, dan kadang ditulis "Gelombang 3".
+            $gelombangMentah = trim((string) ($data['gelombang'] ?? ''));
+            $gelombang = (int) preg_replace('/\D/', '', $gelombangMentah);
+            $maksGelombang = (int) config('pendaftaran.gelombang_maksimal');
+
+            if ($gelombangMentah === '') {
+                $pesan[] = 'Gelombang wajib diisi';
+            } elseif ($gelombang < 1 || $gelombang > $maksGelombang) {
+                $pesan[] = "Gelombang \"{$gelombangMentah}\" di luar rentang 1-{$maksGelombang}";
+            }
+
             if ($password !== '' && mb_strlen($password) < 8) {
                 $pesan[] = 'Password minimal 8 karakter';
             }
@@ -265,6 +279,7 @@ class UserImportController extends Controller
                 'email' => $email !== '' ? $email : null,
                 'prodi_id' => $prodi->get($namaProdi),
                 'tahun_ajar_id' => $tahunAjar->get($labelTa),
+                'gelombang' => $gelombang,
                 'role' => 'mahasiswa',
                 // Password kosong memakai NIM sebagai password awal.
                 'password' => Hash::make($password !== '' ? $password : $nim),
@@ -285,17 +300,27 @@ class UserImportController extends Controller
         return trim($teks, '_');
     }
 
+    /** Lebar kolom template, dikunci ke nama field, bukan ke huruf kolom. */
+    protected const LEBAR = [
+        'nim' => 18, 'nama' => 30, 'email' => 28,
+        'prodi' => 24, 'tahun_ajar' => 20, 'gelombang' => 14, 'password' => 22,
+    ];
+
     protected function tulisHeader(Worksheet $sheet): void
     {
-        $lebar = ['A' => 18, 'B' => 30, 'C' => 28, 'D' => 24, 'E' => 20, 'F' => 22];
-        $kolom = array_keys($lebar);
+        // Dihitung dari daftar kolom, bukan dipatok A..F. Dulu dipatok, dan
+        // menambah satu kolom akan membuat judulnya meleset dari lebarnya.
+        $i = 0;
+        foreach (self::KOLOM as $field => $judul) {
+            $huruf = Coordinate::stringFromColumnIndex(++$i);
 
-        foreach (array_values(self::KOLOM) as $i => $judul) {
-            $sheet->setCellValue($kolom[$i] . '1', $judul);
-            $sheet->getColumnDimension($kolom[$i])->setWidth($lebar[$kolom[$i]]);
+            $sheet->setCellValue($huruf . '1', $judul);
+            $sheet->getColumnDimension($huruf)->setWidth(self::LEBAR[$field] ?? 20);
         }
 
-        $sheet->getStyle('A1:F1')->applyFromArray([
+        $kolomTerakhir = Coordinate::stringFromColumnIndex(count(self::KOLOM));
+
+        $sheet->getStyle('A1:' . $kolomTerakhir . '1')->applyFromArray([
             'font' => ['bold' => true, 'color' => ['rgb' => 'F0C040']],
             'fill' => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['rgb' => '0D1B2A']],
             'alignment' => ['vertical' => Alignment::VERTICAL_CENTER],
@@ -349,12 +374,24 @@ class UserImportController extends Controller
             new NamedRange('DAFTAR_TAHUN_AJAR', $referensi, '$B$2:$B$' . (count($tahunAjar) + 1))
         );
 
+        // Huruf kolomnya dihitung dari posisi field di self::KOLOM, bukan
+        // dipatok 'D' dan 'E'. Menyisipkan kolom baru di tengah dulu akan
+        // memindahkan dropdown ke kolom yang salah tanpa ada yang menyadarinya.
+        $kolomDari = fn (string $field): string => Coordinate::stringFromColumnIndex(
+            array_search($field, array_keys(self::KOLOM), true) + 1
+        );
+
+        // Gelombang memakai daftar angka langsung, tidak perlu named range
+        // karena pilihannya tetap dan tidak berasal dari database.
+        $angkaGelombang = implode(',', range(1, (int) config('pendaftaran.gelombang_maksimal')));
+
         $daftar = [
-            'D' => ['DAFTAR_PRODI', 'Program Studi', 'Pilih program studi dari daftar.'],
-            'E' => ['DAFTAR_TAHUN_AJAR', 'Tahun Ajar', 'Pilih tahun ajar dari daftar.'],
+            $kolomDari('prodi') => ['=DAFTAR_PRODI', 'Program Studi', 'Pilih program studi dari daftar.'],
+            $kolomDari('tahun_ajar') => ['=DAFTAR_TAHUN_AJAR', 'Tahun Ajar', 'Pilih tahun ajar dari daftar.'],
+            $kolomDari('gelombang') => ['"' . $angkaGelombang . '"', 'Gelombang', 'Pilih gelombang pendaftaran.'],
         ];
 
-        foreach ($daftar as $kolom => [$namedRange, $judul, $petunjuk]) {
+        foreach ($daftar as $kolom => [$formula, $judul, $petunjuk]) {
             $validasi = new DataValidation();
             $validasi->setType(DataValidation::TYPE_LIST);
             $validasi->setErrorStyle(DataValidation::STYLE_STOP);
@@ -366,7 +403,7 @@ class UserImportController extends Controller
             $validasi->setPrompt($petunjuk);
             $validasi->setErrorTitle('Pilihan tidak valid');
             $validasi->setError('Gunakan dropdown, nilai di luar daftar tidak diterima.');
-            $validasi->setFormula1('=' . $namedRange);
+            $validasi->setFormula1($formula);
 
             // Satu validasi untuk seluruh rentang, bukan satu per sel.
             $sheet->setDataValidation("{$kolom}2:{$kolom}" . self::BARIS_TEMPLATE, $validasi);

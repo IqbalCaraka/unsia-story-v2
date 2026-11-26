@@ -217,6 +217,27 @@
             </div>
         @endif
     </div>
+
+    {{-- Gelombang --}}
+    <div class="mb-3">
+        <label for="gelombang" class="form-label fw-semibold">Gelombang Pendaftaran</label>
+        <select class="form-select @error('gelombang') is-invalid @enderror" id="gelombang" name="gelombang">
+            <option value="">— Pilih gelombang —</option>
+            @for ($g = 1; $g <= config('pendaftaran.gelombang_maksimal'); $g++)
+                <option value="{{ $g }}"
+                    {{ (int) old('gelombang', $user->gelombang ?? 0) === $g ? 'selected' : '' }}>
+                    Gelombang {{ $g }}
+                </option>
+            @endfor
+        </select>
+        @error('gelombang')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+        <div class="form-text">
+            Gelombang saat mahasiswa ini mendaftar. Bersama tahun ajar di atas,
+            keduanya menandai kapan ia masuk.
+        </div>
+    </div>
 </div>
 
 <hr class="my-4">

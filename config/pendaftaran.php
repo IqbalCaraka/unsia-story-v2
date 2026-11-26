@@ -20,6 +20,14 @@ return [
     'gelombang' => 'Gelombang 1',
     'jalur' => 'Jalur Reguler',
 
+    // Gelombang tertinggi yang boleh dicatat pada data mahasiswa. Dipakai
+    // validasi di UserController dan UserImportController.
+    //
+    // Disetel 10, bukan 9, karena situs ini pernah mengumumkan "Gelombang 10
+    // (Gelombang Terakhir)". Batas yang terlalu rendah akan menolak data
+    // mahasiswa yang sah, sedangkan batas yang sedikit longgar tidak merugikan.
+    'gelombang_maksimal' => 10,
+
     // Tanggal dalam format Y-m-d. Hari terakhir ikut terhitung sebagai buka.
     'mulai' => '2026-11-13',
     'selesai' => '2026-11-26',

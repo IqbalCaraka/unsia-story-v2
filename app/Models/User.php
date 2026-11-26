@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['name', 'email', 'password', 'nim', 'nama', 'foto_profil', 'prodi_id', 'role', 'tahun_ajar_id'])]
+#[Fillable(['name', 'email', 'password', 'nim', 'nama', 'foto_profil', 'prodi_id', 'role', 'tahun_ajar_id', 'gelombang'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -41,6 +41,22 @@ class User extends Authenticatable
     public function tahunAjar(): BelongsTo
     {
         return $this->belongsTo(TahunAjar::class);
+    }
+
+    /**
+     * "Gelombang 3, 2026/2027 Genap" — kapan mahasiswa ini mendaftar.
+     *
+     * Tahun ajar saja belum cukup: satu periode dibuka dalam beberapa
+     * gelombang, jadi keduanya baru lengkap kalau disebut bersama.
+     */
+    public function periodeMasuk(): string
+    {
+        $bagian = array_filter([
+            $this->gelombang ? 'Gelombang ' . $this->gelombang : null,
+            $this->tahunAjar?->label,
+        ]);
+
+        return $bagian ? implode(', ', $bagian) : '—';
     }
 
     /**

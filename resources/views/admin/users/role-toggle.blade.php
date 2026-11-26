@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const email = document.getElementById('email');
     const statusDownline = document.getElementById('status_downline');
     const badgeEmail = document.querySelector('[data-opsional-email]');
-    const akademik = ['nim', 'prodi_id', 'tahun_ajar_id'].map(id => document.getElementById(id));
+    const akademik = ['nim', 'prodi_id', 'tahun_ajar_id', 'gelombang'].map(id => document.getElementById(id));
 
     function terapkan() {
         const mahasiswa = role.value === 'mahasiswa';

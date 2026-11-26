@@ -152,6 +152,8 @@ class DownlineTest extends TestCase
                 'status_downline' => null,
                 'prodi_id' => $prodi->id,
                 'tahun_ajar_id' => $tahun->id,
+                // Gelombang ikut wajib bagi mahasiswa sejak kolom itu ada.
+                'gelombang' => 1,
             ]))
             ->assertSessionHasNoErrors();
 

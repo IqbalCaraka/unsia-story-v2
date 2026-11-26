@@ -129,10 +129,11 @@ class UserController extends Controller
      * Kewajiban field bergantung role:
      *
      * superadmin / admin : email (untuk login)
-     * downline           : email (untuk login) + kode referal
-     * mahasiswa          : NIM, prodi, tahun ajar — emailnya opsional
+     * downline           : email (untuk login) + status downline
+     * mahasiswa          : NIM, prodi, tahun ajar, gelombang — emailnya opsional
      *
-     * Kode referal tetap boleh diisi role lain, hanya tidak diwajibkan.
+     * ID dan kode downline tidak divalidasi di sini: keduanya digenerate
+     * sistem, bukan diisi admin.
      */
     protected function rules(Request $request, ?User $user = null): array
     {
@@ -163,6 +164,13 @@ class UserController extends Controller
 
             'prodi_id' => [$isMahasiswa ? 'required' : 'nullable', 'exists:prodi,id'],
             'tahun_ajar_id' => [$isMahasiswa ? 'required' : 'nullable', 'exists:tahun_ajar,id'],
+
+            // Batas atasnya dari config, bukan ditulis di sini, supaya bisa
+            // digeser tanpa menyentuh kode saat kampus menambah gelombang.
+            'gelombang' => [
+                $isMahasiswa ? 'required' : 'nullable',
+                'integer', 'min:1', 'max:' . config('pendaftaran.gelombang_maksimal'),
+            ],
 
             // ID dan kode downline digenerate sistem, jadi yang diisi admin
             // hanya statusnya.
@@ -196,6 +204,7 @@ class UserController extends Controller
             $data['nim'] = null;
             $data['prodi_id'] = null;
             $data['tahun_ajar_id'] = null;
+            $data['gelombang'] = null;
         }
 
         $data['name'] = $data['nama'];
@@ -290,6 +299,7 @@ class UserController extends Controller
             'nim.required' => 'Akun mahasiswa wajib punya NIM, karena login mahasiswa memakai NIM.',
             'prodi_id.required' => 'Program studi wajib dipilih untuk akun mahasiswa.',
             'tahun_ajar_id.required' => 'Tahun ajar wajib dipilih untuk akun mahasiswa.',
+            'gelombang.required' => 'Gelombang pendaftaran wajib diisi untuk akun mahasiswa.',
             'status_downline.required' => 'Status downline (aktif / tidak aktif) wajib dipilih.',
             'password.confirmed' => 'Konfirmasi password tidak cocok.',
         ];
@@ -301,6 +311,7 @@ class UserController extends Controller
             'nim' => 'NIM',
             'prodi_id' => 'program studi',
             'tahun_ajar_id' => 'tahun ajar',
+            'gelombang' => 'gelombang',
             'status_downline' => 'status downline',
         ];
     }
