@@ -81,8 +81,36 @@
                       enctype="multipart/form-data" class="d-flex flex-column flex-grow-1">
                     @csrf
 
+                    {{-- Dipilih sekali di sini, bukan per baris di Excel: satu berkas
+                         impor berlaku untuk satu periode. --}}
                     <div class="mb-3">
-                        <label for="file" class="form-label fw-semibold">Berkas</label>
+                        <label for="tahun_ajar_id" class="form-label fw-semibold">
+                            Tahun Ajar <span class="text-danger">*</span>
+                        </label>
+                        <select class="form-select @error('tahun_ajar_id') is-invalid @enderror"
+                                id="tahun_ajar_id" name="tahun_ajar_id" required
+                                {{ $tahunAjarList->isEmpty() ? 'disabled' : '' }}>
+                            <option value="">— Pilih tahun ajar —</option>
+                            @foreach ($tahunAjarList as $ta)
+                                <option value="{{ $ta->id }}"
+                                    {{ (int) old('tahun_ajar_id') === $ta->id ? 'selected' : '' }}>
+                                    {{ $ta->label }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('tahun_ajar_id')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                        <div class="form-text">
+                            Berlaku untuk <strong>seluruh peserta</strong> di berkas ini.
+                            Kalau datanya berbeda periode, pisahkan jadi beberapa berkas.
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="file" class="form-label fw-semibold">
+                            Berkas <span class="text-danger">*</span>
+                        </label>
                         <input type="file" class="form-control @error('file') is-invalid @enderror"
                                id="file" name="file" accept=".xlsx,.xls,.csv" required>
                         @error('file')
@@ -93,6 +121,7 @@
 
                     <ul class="small text-muted ps-3 mb-4">
                         <li>Semua peserta diimpor dengan role <strong>mahasiswa</strong>.</li>
+                        <li>Tahun ajar <strong>tidak ada di Excel</strong> — diambil dari pilihan di atas.</li>
                         <li>Password kosong berarti <strong>NIM dipakai sebagai password awal</strong>.</li>
                         <li>Baris kosong diabaikan. Maksimal 2.000 baris sekali impor.</li>
                         <li>

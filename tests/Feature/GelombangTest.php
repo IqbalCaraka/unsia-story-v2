@@ -205,13 +205,22 @@ class GelombangTest extends TestCase
         $sheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($berkas)->getSheet(0);
 
         $judul = [];
-        foreach (range('A', 'G') as $kolom) {
-            $judul[] = (string) $sheet->getCell($kolom.'1')->getValue();
+        foreach (range('A', 'J') as $kolom) {
+            $nilai = (string) $sheet->getCell($kolom.'1')->getValue();
+
+            if ($nilai !== '') {
+                $judul[] = $nilai;
+            }
         }
 
         @unlink($berkas);
 
         $this->assertContains('Gelombang', $judul);
         $this->assertSame('Password (opsional)', end($judul), 'Gelombang harus sebelum password');
+
+        // Tahun ajar dipilih saat mengunggah, bukan diisi per baris di Excel.
+        // Mengembalikannya ke template berarti satu nilai yang sama diketik
+        // ratusan kali, dan sebagian baris bisa masuk ke periode yang keliru.
+        $this->assertNotContains('Tahun Ajar', $judul);
     }
 }

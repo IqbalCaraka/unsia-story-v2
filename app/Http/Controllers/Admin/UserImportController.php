@@ -28,13 +28,19 @@ class UserImportController extends Controller
     /** Batas baris yang diproses sekali impor. */
     protected const MAKS_BARIS = 2000;
 
-    /** Kolom template, berurutan. */
+    /**
+     * Kolom template, berurutan.
+     *
+     * Tahun ajar sengaja TIDAK di sini: satu berkas impor berlaku untuk satu
+     * periode, jadi periodenya dipilih sekali di form unggah. Menaruhnya per
+     * baris membuat satu nilai yang sama diketik ratusan kali, dan membuka
+     * peluang sebagian baris masuk ke periode yang keliru.
+     */
     protected const KOLOM = [
         'nim' => 'NIM',
         'nama' => 'Nama Lengkap',
         'email' => 'Email (opsional)',
         'prodi' => 'Program Studi',
-        'tahun_ajar' => 'Tahun Ajar',
         'gelombang' => 'Gelombang',
         'password' => 'Password (opsional)',
     ];
@@ -48,18 +54,14 @@ class UserImportController extends Controller
     }
 
     /**
-     * Unduh template .xlsx dengan dropdown prodi & tahun ajar yang diambil dari database.
+     * Unduh template .xlsx dengan dropdown program studi dan gelombang.
+     *
+     * Tahun ajar tidak ada di template: periodenya dipilih saat mengunggah,
+     * sehingga template ini berlaku untuk periode mana pun.
      */
     public function template()
     {
         $prodi = Prodi::orderBy('nama_prodi')->pluck('nama_prodi')->all();
-        $tahunAjar = TahunAjar::orderByDesc('tahun_ajar')->orderBy('ganjil_genap')->get()
-            ->map(fn ($ta) => $ta->label)->all();
-
-        if (empty($tahunAjar)) {
-            return redirect()->route('admin.tahun-ajar.index')
-                ->with('error', 'Belum ada tahun ajar. Tambahkan minimal satu sebelum mengunduh template.');
-        }
 
         $spreadsheet = new Spreadsheet();
         $spreadsheet->getProperties()->setTitle('Template Import Peserta');
@@ -68,9 +70,9 @@ class UserImportController extends Controller
         $sheet->setTitle('Data Peserta');
 
         $this->tulisHeader($sheet);
-        $referensi = $this->buatSheetReferensi($spreadsheet, $prodi, $tahunAjar);
-        $this->pasangDropdown($sheet, $spreadsheet, $referensi, $prodi, $tahunAjar);
-        $this->tulisPetunjuk($spreadsheet, $prodi, $tahunAjar);
+        $referensi = $this->buatSheetReferensi($spreadsheet, $prodi);
+        $this->pasangDropdown($sheet, $spreadsheet, $referensi, $prodi);
+        $this->tulisPetunjuk($spreadsheet, $prodi);
 
         $sheet->freezePane('A2');
         $spreadsheet->setActiveSheetIndexByName('Data Peserta');
@@ -92,9 +94,16 @@ class UserImportController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'file' => 'required|file|mimes:xlsx,xls,csv,txt|max:5120',
-        ], [], ['file' => 'berkas']);
+            // Berlaku untuk seluruh baris dalam berkas ini.
+            'tahun_ajar_id' => 'required|exists:tahun_ajar,id',
+        ], [
+            'tahun_ajar_id.required' => 'Pilih dulu tahun ajar untuk seluruh peserta di berkas ini.',
+        ], [
+            'file' => 'berkas',
+            'tahun_ajar_id' => 'tahun ajar',
+        ]);
 
         try {
             $baris = $this->bacaBaris($request->file('file'));
@@ -111,7 +120,7 @@ class UserImportController extends Controller
                 'Maksimal ' . self::MAKS_BARIS . ' baris sekali impor, berkas Anda berisi ' . count($baris) . ' baris.');
         }
 
-        [$siap, $galat] = $this->validasiBaris($baris);
+        [$siap, $galat] = $this->validasiBaris($baris, (int) $validated['tahun_ajar_id']);
 
         if ($galat) {
             return back()->with('error', 'Impor dibatalkan, tidak ada data yang tersimpan.')
@@ -181,13 +190,10 @@ class UserImportController extends Controller
     /**
      * @return array{0: array<int, array<string, mixed>>, 1: array<int, string>}
      */
-    protected function validasiBaris(array $baris): array
+    protected function validasiBaris(array $baris, int $tahunAjarId): array
     {
         $prodi = Prodi::pluck('id', 'nama_prodi')
             ->mapWithKeys(fn ($id, $nama) => [mb_strtolower($nama) => $id]);
-
-        $tahunAjar = TahunAjar::all()
-            ->mapWithKeys(fn ($ta) => [mb_strtolower($ta->label) => $ta->id]);
 
         // Closure, bukan 'mb_strtolower' langsung: map() mengoper key sebagai argumen kedua,
         // dan key itu akan dibaca sebagai nama encoding.
@@ -208,7 +214,6 @@ class UserImportController extends Controller
             $nama = $data['nama'] ?? '';
             $email = $data['email'] ?? '';
             $namaProdi = mb_strtolower($data['prodi'] ?? '');
-            $labelTa = mb_strtolower($data['tahun_ajar'] ?? '');
             $password = $data['password'] ?? '';
 
             if ($nim === '') {
@@ -235,12 +240,6 @@ class UserImportController extends Controller
                 $pesan[] = 'Program studi wajib diisi';
             } elseif (! $prodi->has($namaProdi)) {
                 $pesan[] = "Program studi \"{$data['prodi']}\" tidak dikenal";
-            }
-
-            if ($labelTa === '') {
-                $pesan[] = 'Tahun ajar wajib diisi';
-            } elseif (! $tahunAjar->has($labelTa)) {
-                $pesan[] = "Tahun ajar \"{$data['tahun_ajar']}\" tidak dikenal";
             }
 
             // Gelombang dibaca sebagai angka. Spreadsheet sering mengirimnya
@@ -278,7 +277,7 @@ class UserImportController extends Controller
                 'name' => $nama,
                 'email' => $email !== '' ? $email : null,
                 'prodi_id' => $prodi->get($namaProdi),
-                'tahun_ajar_id' => $tahunAjar->get($labelTa),
+                'tahun_ajar_id' => $tahunAjarId,
                 'gelombang' => $gelombang,
                 'role' => 'mahasiswa',
                 // Password kosong memakai NIM sebagai password awal.
@@ -303,7 +302,7 @@ class UserImportController extends Controller
     /** Lebar kolom template, dikunci ke nama field, bukan ke huruf kolom. */
     protected const LEBAR = [
         'nim' => 18, 'nama' => 30, 'email' => 28,
-        'prodi' => 24, 'tahun_ajar' => 20, 'gelombang' => 14, 'password' => 22,
+        'prodi' => 24, 'gelombang' => 14, 'password' => 22,
     ];
 
     protected function tulisHeader(Worksheet $sheet): void
@@ -336,24 +335,18 @@ class UserImportController extends Controller
     /**
      * Sheet tersembunyi berisi daftar pilihan, dirujuk oleh dropdown lewat named range.
      */
-    protected function buatSheetReferensi(Spreadsheet $spreadsheet, array $prodi, array $tahunAjar): Worksheet
+    protected function buatSheetReferensi(Spreadsheet $spreadsheet, array $prodi): Worksheet
     {
         $sheet = $spreadsheet->createSheet();
         $sheet->setTitle('Referensi');
 
         $sheet->setCellValue('A1', 'Program Studi');
-        $sheet->setCellValue('B1', 'Tahun Ajar');
 
         foreach ($prodi as $i => $nama) {
             $sheet->setCellValue('A' . ($i + 2), $nama);
         }
 
-        foreach ($tahunAjar as $i => $label) {
-            $sheet->setCellValue('B' . ($i + 2), $label);
-        }
-
         $sheet->getColumnDimension('A')->setWidth(24);
-        $sheet->getColumnDimension('B')->setWidth(20);
         $sheet->setSheetState(Worksheet::SHEETSTATE_HIDDEN);
 
         return $sheet;
@@ -363,15 +356,11 @@ class UserImportController extends Controller
         Worksheet $sheet,
         Spreadsheet $spreadsheet,
         Worksheet $referensi,
-        array $prodi,
-        array $tahunAjar
+        array $prodi
     ): void {
         // Named range dipakai agar dropdown tetap jalan walau sheet referensinya disembunyikan.
         $spreadsheet->addNamedRange(
             new NamedRange('DAFTAR_PRODI', $referensi, '$A$2:$A$' . (count($prodi) + 1))
-        );
-        $spreadsheet->addNamedRange(
-            new NamedRange('DAFTAR_TAHUN_AJAR', $referensi, '$B$2:$B$' . (count($tahunAjar) + 1))
         );
 
         // Huruf kolomnya dihitung dari posisi field di self::KOLOM, bukan
@@ -387,7 +376,6 @@ class UserImportController extends Controller
 
         $daftar = [
             $kolomDari('prodi') => ['=DAFTAR_PRODI', 'Program Studi', 'Pilih program studi dari daftar.'],
-            $kolomDari('tahun_ajar') => ['=DAFTAR_TAHUN_AJAR', 'Tahun Ajar', 'Pilih tahun ajar dari daftar.'],
             $kolomDari('gelombang') => ['"' . $angkaGelombang . '"', 'Gelombang', 'Pilih gelombang pendaftaran.'],
         ];
 
@@ -410,7 +398,7 @@ class UserImportController extends Controller
         }
     }
 
-    protected function tulisPetunjuk(Spreadsheet $spreadsheet, array $prodi, array $tahunAjar): void
+    protected function tulisPetunjuk(Spreadsheet $spreadsheet, array $prodi): void
     {
         $sheet = $spreadsheet->createSheet();
         $sheet->setTitle('Petunjuk');
@@ -420,7 +408,9 @@ class UserImportController extends Controller
             'CARA MENGISI TEMPLATE IMPOR PESERTA',
             '',
             ' 1. Isi data mulai baris ke-2 pada sheet "Data Peserta". Jangan mengubah atau menghapus baris header.',
-            ' 2. Kolom Program Studi dan Tahun Ajar HARUS dipilih lewat dropdown. Nilai di luar daftar akan ditolak.',
+            ' 2. Kolom Program Studi dan Gelombang HARUS dipilih lewat dropdown. Nilai di luar daftar akan ditolak.',
+            '    Tahun ajar TIDAK ada di berkas ini — periodenya dipilih sekali saat mengunggah,',
+            '    dan berlaku untuk seluruh baris. Satu berkas untuk satu tahun ajar.',
             ' 3. NIM wajib diisi, maksimal 20 karakter, dan tidak boleh sama dengan NIM yang sudah ada di sistem.',
             ' 4. Nama Lengkap wajib diisi.',
             ' 5. Email boleh dikosongkan. Kalau diisi, harus valid dan belum dipakai akun lain.',
@@ -433,7 +423,6 @@ class UserImportController extends Controller
             '    dan seluruh kesalahan dilaporkan sekaligus beserta nomor barisnya.',
             '',
             'Daftar Program Studi yang tersedia: ' . implode(', ', $prodi),
-            'Daftar Tahun Ajar yang tersedia: ' . implode(', ', $tahunAjar),
             '',
             'Template ini dibuat pada ' . now()->format('d M Y H:i') . '. Jika daftar tahun ajar berubah di sistem,',
             'unduh ulang template agar dropdown-nya ikut diperbarui.',
