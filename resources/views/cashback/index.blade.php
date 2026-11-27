@@ -89,13 +89,20 @@
 
                         <div class="mb-3">
                             <label for="nomor" class="form-label fw-semibold">Nomor E-Wallet</label>
-                            <input type="text" inputmode="numeric"
+                            {{-- inputmode hanya memunculkan papan angka di ponsel, ia tidak
+                                 menghalangi pengetikan huruf. Penyaringnya ada di skrip
+                                 bawah, dan aturan sebenarnya ditegakkan di server. --}}
+                            <input type="text" inputmode="numeric" autocomplete="tel"
                                    class="form-control @error('nomor') is-invalid @enderror"
                                    id="nomor" name="nomor" value="{{ old('nomor') }}"
-                                   placeholder="08xxxxxxxxxx" required>
+                                   placeholder="08xxxxxxxxxx" maxlength="20" required
+                                   data-hanya-angka>
                             @error('nomor')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
+                            <div class="form-text">
+                                Nomor HP yang terdaftar di e-wallet tersebut. Angka saja.
+                            </div>
                         </div>
 
                         <div class="mb-3">
@@ -208,4 +215,28 @@
     </div>
 </div>
 
+@endsection
+
+@section('scripts')
+<script>
+// Menyaring isian nomor agar hanya angka yang tersisa saat diketik maupun
+// ditempel. Ini sekadar kenyamanan — aturan sebenarnya ditegakkan di server,
+// karena penyaring di sisi peramban selalu bisa dilewati.
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('[data-hanya-angka]').forEach(function (isian) {
+        isian.addEventListener('input', function () {
+            // Posisi kursor dijaga, kalau tidak ia melompat ke ujung setiap
+            // kali ada karakter yang dibuang di tengah.
+            var posisi = isian.selectionStart;
+            var sebelum = isian.value;
+            var sesudah = sebelum.replace(/[^0-9]/g, '');
+
+            if (sebelum === sesudah) return;
+
+            isian.value = sesudah;
+            isian.setSelectionRange(posisi - (sebelum.length - sesudah.length), posisi - (sebelum.length - sesudah.length));
+        });
+    });
+});
+</script>
 @endsection

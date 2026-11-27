@@ -65,9 +65,21 @@ class CashbackController extends Controller
                 "Cashback untuk periode {$periode->label} belum dibuka. Hubungi admin bila Anda merasa seharusnya sudah bisa mengajukan.");
         }
 
+        // Pemisah yang biasa ikut saat nomor disalin dirapikan dulu, jadi
+        // "0812-3456-7890" dan "+62 812 3456 7890" tetap diterima dan sama-sama
+        // tersimpan sebagai angka saja. Huruf dan tanda lain tidak dibuang —
+        // isian seperti itu memang keliru dan harus ditolak, bukan dibersihkan
+        // diam-diam sampai menjadi nomor yang bukan dimaksud penggunanya.
+        $request->merge([
+            'nomor' => preg_replace('/[\s\-.()+]/', '', (string) $request->input('nomor')),
+        ]);
+
         $validated = $request->validate([
             'penyedia' => ['required', Rule::in(PengajuanCashback::daftarEwallet())],
-            'nomor' => ['required', 'string', 'max:50', 'regex:/^[0-9][0-9 \-]*$/'],
+            // Hanya angka. Batas 8-20 digit menjaring salah ketik yang kentara
+            // tanpa memaksakan pola nomor tertentu, karena tiap penyedia punya
+            // aturannya sendiri dan nomor yang sah tidak boleh ikut tertolak.
+            'nomor' => ['required', 'string', 'regex:/^[0-9]{8,20}$/'],
             // Rekening harus atas nama mahasiswa sendiri. Dicegat di sini,
             // bukan dibiarkan sampai admin menolaknya, supaya mahasiswa tahu
             // penyebabnya saat itu juga dan tidak menunggu sia-sia.
@@ -83,7 +95,7 @@ class CashbackController extends Controller
             'catatan' => ['nullable', 'string', 'max:500'],
         ], [
             'penyedia.in' => 'Pilih e-wallet dari daftar yang tersedia.',
-            'nomor.regex' => 'Nomor hanya boleh berisi angka, spasi, dan tanda hubung.',
+            'nomor.regex' => 'Nomor e-wallet hanya boleh berisi angka, 8 sampai 20 digit.',
         ], [
             'atas_nama' => 'nama pemilik rekening',
         ]);

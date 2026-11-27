@@ -269,7 +269,7 @@ class CashbackSekaliTest extends TestCase
             $user = $this->mahasiswa();
 
             $this->actingAs($user)
-                ->post(route('cashback.store'), $this->dataPengajuan($this->ganjil) + ['penyedia' => $penyedia])
+                ->post(route('cashback.store'), array_merge($this->dataPengajuan($this->ganjil), ['penyedia' => $penyedia]))
                 ->assertSessionHasNoErrors();
         }
 
@@ -299,7 +299,7 @@ class CashbackSekaliTest extends TestCase
         $user = $this->mahasiswa();
 
         $this->actingAs($user)
-            ->post(route('cashback.store'), $this->dataPengajuan($this->ganjil) + ['metode' => 'bank'])
+            ->post(route('cashback.store'), array_merge($this->dataPengajuan($this->ganjil), ['metode' => 'bank']))
             ->assertSessionHasNoErrors();
 
         $this->assertSame('ewallet', PengajuanCashback::where('user_id', $user->id)->value('metode'));
@@ -350,6 +350,59 @@ class CashbackSekaliTest extends TestCase
             ->post(route('cashback.store'), $this->dataPengajuan($this->ganjil))
             ->assertSessionHas('success', fn ($p) => str_contains($p, 'biaya transfer ditanggung penerima')
                 && str_contains($p, $this->ganjil->nominal_rupiah));
+    }
+
+    /**
+     * Nomor e-wallet adalah nomor HP, jadi hanya angka. Aturan sebelumnya
+     * masih mengizinkan spasi dan tanda hubung — peninggalan masa nomor
+     * rekening bank, yang sudah tidak berlaku sejak pencairan khusus e-wallet.
+     */
+    public function test_nomor_dengan_huruf_atau_tanda_ditolak(): void
+    {
+        foreach (['08abc123456', '0812/3456/789', 'nol812345678', '0812#345678', '08 12 ab'] as $nomor) {
+            $this->actingAs($this->mahasiswa())
+                ->post(route('cashback.store'), array_merge($this->dataPengajuan($this->ganjil), ['nomor' => $nomor]))
+                ->assertSessionHasErrors('nomor');
+        }
+
+        $this->assertDatabaseCount('pengajuan_cashback', 0);
+    }
+
+    /**
+     * Pemisah yang ikut saat nomor disalin dirapikan, bukan ditolak: maksud
+     * penggunanya jelas, dan menolaknya hanya menyusahkan tanpa alasan.
+     */
+    public function test_pemisah_dirapikan_jadi_angka_saja(): void
+    {
+        $contoh = [
+            '0812-3456-7890' => '081234567890',
+            '0812 3456 7890' => '081234567890',
+            '+62 812 3456 7890' => '6281234567890',
+            '(0812) 3456.7890' => '081234567890',
+        ];
+
+        foreach ($contoh as $masukan => $harapan) {
+            $user = $this->mahasiswa();
+
+            $this->actingAs($user)
+                ->post(route('cashback.store'), array_merge($this->dataPengajuan($this->ganjil), ['nomor' => $masukan]))
+                ->assertSessionHasNoErrors();
+
+            $this->assertSame(
+                $harapan,
+                PengajuanCashback::where('user_id', $user->id)->value('nomor'),
+                "Masukan \"{$masukan}\" harus tersimpan sebagai angka saja"
+            );
+        }
+    }
+
+    public function test_nomor_terlalu_pendek_atau_panjang_ditolak(): void
+    {
+        foreach (['0812345', str_repeat('8', 21)] as $nomor) {
+            $this->actingAs($this->mahasiswa())
+                ->post(route('cashback.store'), array_merge($this->dataPengajuan($this->ganjil), ['nomor' => $nomor]))
+                ->assertSessionHasErrors('nomor');
+        }
     }
 
     public function test_downline_dan_admin_tidak_bisa_mengajukan(): void
