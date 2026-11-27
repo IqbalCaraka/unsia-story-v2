@@ -192,6 +192,64 @@ class CashbackSekaliTest extends TestCase
             ->assertSee('name="atas_nama"', false);
     }
 
+    /**
+     * Periode diambil dari data pendaftaran mahasiswa, bukan dari kiriman
+     * form. Mahasiswa tidak perlu — dan tidak bisa — memilihnya sendiri.
+     */
+    public function test_periode_diambil_dari_data_mahasiswa(): void
+    {
+        $user = $this->mahasiswa(); // terdaftar di periode ganjil
+
+        // Sengaja mengirim periode lain; harus diabaikan.
+        $this->actingAs($user)
+            ->post(route('cashback.store'), $this->dataPengajuan($this->genap))
+            ->assertSessionHasNoErrors();
+
+        $this->assertSame(
+            $this->ganjil->id,
+            PengajuanCashback::where('user_id', $user->id)->value('tahun_ajar_id'),
+            'Periode harus mengikuti data mahasiswa, bukan isian form'
+        );
+    }
+
+    public function test_mahasiswa_tanpa_tahun_ajar_tidak_bisa_mengajukan(): void
+    {
+        $user = $this->mahasiswa();
+        $user->forceFill(['tahun_ajar_id' => null])->save();
+
+        $this->actingAs($user)
+            ->post(route('cashback.store'), $this->dataPengajuan($this->ganjil))
+            ->assertSessionHas('error', fn ($p) => str_contains($p, 'tahun ajar'));
+
+        $this->assertDatabaseCount('pengajuan_cashback', 0);
+    }
+
+    public function test_periode_yang_cashbacknya_tertutup_ditolak(): void
+    {
+        $tertutup = TahunAjar::create([
+            'tahun_ajar' => '2025/2026', 'ganjil_genap' => 'ganjil', 'nominal_cashback' => 0,
+        ]);
+
+        $user = $this->mahasiswa();
+        $user->forceFill(['tahun_ajar_id' => $tertutup->id])->save();
+
+        $this->actingAs($user)
+            ->post(route('cashback.store'), $this->dataPengajuan($this->ganjil))
+            ->assertSessionHas('error', fn ($p) => str_contains($p, 'belum dibuka'));
+
+        $this->assertDatabaseCount('pengajuan_cashback', 0);
+    }
+
+    public function test_halaman_menampilkan_periode_tanpa_dropdown(): void
+    {
+        $this->actingAs($this->mahasiswa())
+            ->get(route('cashback.index'))
+            ->assertStatus(200)
+            ->assertSee($this->ganjil->label)
+            // Tidak ada lagi pilihan periode yang bisa diutak-atik.
+            ->assertDontSee('name="tahun_ajar_id"', false);
+    }
+
     public function test_downline_dan_admin_tidak_bisa_mengajukan(): void
     {
         foreach (['downline', 'admin', 'superadmin'] as $role) {

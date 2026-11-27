@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\LogCashback;
 use App\Models\PengajuanCashback;
-use App\Models\TahunAjar;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -30,18 +29,16 @@ class CashbackController extends Controller
             ->whereIn('status', PengajuanCashback::STATUS_AKTIF)
             ->first();
 
-        // Saat terkunci, daftar periode tidak perlu diambil sama sekali —
-        // formulirnya memang tidak ditampilkan.
-        $periodeTersedia = $klaimPengunci
-            ? collect()
-            : TahunAjar::where('nominal_cashback', '>', 0)
-                ->orderByDesc('tahun_ajar')
-                ->orderBy('ganjil_genap')
-                ->get();
+        // Periode tidak dipilih mahasiswa, melainkan diambil dari periode
+        // tempat ia terdaftar. Cashback melekat pada pemakaian kode referal
+        // saat mendaftar, jadi periodenya sudah tertentu — membiarkan mahasiswa
+        // memilih sendiri hanya membuka peluang salah pilih.
+        $periode = $user->tahunAjar;
 
         return view('cashback.index', [
             'pengajuanList' => $pengajuan,
-            'periodeTersedia' => $periodeTersedia,
+            'periode' => $periode,
+            'periodeDibuka' => $periode?->cashbackDibuka() ?? false,
             'klaimPengunci' => $klaimPengunci,
             'daftarBank' => PengajuanCashback::daftarBank(),
             'daftarEwallet' => PengajuanCashback::daftarEwallet(),
@@ -56,13 +53,22 @@ class CashbackController extends Controller
 
         $metode = $request->input('metode');
 
+        // Periode diambil dari data mahasiswa, bukan dari kiriman form.
+        // Dengan begitu tidak ada cara mengajukan atas nama periode lain,
+        // sekalipun isian formnya dipalsukan.
+        $periode = $user->tahunAjar;
+
+        if (! $periode) {
+            return back()->withInput()->with('error',
+                'Data tahun ajar Anda belum terisi, sehingga cashback belum bisa diajukan. Hubungi admin.');
+        }
+
+        if (! $periode->cashbackDibuka()) {
+            return back()->withInput()->with('error',
+                "Cashback untuk periode {$periode->label} belum dibuka. Hubungi admin bila Anda merasa seharusnya sudah bisa mengajukan.");
+        }
+
         $validated = $request->validate([
-            // Closure, bukan ->where('nominal_cashback', '>', 0): Rule::exists()->where()
-            // hanya menerima (kolom, nilai), operatornya akan diperlakukan sebagai nilai.
-            'tahun_ajar_id' => [
-                'required',
-                Rule::exists('tahun_ajar', 'id')->where(fn ($q) => $q->where('nominal_cashback', '>', 0)),
-            ],
             'metode' => ['required', Rule::in(['bank', 'ewallet'])],
             'penyedia' => ['required', Rule::in(PengajuanCashback::daftarPenyedia($metode ?? 'bank'))],
             'nomor' => ['required', 'string', 'max:50', 'regex:/^[0-9][0-9 \-]*$/'],
@@ -80,11 +86,9 @@ class CashbackController extends Controller
             ],
             'catatan' => ['nullable', 'string', 'max:500'],
         ], [
-            'tahun_ajar_id.exists' => 'Periode tersebut tidak membuka cashback.',
             'penyedia.in' => 'Pilih penyedia dari daftar yang tersedia.',
             'nomor.regex' => 'Nomor hanya boleh berisi angka, spasi, dan tanda hubung.',
         ], [
-            'tahun_ajar_id' => 'periode',
             'atas_nama' => 'nama pemilik rekening',
         ]);
 
@@ -100,10 +104,9 @@ class CashbackController extends Controller
                 ->with('error', 'Masih ada pengajuan cashback Anda yang sedang diproses. Tunggu keputusan admin dulu.');
         }
 
-        $periode = TahunAjar::findOrFail($validated['tahun_ajar_id']);
-
         $pengajuan = PengajuanCashback::create($validated + [
             'user_id' => $user->id,
+            'tahun_ajar_id' => $periode->id,
             // Nominal dibekukan saat pengajuan dibuat.
             'jumlah' => $periode->nominal_cashback,
         ]);

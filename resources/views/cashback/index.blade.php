@@ -31,31 +31,34 @@
                         <strong>Pengajuan Anda sedang diproses.</strong>
                         Tunggu keputusan admin dulu sebelum mengajukan lagi. Statusnya bisa dilihat di bawah.
                     </div>
-                @elseif ($periodeTersedia->isEmpty())
+                @elseif (! $periode)
                     <div class="alert alert-light border small mb-0">
                         <i class="fas fa-circle-info me-1 text-muted"></i>
-                        Belum ada periode yang membuka cashback saat ini. Hubungi admin bila Anda
-                        merasa seharusnya sudah bisa mengajukan.
+                        Data tahun ajar Anda belum terisi, sehingga cashback belum bisa diajukan.
+                        Hubungi admin untuk melengkapinya.
+                    </div>
+                @elseif (! $periodeDibuka)
+                    <div class="alert alert-light border small mb-0">
+                        <i class="fas fa-circle-info me-1 text-muted"></i>
+                        Cashback untuk periode <strong>{{ $periode->label }}</strong> belum dibuka.
+                        Hubungi admin bila Anda merasa seharusnya sudah bisa mengajukan.
                     </div>
                 @else
                     <form action="{{ route('cashback.store') }}" method="POST">
                         @csrf
 
+                        {{-- Periode ditampilkan, bukan dipilih. Ia sudah tertentu dari data
+                             pendaftaran mahasiswa, jadi dropdown hanya membuka peluang salah
+                             pilih tanpa memberi manfaat apa pun. --}}
                         <div class="mb-3">
-                            <label for="tahun_ajar_id" class="form-label fw-semibold">Periode</label>
-                            <select class="form-select @error('tahun_ajar_id') is-invalid @enderror"
-                                    id="tahun_ajar_id" name="tahun_ajar_id" required>
-                                <option value="">— Pilih periode —</option>
-                                @foreach ($periodeTersedia as $p)
-                                    <option value="{{ $p->id }}" data-nominal="{{ $p->nominal_rupiah }}"
-                                        {{ (int) old('tahun_ajar_id') === $p->id ? 'selected' : '' }}>
-                                        {{ $p->label }} — {{ $p->nominal_rupiah }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('tahun_ajar_id')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            <label class="form-label fw-semibold">Periode</label>
+                            <div class="form-control bg-light d-flex justify-content-between align-items-center">
+                                <span>{{ $periode->label }}</span>
+                                <strong class="text-success">{{ $periode->nominal_rupiah }}</strong>
+                            </div>
+                            <div class="form-text">
+                                Diambil dari periode pendaftaran Anda. Kalau keliru, hubungi admin.
+                            </div>
                         </div>
 
                         <div class="mb-3">
