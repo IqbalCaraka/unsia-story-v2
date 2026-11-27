@@ -33,26 +33,22 @@ class PengajuanCashback extends Model
      *
      * @return array<int, string>
      */
-    public static function daftarBank(): array
-    {
-        return [
-            'BCA', 'BNI', 'BRI', 'Mandiri', 'BTN', 'BSI', 'CIMB Niaga',
-            'Danamon', 'Permata', 'Panin', 'OCBC', 'Maybank', 'Bank Jago',
-            'Seabank', 'Bank Neo Commerce', 'Blu by BCA Digital',
-        ];
-    }
+    /**
+     * Pencairan cashback hanya lewat e-wallet, jadi metodenya selalu ini.
+     *
+     * Kolom `metode` tetap dipertahankan beserta nilai 'bank'-nya karena
+     * pengajuan lama mungkin masih memakainya; yang berubah hanya pilihan
+     * untuk pengajuan baru.
+     */
+    public const METODE = 'ewallet';
 
     /**
      * @return array<int, string>
      */
+    /** E-wallet yang dilayani untuk pencairan cashback. */
     public static function daftarEwallet(): array
     {
-        return ['DANA', 'OVO', 'GoPay', 'ShopeePay', 'LinkAja', 'Sakuku'];
-    }
-
-    public static function daftarPenyedia(string $metode): array
-    {
-        return $metode === 'ewallet' ? self::daftarEwallet() : self::daftarBank();
+        return ['DANA', 'GoPay', 'ShopeePay'];
     }
 
     /**

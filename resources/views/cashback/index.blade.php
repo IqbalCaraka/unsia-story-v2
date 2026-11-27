@@ -61,42 +61,34 @@
                             </div>
                         </div>
 
+                        {{-- Pencairan hanya lewat e-wallet, jadi tidak ada lagi pilihan
+                             metode: menanyakan sesuatu yang jawabannya cuma satu hanya
+                             menambah langkah tanpa memberi pilihan apa pun. --}}
                         <div class="mb-3">
-                            <label for="metode" class="form-label fw-semibold">Metode Pencairan</label>
-                            <select class="form-select @error('metode') is-invalid @enderror"
-                                    id="metode" name="metode" required>
-                                <option value="bank" {{ old('metode', 'bank') === 'bank' ? 'selected' : '' }}>
-                                    Transfer Bank
-                                </option>
-                                <option value="ewallet" {{ old('metode') === 'ewallet' ? 'selected' : '' }}>
-                                    E-Wallet
-                                </option>
-                            </select>
-                            @error('metode')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="penyedia" class="form-label fw-semibold">
-                                <span data-label-penyedia>Nama Bank</span>
-                            </label>
+                            <label for="penyedia" class="form-label fw-semibold">E-Wallet</label>
                             <select class="form-select @error('penyedia') is-invalid @enderror"
                                     id="penyedia" name="penyedia" required>
                                 <option value="">— Pilih —</option>
+                                @foreach ($daftarEwallet as $nama)
+                                    <option value="{{ $nama }}" {{ old('penyedia') === $nama ? 'selected' : '' }}>
+                                        {{ $nama }}
+                                    </option>
+                                @endforeach
                             </select>
                             @error('penyedia')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
+                            <div class="form-text">
+                                Pencairan hanya melalui {{ implode(', ', $daftarEwallet) }}.
+                            </div>
                         </div>
 
                         <div class="mb-3">
-                            <label for="nomor" class="form-label fw-semibold">
-                                <span data-label-nomor>Nomor Rekening</span>
-                            </label>
+                            <label for="nomor" class="form-label fw-semibold">Nomor E-Wallet</label>
                             <input type="text" inputmode="numeric"
                                    class="form-control @error('nomor') is-invalid @enderror"
-                                   id="nomor" name="nomor" value="{{ old('nomor') }}" required>
+                                   id="nomor" name="nomor" value="{{ old('nomor') }}"
+                                   placeholder="08xxxxxxxxxx" required>
                             @error('nomor')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -110,7 +102,7 @@
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                             <div class="form-text">
-                                Harus sesuai nama pemilik rekening, kalau tidak transfer bisa gagal.
+                                Harus sama dengan nama Anda sendiri. Pengajuan dengan nama berbeda akan ditolak.
                             </div>
                         </div>
 
@@ -199,45 +191,4 @@
     </div>
 </div>
 
-@endsection
-
-@section('scripts')
-<script>
-// Daftar penyedia mengikuti metode yang dipilih.
-const PENYEDIA = {
-    bank: @json($daftarBank),
-    ewallet: @json($daftarEwallet),
-};
-
-document.addEventListener('DOMContentLoaded', function () {
-    const metode = document.getElementById('metode');
-    if (!metode) return;
-
-    const penyedia = document.getElementById('penyedia');
-    const labelPenyedia = document.querySelector('[data-label-penyedia]');
-    const labelNomor = document.querySelector('[data-label-nomor]');
-    const nomor = document.getElementById('nomor');
-    const terpilih = @json(old('penyedia'));
-
-    function isiPenyedia() {
-        const ewallet = metode.value === 'ewallet';
-
-        labelPenyedia.textContent = ewallet ? 'Nama E-Wallet' : 'Nama Bank';
-        labelNomor.textContent = ewallet ? 'Nomor HP Terdaftar' : 'Nomor Rekening';
-        nomor.placeholder = ewallet ? '08123456789' : '1234567890';
-
-        penyedia.innerHTML = '<option value="">— Pilih —</option>';
-        PENYEDIA[metode.value].forEach(function (nama) {
-            const opt = document.createElement('option');
-            opt.value = nama;
-            opt.textContent = nama;
-            if (nama === terpilih) opt.selected = true;
-            penyedia.appendChild(opt);
-        });
-    }
-
-    metode.addEventListener('change', isiPenyedia);
-    isiPenyedia();
-});
-</script>
 @endsection

@@ -40,7 +40,6 @@ class CashbackController extends Controller
             'periode' => $periode,
             'periodeDibuka' => $periode?->cashbackDibuka() ?? false,
             'klaimPengunci' => $klaimPengunci,
-            'daftarBank' => PengajuanCashback::daftarBank(),
             'daftarEwallet' => PengajuanCashback::daftarEwallet(),
         ]);
     }
@@ -50,8 +49,6 @@ class CashbackController extends Controller
         $user = Auth::user();
 
         abort_unless($user->isMahasiswa(), 403);
-
-        $metode = $request->input('metode');
 
         // Periode diambil dari data mahasiswa, bukan dari kiriman form.
         // Dengan begitu tidak ada cara mengajukan atas nama periode lain,
@@ -69,8 +66,7 @@ class CashbackController extends Controller
         }
 
         $validated = $request->validate([
-            'metode' => ['required', Rule::in(['bank', 'ewallet'])],
-            'penyedia' => ['required', Rule::in(PengajuanCashback::daftarPenyedia($metode ?? 'bank'))],
+            'penyedia' => ['required', Rule::in(PengajuanCashback::daftarEwallet())],
             'nomor' => ['required', 'string', 'max:50', 'regex:/^[0-9][0-9 \-]*$/'],
             // Rekening harus atas nama mahasiswa sendiri. Dicegat di sini,
             // bukan dibiarkan sampai admin menolaknya, supaya mahasiswa tahu
@@ -86,7 +82,7 @@ class CashbackController extends Controller
             ],
             'catatan' => ['nullable', 'string', 'max:500'],
         ], [
-            'penyedia.in' => 'Pilih penyedia dari daftar yang tersedia.',
+            'penyedia.in' => 'Pilih e-wallet dari daftar yang tersedia.',
             'nomor.regex' => 'Nomor hanya boleh berisi angka, spasi, dan tanda hubung.',
         ], [
             'atas_nama' => 'nama pemilik rekening',
@@ -107,6 +103,8 @@ class CashbackController extends Controller
         $pengajuan = PengajuanCashback::create($validated + [
             'user_id' => $user->id,
             'tahun_ajar_id' => $periode->id,
+            // Hanya e-wallet yang dilayani, jadi tidak ditanyakan ke mahasiswa.
+            'metode' => PengajuanCashback::METODE,
             // Nominal dibekukan saat pengajuan dibuat.
             'jumlah' => $periode->nominal_cashback,
         ]);

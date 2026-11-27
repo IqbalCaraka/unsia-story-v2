@@ -36,14 +36,21 @@ class CashbackSekaliTest extends TestCase
         ]);
     }
 
+    /** Penghitung agar tiap mahasiswa uji punya NIM sendiri. */
+    protected int $urutan = 0;
+
     protected function mahasiswa(): User
     {
+        $this->urutan++;
+
         return User::factory()->create([
             'role' => 'mahasiswa',
             'nama' => 'Budi',
-            'nim' => '2200000001',
+            // firstOrCreate, bukan create: nama_prodi punya indeks unique,
+            // sehingga pemanggilan kedua akan ditolak.
+            'nim' => '220000000'.$this->urutan,
             'email' => null,
-            'prodi_id' => Prodi::create(['nama_prodi' => 'Akuntansi'])->id,
+            'prodi_id' => Prodi::firstOrCreate(['nama_prodi' => 'Akuntansi'])->id,
             'tahun_ajar_id' => $this->ganjil->id,
         ]);
     }
@@ -248,6 +255,67 @@ class CashbackSekaliTest extends TestCase
             ->assertSee($this->ganjil->label)
             // Tidak ada lagi pilihan periode yang bisa diutak-atik.
             ->assertDontSee('name="tahun_ajar_id"', false);
+    }
+
+    /**
+     * Pencairan hanya lewat tiga e-wallet ini. Daftar sebelumnya memuat OVO,
+     * LinkAja, Sakuku, dan puluhan bank — semuanya tidak lagi dilayani.
+     */
+    public function test_hanya_tiga_ewallet_yang_dilayani(): void
+    {
+        $this->assertSame(['DANA', 'GoPay', 'ShopeePay'], PengajuanCashback::daftarEwallet());
+
+        foreach (['DANA', 'GoPay', 'ShopeePay'] as $penyedia) {
+            $user = $this->mahasiswa();
+
+            $this->actingAs($user)
+                ->post(route('cashback.store'), $this->dataPengajuan($this->ganjil) + ['penyedia' => $penyedia])
+                ->assertSessionHasNoErrors();
+        }
+
+        $this->assertSame(3, PengajuanCashback::count());
+    }
+
+    public function test_penyedia_di_luar_daftar_ditolak(): void
+    {
+        foreach (['OVO', 'LinkAja', 'Sakuku', 'BCA', 'Mandiri'] as $penyedia) {
+            $this->actingAs($this->mahasiswa())
+                ->post(route('cashback.store'), array_merge(
+                    $this->dataPengajuan($this->ganjil),
+                    ['penyedia' => $penyedia]
+                ))
+                ->assertSessionHasErrors('penyedia');
+        }
+
+        $this->assertDatabaseCount('pengajuan_cashback', 0);
+    }
+
+    /**
+     * Metode tidak lagi ditanyakan ke mahasiswa, jadi kiriman form apa pun
+     * tidak boleh mengubahnya.
+     */
+    public function test_metode_selalu_ewallet(): void
+    {
+        $user = $this->mahasiswa();
+
+        $this->actingAs($user)
+            ->post(route('cashback.store'), $this->dataPengajuan($this->ganjil) + ['metode' => 'bank'])
+            ->assertSessionHasNoErrors();
+
+        $this->assertSame('ewallet', PengajuanCashback::where('user_id', $user->id)->value('metode'));
+    }
+
+    public function test_halaman_tidak_lagi_menanyakan_metode(): void
+    {
+        $response = $this->actingAs($this->mahasiswa())
+            ->get(route('cashback.index'))
+            ->assertStatus(200)
+            ->assertDontSee('name="metode"', false)
+            ->assertDontSee('Transfer Bank');
+
+        foreach (['DANA', 'GoPay', 'ShopeePay'] as $penyedia) {
+            $response->assertSee($penyedia);
+        }
     }
 
     public function test_downline_dan_admin_tidak_bisa_mengajukan(): void
