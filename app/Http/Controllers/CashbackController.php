@@ -152,13 +152,24 @@ class CashbackController extends Controller
     }
 
     /**
-     * Mahasiswa mengunduh bukti transfer miliknya sendiri.
+     * Bukti transfer milik mahasiswa itu sendiri.
+     *
+     * Ditampilkan langsung di peramban, bukan dipaksa terunduh: mahasiswa
+     * umumnya hanya ingin melihat sekilas bahwa transfernya benar, dan
+     * memaksanya menyimpan berkas lebih dulu hanya menambah langkah serta
+     * memenuhi folder unduhan.
+     *
+     * Dengan ?unduh=1 berkasnya tetap bisa disimpan.
      */
-    public function bukti(PengajuanCashback $cashback): StreamedResponse
+    public function bukti(Request $request, PengajuanCashback $cashback): StreamedResponse
     {
         abort_unless($cashback->user_id === Auth::id(), 403);
         abort_unless($cashback->bukti_path && Storage::disk('local')->exists($cashback->bukti_path), 404);
 
-        return Storage::disk('local')->download($cashback->bukti_path, $cashback->bukti_nama);
+        $disk = Storage::disk('local');
+
+        return $request->boolean('unduh')
+            ? $disk->download($cashback->bukti_path, $cashback->bukti_nama)
+            : $disk->response($cashback->bukti_path, $cashback->bukti_nama);
     }
 }

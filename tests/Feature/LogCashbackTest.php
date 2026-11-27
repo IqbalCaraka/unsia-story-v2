@@ -199,6 +199,89 @@ class LogCashbackTest extends TestCase
             ->assertStatus(200);
     }
 
+    /**
+     * Bukti ditampilkan di peramban, bukan dipaksa terunduh. Mahasiswa
+     * umumnya hanya ingin melihat sekilas bahwa transfernya benar.
+     */
+    public function test_bukti_ditampilkan_bukan_dipaksa_terunduh(): void
+    {
+        Storage::fake('local');
+
+        $user = $this->mahasiswa();
+        $this->actingAs($user)->post(route('cashback.store'), $this->data());
+
+        $pengajuan = PengajuanCashback::firstOrFail();
+
+        $this->actingAs($this->admin())
+            ->post(route('admin.cashback.bayar', $pengajuan), [
+                'bukti' => UploadedFile::fake()->image('transfer.jpg'),
+            ]);
+
+        $this->actingAs($user)
+            ->get(route('cashback.bukti', $pengajuan->id))
+            ->assertStatus(200)
+            ->assertHeader('content-disposition', 'inline; filename=transfer.jpg');
+    }
+
+    public function test_bukti_tetap_bisa_diunduh_bila_diminta(): void
+    {
+        Storage::fake('local');
+
+        $user = $this->mahasiswa();
+        $this->actingAs($user)->post(route('cashback.store'), $this->data());
+
+        $pengajuan = PengajuanCashback::firstOrFail();
+
+        $this->actingAs($this->admin())
+            ->post(route('admin.cashback.bayar', $pengajuan), [
+                'bukti' => UploadedFile::fake()->image('transfer.jpg'),
+            ]);
+
+        $response = $this->actingAs($user)
+            ->get(route('cashback.bukti', [$pengajuan->id, 'unduh' => 1]))
+            ->assertStatus(200);
+
+        $this->assertStringContainsString('attachment', $response->headers->get('content-disposition'));
+    }
+
+    /** Pratinjaunya muncul di halaman, bukan sekadar tautan unduhan. */
+    public function test_halaman_menampilkan_pratinjau_bukti(): void
+    {
+        Storage::fake('local');
+
+        $user = $this->mahasiswa();
+        $this->actingAs($user)->post(route('cashback.store'), $this->data());
+
+        $pengajuan = PengajuanCashback::firstOrFail();
+
+        $this->actingAs($this->admin())
+            ->post(route('admin.cashback.bayar', $pengajuan), [
+                'bukti' => UploadedFile::fake()->image('transfer.jpg'),
+            ]);
+
+        $this->actingAs($user)
+            ->get(route('cashback.index'))
+            ->assertStatus(200)
+            ->assertSee('id="bukti'.$pengajuan->id.'"', false)
+            // Gambarnya ditampilkan langsung di dalam modal.
+            ->assertSee('<img src="'.route('cashback.bukti', $pengajuan->id).'"', false);
+    }
+
+    public function test_jenis_berkas_bukti_dikenali(): void
+    {
+        $pengajuan = new PengajuanCashback(['bukti_nama' => 'transfer.JPG']);
+        $this->assertTrue($pengajuan->buktiGambar());
+        $this->assertFalse($pengajuan->buktiPdf());
+
+        $pengajuan = new PengajuanCashback(['bukti_nama' => 'struk.pdf']);
+        $this->assertTrue($pengajuan->buktiPdf());
+        $this->assertFalse($pengajuan->buktiGambar());
+
+        $pengajuan = new PengajuanCashback(['bukti_nama' => null]);
+        $this->assertFalse($pengajuan->buktiGambar());
+        $this->assertFalse($pengajuan->buktiPdf());
+    }
+
     public function test_bukti_bayar_tidak_bisa_diunduh_mahasiswa_lain(): void
     {
         Storage::fake('local');

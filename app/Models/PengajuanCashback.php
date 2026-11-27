@@ -45,6 +45,28 @@ class PengajuanCashback extends Model
     /**
      * @return array<int, string>
      */
+    /** Jenis berkas bukti yang bisa ditampilkan langsung di halaman. */
+    private const GAMBAR = ['jpg', 'jpeg', 'png', 'webp'];
+
+    public function buktiEkstensi(): ?string
+    {
+        if (! $this->bukti_nama) {
+            return null;
+        }
+
+        return mb_strtolower(pathinfo($this->bukti_nama, PATHINFO_EXTENSION));
+    }
+
+    public function buktiGambar(): bool
+    {
+        return in_array($this->buktiEkstensi(), self::GAMBAR, true);
+    }
+
+    public function buktiPdf(): bool
+    {
+        return $this->buktiEkstensi() === 'pdf';
+    }
+
     /** E-wallet yang dilayani untuk pencairan cashback. */
     public static function daftarEwallet(): array
     {

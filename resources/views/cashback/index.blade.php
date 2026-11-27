@@ -191,10 +191,12 @@
 
                             <div class="d-flex gap-2">
                                 @if ($p->isDibayar() && $p->bukti_path)
-                                    <a href="{{ route('cashback.bukti', $p->id) }}"
-                                       class="btn btn-sm btn-outline-success">
+                                    {{-- Membuka pratinjau, bukan mengunduh. Unduhan tetap
+                                         tersedia dari dalam modalnya. --}}
+                                    <button type="button" class="btn btn-sm btn-outline-success"
+                                            data-bs-toggle="modal" data-bs-target="#bukti{{ $p->id }}">
                                         <i class="fas fa-file-invoice-dollar me-1"></i>Bukti Transfer
-                                    </a>
+                                    </button>
                                 @endif
 
                                 @if ($p->isMenunggu())
@@ -216,6 +218,59 @@
         </div>
     </div>
 </div>
+
+{{-- Modal pratinjau bukti transfer.
+
+     Gambar ditampilkan apa adanya; PDF lewat <object> yang punya penampil
+     bawaan peramban. Kalau peramban tidak sanggup menampilkannya, isi
+     cadangan di dalam <object> yang muncul, bukan halaman kosong. --}}
+@foreach ($pengajuanList->where('status', 'dibayar')->where('bukti_path', '!=', null) as $p)
+    <div class="modal fade" id="bukti{{ $p->id }}" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div>
+                        <h6 class="modal-title fw-bold">Bukti Transfer</h6>
+                        <small class="text-muted">
+                            {{ $p->jumlah_rupiah }} · {{ $p->dibayar_pada?->format('d M Y') }}
+                        </small>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+                </div>
+
+                <div class="modal-body text-center bg-light">
+                    @if ($p->buktiGambar())
+                        <img src="{{ route('cashback.bukti', $p->id) }}"
+                             alt="Bukti transfer {{ $p->jumlah_rupiah }}"
+                             class="img-fluid rounded" style="max-height: 70vh;">
+                    @elseif ($p->buktiPdf())
+                        <object data="{{ route('cashback.bukti', $p->id) }}"
+                                type="application/pdf"
+                                style="width: 100%; height: 70vh;">
+                            <p class="text-muted small mb-0 py-4">
+                                Peramban Anda tidak bisa menampilkan PDF di sini.
+                                Gunakan tombol Unduh di bawah.
+                            </p>
+                        </object>
+                    @else
+                        <p class="text-muted small mb-0 py-4">
+                            Berkas {{ $p->bukti_nama }} tidak bisa ditampilkan langsung.
+                            Gunakan tombol Unduh di bawah.
+                        </p>
+                    @endif
+                </div>
+
+                <div class="modal-footer">
+                    <a href="{{ route('cashback.bukti', [$p->id, 'unduh' => 1]) }}"
+                       class="btn btn-outline-secondary">
+                        <i class="fas fa-download me-1"></i>Unduh
+                    </a>
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
+@endforeach
 
 {{-- Modal pembatalan, satu per pengajuan yang masih menunggu. --}}
 @foreach ($pengajuanList->where('status', 'menunggu') as $p)
