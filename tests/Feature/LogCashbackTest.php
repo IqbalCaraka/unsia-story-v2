@@ -139,6 +139,80 @@ class LogCashbackTest extends TestCase
         $this->assertSame(['diajukan', 'diverifikasi', 'dibayar'], $aksi);
     }
 
+    /**
+     * Bukti transfer yang diunggah admin harus bisa dilihat mahasiswa yang
+     * mengajukan — dan hanya oleh dia.
+     */
+    public function test_bukti_bayar_sampai_ke_mahasiswa(): void
+    {
+        Storage::fake('local');
+
+        $user = $this->mahasiswa();
+        $this->actingAs($user)->post(route('cashback.store'), $this->data());
+
+        $pengajuan = PengajuanCashback::firstOrFail();
+
+        $this->actingAs($this->admin())
+            ->patch(route('admin.cashback.verifikasi', $pengajuan), ['catatan_admin' => 'cocok']);
+
+        $this->actingAs($this->admin())
+            ->post(route('admin.cashback.bayar', $pengajuan), [
+                'bukti' => UploadedFile::fake()->image('transfer.jpg'),
+            ]);
+
+        // Tautannya muncul di halaman mahasiswa.
+        $this->actingAs($user)
+            ->get(route('cashback.index'))
+            ->assertStatus(200)
+            ->assertSee('Bukti Transfer')
+            ->assertSee(route('cashback.bukti', $pengajuan->id));
+
+        // Dan berkasnya benar-benar bisa diunduh.
+        $this->actingAs($user)
+            ->get(route('cashback.bukti', $pengajuan->id))
+            ->assertStatus(200);
+    }
+
+    public function test_bukti_bayar_tidak_bisa_diunduh_mahasiswa_lain(): void
+    {
+        Storage::fake('local');
+
+        $pemilik = $this->mahasiswa();
+        $this->actingAs($pemilik)->post(route('cashback.store'), $this->data());
+
+        $pengajuan = PengajuanCashback::firstOrFail();
+
+        $this->actingAs($this->admin())
+            ->patch(route('admin.cashback.verifikasi', $pengajuan), ['catatan_admin' => 'cocok']);
+        $this->actingAs($this->admin())
+            ->post(route('admin.cashback.bayar', $pengajuan), [
+                'bukti' => UploadedFile::fake()->image('transfer.jpg'),
+            ]);
+
+        $orangLain = User::factory()->create(['role' => 'mahasiswa', 'nim' => '2205555555', 'email' => null]);
+
+        $this->actingAs($orangLain)
+            ->get(route('cashback.bukti', $pengajuan->id))
+            ->assertStatus(403);
+    }
+
+    public function test_bayar_wajib_melampirkan_bukti(): void
+    {
+        $user = $this->mahasiswa();
+        $this->actingAs($user)->post(route('cashback.store'), $this->data());
+
+        $pengajuan = PengajuanCashback::firstOrFail();
+
+        $this->actingAs($this->admin())
+            ->patch(route('admin.cashback.verifikasi', $pengajuan), ['catatan_admin' => 'cocok']);
+
+        $this->actingAs($this->admin())
+            ->post(route('admin.cashback.bayar', $pengajuan), [])
+            ->assertSessionHasErrors('bukti');
+
+        $this->assertSame('diverifikasi', $pengajuan->fresh()->status);
+    }
+
     public function test_penolakan_mencatat_alasannya(): void
     {
         $user = $this->mahasiswa();

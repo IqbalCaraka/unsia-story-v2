@@ -114,8 +114,10 @@ class CashbackController extends Controller
             $pengajuan->tujuan,
         );
 
-        return redirect()->route('cashback.index')
-            ->with('success', 'Pengajuan cashback terkirim dan menunggu verifikasi admin.');
+        return redirect()->route('cashback.index')->with('success',
+            'Pengajuan cashback terkirim dan menunggu verifikasi admin. '
+            . 'Perlu diingat, biaya transfer ditanggung penerima sehingga jumlah yang masuk '
+            . 'sedikit lebih kecil dari ' . $periode->nominal_rupiah . '.');
     }
 
     public function batal(PengajuanCashback $cashback)

@@ -44,7 +44,11 @@
                         Hubungi admin bila Anda merasa seharusnya sudah bisa mengajukan.
                     </div>
                 @else
-                    <form action="{{ route('cashback.store') }}" method="POST">
+                    {{-- Konfirmasi saat mengirim, bukan hanya keterangan di halaman:
+                         soal potongan biaya transfer mudah terlewat kalau cuma dibaca
+                         sambil lalu, dan ia menyangkut jumlah uang yang diterima. --}}
+                    <form action="{{ route('cashback.store') }}" method="POST"
+                          onsubmit="return confirm('Cashback {{ $periode->nominal_rupiah }} akan dikirim ke e-wallet Anda, dikurangi biaya transfer yang ditanggung penerima.\n\nLanjutkan pengajuan?')">
                         @csrf
 
                         {{-- Periode ditampilkan, bukan dipilih. Ia sudah tertentu dari data
@@ -115,6 +119,19 @@
                             @error('catatan')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
+                        </div>
+
+                        {{-- Nominalnya diambil dari periode, bukan ditulis tetap: besaran
+                             cashback berbeda antarperiode, dan angka yang ditulis tetap
+                             akan menyesatkan begitu periodenya berganti. --}}
+                        <div class="alert alert-warning border-0 small d-flex gap-2 mb-3">
+                            <i class="fas fa-circle-exclamation mt-1"></i>
+                            <div>
+                                <strong>Biaya transfer ditanggung penerima.</strong>
+                                Cashback periode ini {{ $periode->nominal_rupiah }}, dan biaya
+                                transfer dipotong dari jumlah itu — jadi yang masuk ke e-wallet
+                                Anda sedikit lebih kecil, besarnya tergantung tarif penyedia.
+                            </div>
                         </div>
 
                         <button type="submit" class="btn btn-gold w-100">

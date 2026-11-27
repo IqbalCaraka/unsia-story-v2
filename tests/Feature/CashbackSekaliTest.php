@@ -318,6 +318,40 @@ class CashbackSekaliTest extends TestCase
         }
     }
 
+    /**
+     * Mahasiswa harus tahu bahwa yang masuk ke e-wallet lebih kecil dari
+     * nominal cashback, karena biaya transfer dipotong dari jumlah itu.
+     */
+    public function test_pemberitahuan_biaya_transfer_memakai_nominal_periode(): void
+    {
+        $html = $this->actingAs($this->mahasiswa())
+            ->get(route('cashback.index'))
+            ->assertStatus(200)
+            ->assertSee('Biaya transfer ditanggung penerima')
+            ->getContent();
+
+        // Diperiksa DI DALAM blok pemberitahuannya, bukan di seluruh halaman.
+        // Nominal yang sama juga tampil di kotak Periode, sehingga asersi
+        // selebar halaman sempat lolos meski angkanya dipatok tetap.
+        preg_match('#<div class="alert alert-warning.*?</div>\s*</div>#s', $html, $blok);
+
+        $this->assertNotEmpty($blok, 'Blok pemberitahuan biaya transfer tidak ditemukan');
+
+        $this->assertStringContainsString(
+            $this->ganjil->nominal_rupiah,
+            $blok[0],
+            'Pemberitahuan harus menyebut nominal periode, bukan angka tetap'
+        );
+    }
+
+    public function test_pesan_setelah_mengajukan_mengingatkan_biaya_transfer(): void
+    {
+        $this->actingAs($this->mahasiswa())
+            ->post(route('cashback.store'), $this->dataPengajuan($this->ganjil))
+            ->assertSessionHas('success', fn ($p) => str_contains($p, 'biaya transfer ditanggung penerima')
+                && str_contains($p, $this->ganjil->nominal_rupiah));
+    }
+
     public function test_downline_dan_admin_tidak_bisa_mengajukan(): void
     {
         foreach (['downline', 'admin', 'superadmin'] as $role) {
