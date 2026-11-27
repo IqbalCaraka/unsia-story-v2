@@ -117,7 +117,11 @@ class LogCashbackTest extends TestCase
         $this->assertSame('menunggu', $log->status_baru);
     }
 
-    public function test_verifikasi_tolak_dan_bayar_tercatat_berurutan(): void
+    /**
+     * Validasi dan pencatatan pembayaran kini satu langkah, jadi riwayatnya
+     * dua peristiwa saja: diajukan, lalu dibayar.
+     */
+    public function test_pengajuan_dan_pembayaran_tercatat_berurutan(): void
     {
         Storage::fake('local');
 
@@ -127,16 +131,40 @@ class LogCashbackTest extends TestCase
         $pengajuan = PengajuanCashback::firstOrFail();
 
         $this->actingAs($this->admin())
-            ->patch(route('admin.cashback.verifikasi', $pengajuan), ['catatan_admin' => 'rekening cocok']);
+            ->post(route('admin.cashback.bayar', $pengajuan), [
+                'bukti' => UploadedFile::fake()->image('transfer.jpg'),
+            ]);
+
+        $this->assertSame(['diajukan', 'dibayar'], $pengajuan->log()->pluck('aksi')->all());
+
+        // Jejak pemeriksa ikut terisi walau tidak ada langkah verifikasi
+        // tersendiri — dalam alur satu langkah, orang dan waktunya sama.
+        $pengajuan->refresh();
+        $this->assertSame($this->admin()->id, $pengajuan->diverifikasi_oleh);
+        $this->assertSame($this->admin()->id, $pengajuan->dibayar_oleh);
+        $this->assertNotNull($pengajuan->diverifikasi_pada);
+    }
+
+    /**
+     * Pengajuan yang terlanjur berstatus "diverifikasi" sebelum alurnya
+     * disederhanakan tetap bisa dituntaskan, bukan tertinggal menggantung.
+     */
+    public function test_pengajuan_lama_berstatus_diverifikasi_tetap_bisa_dibayar(): void
+    {
+        Storage::fake('local');
+
+        $user = $this->mahasiswa();
+        $this->actingAs($user)->post(route('cashback.store'), $this->data());
+
+        $pengajuan = PengajuanCashback::firstOrFail();
+        $pengajuan->update(['status' => 'diverifikasi']);
 
         $this->actingAs($this->admin())
             ->post(route('admin.cashback.bayar', $pengajuan), [
                 'bukti' => UploadedFile::fake()->image('transfer.jpg'),
             ]);
 
-        $aksi = $pengajuan->log()->pluck('aksi')->all();
-
-        $this->assertSame(['diajukan', 'diverifikasi', 'dibayar'], $aksi);
+        $this->assertSame('dibayar', $pengajuan->fresh()->status);
     }
 
     /**
@@ -152,8 +180,6 @@ class LogCashbackTest extends TestCase
 
         $pengajuan = PengajuanCashback::firstOrFail();
 
-        $this->actingAs($this->admin())
-            ->patch(route('admin.cashback.verifikasi', $pengajuan), ['catatan_admin' => 'cocok']);
 
         $this->actingAs($this->admin())
             ->post(route('admin.cashback.bayar', $pengajuan), [
@@ -183,8 +209,6 @@ class LogCashbackTest extends TestCase
         $pengajuan = PengajuanCashback::firstOrFail();
 
         $this->actingAs($this->admin())
-            ->patch(route('admin.cashback.verifikasi', $pengajuan), ['catatan_admin' => 'cocok']);
-        $this->actingAs($this->admin())
             ->post(route('admin.cashback.bayar', $pengajuan), [
                 'bukti' => UploadedFile::fake()->image('transfer.jpg'),
             ]);
@@ -203,14 +227,14 @@ class LogCashbackTest extends TestCase
 
         $pengajuan = PengajuanCashback::firstOrFail();
 
-        $this->actingAs($this->admin())
-            ->patch(route('admin.cashback.verifikasi', $pengajuan), ['catatan_admin' => 'cocok']);
 
         $this->actingAs($this->admin())
             ->post(route('admin.cashback.bayar', $pengajuan), [])
             ->assertSessionHasErrors('bukti');
 
-        $this->assertSame('diverifikasi', $pengajuan->fresh()->status);
+        // Tanpa bukti, pengajuan tetap menunggu — tidak boleh terlanjur
+        // ditandai dibayar.
+        $this->assertSame('menunggu', $pengajuan->fresh()->status);
     }
 
     public function test_penolakan_mencatat_alasannya(): void

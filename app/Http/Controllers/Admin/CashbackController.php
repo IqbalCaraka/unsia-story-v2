@@ -55,41 +55,21 @@ class CashbackController extends Controller
     }
 
     /**
-     * Langkah 1: admin memastikan data rekening benar.
-     */
-    public function verifikasi(Request $request, PengajuanCashback $cashback)
-    {
-        if (! $cashback->isMenunggu()) {
-            return back()->with('error', 'Pengajuan ini sudah diproses sebelumnya.');
-        }
-
-        $request->validate(['catatan_admin' => ['nullable', 'string', 'max:500']]);
-
-        $statusLama = $cashback->status;
-
-        $cashback->update([
-            'status' => 'diverifikasi',
-            'catatan_admin' => $request->input('catatan_admin'),
-            'diverifikasi_oleh' => auth()->id(),
-            'diverifikasi_pada' => now(),
-        ]);
-
-        LogCashback::catat(
-            $cashback, 'diverifikasi', auth()->id(), $statusLama, 'diverifikasi',
-            $request->input('catatan_admin'),
-        );
-
-        return back()->with('success',
-            "Pengajuan {$cashback->user->nama} diverifikasi. Silakan transfer lalu unggah buktinya.");
-    }
-
-    /**
-     * Langkah 2: admin sudah transfer, unggah bukti.
+     * Validasi sekaligus pencatatan pembayaran, dalam satu langkah.
+     *
+     * Sebelumnya terbagi dua: verifikasi data rekening dulu, lalu unggah bukti
+     * di langkah terpisah. Dalam praktiknya admin mentransfer uangnya lebih
+     * dulu baru membuka panel, sehingga langkah pertama hanya menambah klik
+     * tanpa menghasilkan keputusan apa pun.
+     *
+     * Pengajuan berstatus "diverifikasi" tetap dilayani di sini, karena
+     * sebagian sudah terlanjur melewati langkah pertama sebelum alurnya
+     * disederhanakan.
      */
     public function bayar(Request $request, PengajuanCashback $cashback)
     {
-        if (! $cashback->isDiverifikasi()) {
-            return back()->with('error', 'Hanya pengajuan yang sudah diverifikasi yang bisa ditandai dibayar.');
+        if (! $cashback->isMenunggu() && ! $cashback->isDiverifikasi()) {
+            return back()->with('error', 'Pengajuan ini sudah selesai diproses.');
         }
 
         $validated = $request->validate([
@@ -114,6 +94,11 @@ class CashbackController extends Controller
             'bukti_path' => $path,
             'bukti_nama' => $berkas->getClientOriginalName(),
             'catatan_admin' => $validated['catatan_admin'] ?? $cashback->catatan_admin,
+            // Kalau pengajuan ini belum pernah melewati langkah verifikasi,
+            // jejak pemeriksanya diisi sekalian: dalam alur satu langkah,
+            // orang dan waktunya memang sama.
+            'diverifikasi_oleh' => $cashback->diverifikasi_oleh ?? auth()->id(),
+            'diverifikasi_pada' => $cashback->diverifikasi_pada ?? now(),
             'dibayar_oleh' => auth()->id(),
             'dibayar_pada' => now(),
         ]);
@@ -125,7 +110,7 @@ class CashbackController extends Controller
         );
 
         return back()->with('success',
-            "Cashback {$cashback->jumlah_rupiah} untuk {$cashback->user->nama} ditandai sudah dibayar.");
+            "Cashback {$cashback->jumlah_rupiah} untuk {$cashback->user->nama} divalidasi dan ditandai sudah dibayar.");
     }
 
     public function tolak(Request $request, PengajuanCashback $cashback)

@@ -405,6 +405,58 @@ class CashbackSekaliTest extends TestCase
         }
     }
 
+    /**
+     * Konfirmasi memakai modal, bukan dialog bawaan peramban. Dialog bawaan
+     * tidak bisa diatur tampilannya dan memotong teks panjang di sebagian
+     * peramban — padahal isinya menyangkut jumlah uang yang diterima.
+     */
+    public function test_konfirmasi_memakai_modal_bukan_dialog_peramban(): void
+    {
+        $html = $this->actingAs($this->mahasiswa())
+            ->get(route('cashback.index'))
+            ->assertStatus(200)
+            ->assertSee('id="konfirmasiCashback"', false)
+            ->assertSee('Konfirmasi Pengajuan Cashback')
+            ->getContent();
+
+        $this->assertStringNotContainsString('confirm(', $html,
+            'Masih ada dialog bawaan peramban di halaman cashback');
+    }
+
+    /**
+     * Pembatalan juga memakai modal. Pemeriksaan di atas sempat tidak
+     * menangkapnya karena mahasiswa ujinya belum punya pengajuan sama sekali,
+     * sehingga tombol Batalkan tidak ikut dirender.
+     */
+    public function test_pembatalan_juga_memakai_modal(): void
+    {
+        $user = $this->mahasiswa();
+        $this->actingAs($user)->post(route('cashback.store'), $this->dataPengajuan($this->ganjil));
+
+        $pengajuan = PengajuanCashback::firstOrFail();
+
+        $html = $this->actingAs($user)
+            ->get(route('cashback.index'))
+            ->assertStatus(200)
+            ->assertSee('id="batal'.$pengajuan->id.'"', false)
+            ->assertSee('Batalkan Pengajuan?')
+            ->getContent();
+
+        $this->assertStringNotContainsString('confirm(', $html);
+    }
+
+    /**
+     * Tombol kirim di dalam modal menunjuk ke form lewat atribut form,
+     * sehingga modalnya boleh diletakkan di luar form itu.
+     */
+    public function test_tombol_modal_terhubung_ke_formulir(): void
+    {
+        $this->actingAs($this->mahasiswa())
+            ->get(route('cashback.index'))
+            ->assertSee('id="formCashback"', false)
+            ->assertSee('form="formCashback"', false);
+    }
+
     public function test_downline_dan_admin_tidak_bisa_mengajukan(): void
     {
         foreach (['downline', 'admin', 'superadmin'] as $role) {

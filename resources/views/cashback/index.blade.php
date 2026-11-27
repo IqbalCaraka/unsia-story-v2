@@ -44,11 +44,11 @@
                         Hubungi admin bila Anda merasa seharusnya sudah bisa mengajukan.
                     </div>
                 @else
-                    {{-- Konfirmasi saat mengirim, bukan hanya keterangan di halaman:
-                         soal potongan biaya transfer mudah terlewat kalau cuma dibaca
-                         sambil lalu, dan ia menyangkut jumlah uang yang diterima. --}}
-                    <form action="{{ route('cashback.store') }}" method="POST"
-                          onsubmit="return confirm('Cashback {{ $periode->nominal_rupiah }} akan dikirim ke e-wallet Anda, dikurangi biaya transfer yang ditanggung penerima.\n\nLanjutkan pengajuan?')">
+                    {{-- Konfirmasinya lewat modal, bukan dialog bawaan peramban:
+                         dialog bawaan tidak bisa diatur tampilannya, memotong teks
+                         panjang di sebagian peramban, dan terlihat asing dibanding
+                         sisa panel. Isinya menyangkut jumlah uang, jadi harus terbaca. --}}
+                    <form id="formCashback" action="{{ route('cashback.store') }}" method="POST">
                         @csrf
 
                         {{-- Periode ditampilkan, bukan dipilih. Ia sudah tertentu dari data
@@ -141,7 +141,11 @@
                             </div>
                         </div>
 
-                        <button type="submit" class="btn btn-gold w-100">
+                        {{-- Tombolnya membuka modal, bukan langsung mengirim. Pengiriman
+                             sebenarnya dilakukan tombol di dalam modal, supaya pesan
+                             tentang potongan biaya transfer pasti terbaca dulu. --}}
+                        <button type="button" class="btn btn-gold w-100"
+                                data-bs-toggle="modal" data-bs-target="#konfirmasiCashback">
                             <i class="fas fa-paper-plane me-2"></i>Kirim Pengajuan
                         </button>
                     </form>
@@ -194,12 +198,10 @@
                                 @endif
 
                                 @if ($p->isMenunggu())
-                                    <form action="{{ route('cashback.batal', $p->id) }}" method="POST"
-                                          onsubmit="return confirm('Batalkan pengajuan ini?')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-outline-danger">Batalkan</button>
-                                    </form>
+                                    <button type="button" class="btn btn-sm btn-outline-danger"
+                                            data-bs-toggle="modal" data-bs-target="#batal{{ $p->id }}">
+                                        Batalkan
+                                    </button>
                                 @endif
                             </div>
                         </div>
@@ -214,6 +216,74 @@
         </div>
     </div>
 </div>
+
+{{-- Modal pembatalan, satu per pengajuan yang masih menunggu. --}}
+@foreach ($pengajuanList->where('status', 'menunggu') as $p)
+    <div class="modal fade" id="batal{{ $p->id }}" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <form class="modal-content" action="{{ route('cashback.batal', $p->id) }}" method="POST">
+                @csrf
+                @method('DELETE')
+
+                <div class="modal-header">
+                    <h6 class="modal-title fw-bold">Batalkan Pengajuan?</h6>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+                </div>
+
+                <div class="modal-body small">
+                    Pengajuan <strong>{{ $p->jumlah_rupiah }}</strong> ke {{ $p->tujuan }} akan dibatalkan.
+                    Anda masih bisa mengajukan lagi setelah ini.
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Tidak</button>
+                    <button type="submit" class="btn btn-danger">Ya, Batalkan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+@endforeach
+
+{{-- Modal konfirmasi pengajuan.
+
+     Diletakkan di luar form di atas, dan tombol kirimnya menunjuk ke form itu
+     lewat atribut form="formCashback". Dengan begitu modal boleh berada di
+     mana saja pada halaman tanpa membuat form bersarang. --}}
+@if (! $klaimPengunci && $periode && $periodeDibuka)
+    <div class="modal fade" id="konfirmasiCashback" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h6 class="modal-title fw-bold">Konfirmasi Pengajuan Cashback</h6>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="d-flex justify-content-between align-items-baseline mb-3">
+                        <span class="text-muted">Cashback periode {{ $periode->label }}</span>
+                        <strong class="fs-5 text-success">{{ $periode->nominal_rupiah }}</strong>
+                    </div>
+
+                    <div class="alert alert-warning border-0 small mb-0 d-flex gap-2">
+                        <i class="fas fa-circle-exclamation mt-1"></i>
+                        <div>
+                            <strong>Biaya transfer ditanggung penerima.</strong>
+                            Jumlah yang masuk ke e-wallet Anda sedikit lebih kecil dari
+                            {{ $periode->nominal_rupiah }}, besarnya tergantung tarif penyedia.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" form="formCashback" class="btn btn-gold">
+                        <i class="fas fa-paper-plane me-1"></i>Ya, Ajukan
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+@endif
 
 @endsection
 

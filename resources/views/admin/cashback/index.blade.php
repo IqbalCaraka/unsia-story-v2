@@ -143,25 +143,13 @@
                                 @endif
                             </td>
                             <td class="text-end pe-3">
-                                @if ($p->isMenunggu())
-                                    <form action="{{ route('admin.cashback.verifikasi', $p->id) }}" method="POST"
-                                          class="d-inline"
-                                          onsubmit="return confirm('Data rekening sudah dicek dan benar?')">
-                                        @csrf
-                                        @method('PATCH')
-                                        <button type="submit" class="btn btn-sm btn-outline-primary"
-                                                title="Verifikasi data rekening">
-                                            <i class="fas fa-user-check"></i>
-                                        </button>
-                                    </form>
-                                    <button type="button" class="btn btn-sm btn-outline-danger"
-                                            data-bs-toggle="modal" data-bs-target="#tolak{{ $p->id }}" title="Tolak">
-                                        <i class="fas fa-times"></i>
-                                    </button>
-                                @elseif ($p->isDiverifikasi())
+                                {{-- Satu tombol untuk menunggu maupun diverifikasi: keduanya
+                                     dituntaskan lewat modal yang sama. Status "diverifikasi"
+                                     hanya tersisa pada pengajuan lama. --}}
+                                @if ($p->isMenunggu() || $p->isDiverifikasi())
                                     <button type="button" class="btn btn-sm btn-success"
                                             data-bs-toggle="modal" data-bs-target="#bayar{{ $p->id }}">
-                                        <i class="fas fa-upload me-1"></i>Bukti
+                                        <i class="fas fa-circle-check me-1"></i>Validasi
                                     </button>
                                     <button type="button" class="btn btn-sm btn-outline-danger"
                                             data-bs-toggle="modal" data-bs-target="#tolak{{ $p->id }}" title="Tolak">
@@ -200,8 +188,10 @@
     </div>
 @endif
 
-{{-- Modal unggah bukti pembayaran --}}
-@foreach ($pengajuanList->where('status', 'diverifikasi') as $p)
+{{-- Modal validasi sekaligus unggah bukti pembayaran.
+     Mencakup "menunggu" dan "diverifikasi": keduanya dituntaskan lewat modal
+     yang sama sejak alurnya disederhanakan jadi satu langkah. --}}
+@foreach ($pengajuanList->whereIn('status', ['menunggu', 'diverifikasi']) as $p)
     <div class="modal fade" id="bayar{{ $p->id }}" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <form class="modal-content" action="{{ route('admin.cashback.bayar', $p->id) }}"
@@ -209,7 +199,7 @@
                 @csrf
 
                 <div class="modal-header">
-                    <h6 class="modal-title fw-bold">Unggah Bukti Pembayaran</h6>
+                    <h6 class="modal-title fw-bold">Validasi &amp; Bukti Pembayaran</h6>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
                 </div>
 

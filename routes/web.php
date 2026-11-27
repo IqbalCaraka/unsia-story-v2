@@ -159,8 +159,9 @@ Route::prefix('admin')->middleware('admin')->name('admin.')->group(function () {
 
     // Cashback: verifikasi, pembayaran, penolakan
     Route::get('/cashback', [AdminCashbackController::class, 'index'])->name('cashback.index');
-    Route::patch('/cashback/{cashback}/verifikasi', [AdminCashbackController::class, 'verifikasi'])
-        ->name('cashback.verifikasi');
+    // Validasi dan pencatatan pembayaran jadi satu langkah, jadi tidak ada
+    // lagi route verifikasi tersendiri. Pengajuan yang terlanjur berstatus
+    // "diverifikasi" tetap bisa dituntaskan lewat route ini.
     Route::post('/cashback/{cashback}/bayar', [AdminCashbackController::class, 'bayar'])->name('cashback.bayar');
     Route::patch('/cashback/{cashback}/tolak', [AdminCashbackController::class, 'tolak'])->name('cashback.tolak');
     Route::get('/cashback/{cashback}/bukti', [AdminCashbackController::class, 'bukti'])->name('cashback.bukti');
