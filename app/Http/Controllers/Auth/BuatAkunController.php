@@ -57,7 +57,17 @@ class BuatAkunController extends Controller
         // Seluruh pemeriksaan di bawah berujung pada pesan yang sama. Yang
         // berbeda hanya apakah emailnya benar-benar dikirim.
         if ($user && $this->bolehDibuatkan($user)) {
-            $this->buatkanPassword($user);
+            // Kegagalan kirim dilaporkan apa adanya, walau itu berarti
+            // jawabannya tidak lagi seragam untuk email terdaftar dan tidak.
+            // Gangguan layanan harus terlihat: membiarkan mahasiswa menunggu
+            // email yang tidak pernah datang jauh lebih merugikan daripada
+            // kebocoran kecil itu, dan keadaannya pun tidak berlangsung lama.
+            if (! $this->buatkanPassword($user)) {
+                return back()->withInput()->withErrors([
+                    'email' => 'Layanan email kami sedang bermasalah sehingga password belum bisa dikirim. '
+                        . 'Coba lagi beberapa saat lagi, atau hubungi admin.',
+                ]);
+            }
         } elseif ($user) {
             // Akun ada tapi sudah pernah dipakai masuk. Dicatat di log supaya
             // admin bisa melihatnya kalau ada mahasiswa yang mengeluh.
@@ -84,16 +94,39 @@ class BuatAkunController extends Controller
             && filled($user->email);
     }
 
-    private function buatkanPassword(User $user): void
+    /**
+     * Membuat password baru dan mengirimkannya. Mengembalikan false kalau
+     * emailnya gagal dikirim.
+     *
+     * Emailnya dikirim LEBIH DULU, passwordnya disimpan setelah pengiriman
+     * berhasil. Urutan sebaliknya pernah dipakai dan berbahaya: begitu
+     * pengiriman gagal, password mahasiswa sudah terlanjur diganti menjadi
+     * nilai acak yang tidak diketahui siapa pun, sehingga akunnya tidak bisa
+     * dipakai masuk sama sekali.
+     */
+    private function buatkanPassword(User $user): bool
     {
         $password = PasswordAwal::buat();
 
+        try {
+            // Dikirim langsung, bukan lewat antrean: belum ada worker antrean
+            // yang berjalan di server ini, dan email yang tertahan di antrean
+            // tidak akan pernah sampai.
+            Mail::to($user->email)->send(new PasswordAkunMahasiswa($user, $password));
+        } catch (\Throwable $e) {
+            // Password lama dibiarkan utuh, jadi mahasiswa bisa mencoba lagi
+            // setelah gangguannya beres.
+            Log::error('Gagal mengirim password akun mahasiswa', [
+                'user_id' => $user->id,
+                'galat' => $e->getMessage(),
+            ]);
+
+            return false;
+        }
+
         $user->forceFill(['password' => Hash::make($password)])->save();
 
-        // Dikirim langsung, bukan lewat antrean: belum ada worker antrean yang
-        // berjalan di server ini, dan email yang tertahan di antrean tidak akan
-        // pernah sampai.
-        Mail::to($user->email)->send(new PasswordAkunMahasiswa($user, $password));
+        return true;
     }
 
     /**

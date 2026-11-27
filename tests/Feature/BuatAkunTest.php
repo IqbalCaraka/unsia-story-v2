@@ -200,6 +200,41 @@ class BuatAkunTest extends TestCase
         Mail::assertSentCount(3);
     }
 
+    /**
+     * Gangguan SMTP dulu menjadi 500 tanpa penjelasan apa pun.
+     */
+    public function test_gangguan_email_tidak_menjadi_error_500(): void
+    {
+        $this->mahasiswa();
+
+        Mail::shouldReceive('to')->andThrow(new \RuntimeException('SMTP tumbang'));
+
+        $this->post(route('buat-akun.kirim'), ['email' => 'budi@contoh.id'])
+            ->assertStatus(302)
+            ->assertSessionHasErrors('email');
+    }
+
+    /**
+     * Inti perbaikannya: password hanya boleh berganti kalau emailnya benar-
+     * benar terkirim. Urutan sebaliknya membuat akun mahasiswa tidak bisa
+     * dipakai masuk begitu pengiriman gagal — passwordnya sudah diganti
+     * menjadi nilai acak yang tidak diketahui siapa pun.
+     */
+    public function test_password_tidak_berganti_saat_pengiriman_gagal(): void
+    {
+        $user = $this->mahasiswa();
+        $user->forceFill(['password' => Hash::make('passwordlama')])->save();
+
+        Mail::shouldReceive('to')->andThrow(new \RuntimeException('SMTP tumbang'));
+
+        $this->post(route('buat-akun.kirim'), ['email' => 'budi@contoh.id']);
+
+        $this->assertTrue(
+            Hash::check('passwordlama', $user->fresh()->password),
+            'Password berubah padahal emailnya gagal dikirim'
+        );
+    }
+
     public function test_halaman_login_menautkan_ke_buat_akun(): void
     {
         $this->get(route('login'))
